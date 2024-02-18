@@ -1,2 +1,7 @@
+spring:
+  data:
+    mongodb:
+      database : Ssafe
+
 server:
   port: 80
