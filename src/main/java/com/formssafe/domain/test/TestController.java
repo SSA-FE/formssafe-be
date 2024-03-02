@@ -1,11 +1,12 @@
 package com.formssafe.domain.test;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 @RestController
 @RequestMapping("/api/v1/test")
 public class TestController {
@@ -21,20 +22,5 @@ public class TestController {
     @ResponseStatus(HttpStatus.OK)
     public String admin() {
         return "Admin";
-    }
-
-    @Autowired
-    private TestService testService;
-
-    @GetMapping("/get")
-    @ResponseStatus(HttpStatus.OK)
-    public List<Test> getAll(){
-        return testService.getAll();
-    }
-
-    @PostMapping("/add")
-    @ResponseStatus(HttpStatus.OK)
-    public Test add(@RequestBody Test t){
-        return testService.add(t);
     }
 }
