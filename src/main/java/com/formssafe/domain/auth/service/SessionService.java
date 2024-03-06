@@ -1,28 +1,36 @@
 package com.formssafe.domain.auth.service;
 
-import com.formssafe.domain.auth.entity.Session;
-import com.formssafe.domain.auth.repository.SessionRepository;
 import com.formssafe.domain.member.entity.Member;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import com.formssafe.global.exception.type.SessionNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional(readOnly = true)
 public class SessionService {
 
-    private final SessionRepository sessionRepository;
+    public void createSession(HttpServletRequest request, Member member) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            log.debug("old session: {}", session.getId());
+            session.invalidate();
+        }
 
-    @Transactional
-    public String createSession(Member member) {
-        String sessionValue = UUID.randomUUID().toString().replace("-", "");
-        Session session = sessionRepository.save(new Session(sessionValue, member, LocalDateTime.now()));
-        log.debug("member: {}, session: {}", session.member().nickname(), session.id());
-        return session.id();
+        session = request.getSession();
+        session.setAttribute("member", member);
+        log.debug("new session: {} {}", session.getId(), member.nickname());
+    }
+
+    public void deleteSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new SessionNotFoundException("Session cannot be null");
+        }
+        session.invalidate();
+        log.debug("Session invalidated.");
     }
 }

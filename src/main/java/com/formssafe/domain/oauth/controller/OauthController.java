@@ -5,13 +5,12 @@ import com.formssafe.domain.member.entity.Member;
 import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.oauth.dto.AuthCode;
 import com.formssafe.domain.oauth.service.OAuthService;
-import com.formssafe.global.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,25 +28,22 @@ public class OauthController {
     private final OAuthService oauthService;
     private final SessionService sessionService;
 
-    @SneakyThrows
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/{oauthServerType}")
-    ResponseEntity<Void> redirectAuthCodeRequestUrl(@PathVariable OauthServerType oauthServerType,
-                                                    HttpServletResponse response) {
+    void redirectAuthCodeRequestUrl(@PathVariable OauthServerType oauthServerType,
+                                    HttpServletResponse response) throws IOException {
         String redirectUrl = oauthService.getAuthCodeRequestUrl(oauthServerType);
         log.debug("redirectUrl: {}", redirectUrl);
 
         response.sendRedirect(redirectUrl);
-        return ResponseEntity.ok().build();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/login/{oauthServerType}")
     void login(@PathVariable OauthServerType oauthServerType,
                @RequestBody AuthCode authCode,
-               HttpServletResponse response) {
+               HttpServletRequest request) {
         Member member = oauthService.loginOrSignup(oauthServerType, authCode.code());
-        String session = sessionService.createSession(member);
-        CookieUtil.addCookie(response, "auth", session, -1);
+        sessionService.createSession(request, member);
     }
 }

@@ -1,6 +1,5 @@
 package com.formssafe.global.config;
 
-import com.formssafe.domain.auth.repository.SessionRepository;
 import com.formssafe.global.auth.SessionAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +21,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 @EnableWebSecurity
 public class WebSecurityConfig {
-
-    private final SessionRepository sessionRepository;
 
     @Bean
     @Profile(value = {"local", "default"})
@@ -50,7 +47,7 @@ public class WebSecurityConfig {
         http.cors(cors -> cors
                 .configurationSource(corsConfigurationSource()));
 
-        http.addFilterBefore(sessionAuthenticationFilter(sessionRepository),
+        http.addFilterBefore(sessionAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -71,7 +68,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SessionAuthenticationFilter sessionAuthenticationFilter(SessionRepository sessionRepository) {
-        return new SessionAuthenticationFilter(sessionRepository);
+    public SessionAuthenticationFilter sessionAuthenticationFilter() {
+        return new SessionAuthenticationFilter();
     }
 }
