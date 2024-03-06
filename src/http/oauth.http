@@ -1,0 +1,5 @@
+### 구글 oauth 요청
+GET http://localhost:80/api/v1/oauth/google
+
+### 구글 로그인/회원가입 요청
+POST http://localhost:80/api/v1/oauth/login/google

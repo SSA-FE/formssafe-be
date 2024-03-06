@@ -1,0 +1,2 @@
+### 로그아웃
+GET http://localhost:80/api/v1/logout
