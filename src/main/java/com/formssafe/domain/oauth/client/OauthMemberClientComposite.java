@@ -1,7 +1,7 @@
 package com.formssafe.domain.oauth.client;
 
+import com.formssafe.domain.member.entity.Member;
 import com.formssafe.domain.oauth.OauthServerType;
-import com.formssafe.domain.oauth.entity.OauthMember;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -19,7 +19,7 @@ public class OauthMemberClientComposite {
                 .collect(Collectors.toMap(OauthMemberClient::supportServer, Function.identity()));
     }
 
-    public OauthMember fetch(OauthServerType oauthServerType, String authCode) {
+    public Member fetch(OauthServerType oauthServerType, String authCode) {
         return getClient(oauthServerType).fetch(authCode);
     }
 

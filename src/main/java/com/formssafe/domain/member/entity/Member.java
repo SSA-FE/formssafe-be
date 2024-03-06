@@ -1,8 +1,10 @@
-package com.formssafe.domain.oauth.entity;
+package com.formssafe.domain.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OauthMember {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +30,15 @@ public class OauthMember {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
     @Column(nullable = false)
     private String imageUrl;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Authority authority;
 
     @Column(nullable = false)
     private LocalDateTime createTime;
@@ -44,6 +53,14 @@ public class OauthMember {
 
     public String nickname() {
         return nickname;
+    }
+
+    public String email() {
+        return email;
+    }
+
+    public Authority authority() {
+        return authority;
     }
 
     public String imageUrl() {

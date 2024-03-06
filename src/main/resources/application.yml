@@ -1,3 +1,6 @@
+server:
+  port: 80
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,9 +13,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-
-server:
-  port: 80
 
 oauth:
   google:

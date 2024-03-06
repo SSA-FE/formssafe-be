@@ -39,10 +39,10 @@ public class LoggingFilter extends OncePerRequestFilter {
             byte[] content = StreamUtils.copyToByteArray(inputStream);
             if (content.length > 0) {
                 String contentString = new String(content);
-                log.info("{} Payload: {}", "Request", contentString);
+                log.debug("{} Payload: {}", "Request", contentString);
             }
         } else {
-            log.info("{} Payload: Binary Content", "Request");
+            log.debug("{} Payload: Binary Content", "Request");
         }
     }
 

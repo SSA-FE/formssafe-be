@@ -1,4 +1,4 @@
-package com.formssafe.domain.oauth.entity;
+package com.formssafe.domain.member.entity;
 
 import com.formssafe.domain.oauth.OauthServerType;
 import jakarta.persistence.Column;
@@ -34,18 +34,11 @@ public class OauthId {
     @Column(nullable = false, name = "oauth_server")
     private OauthServerType oauthServerType;
 
-    @Column(nullable = false, name = "oauth_email")
-    private String oauthEmail;
-
     public String oauthServerId() {
         return oauthServerId;
     }
 
     public OauthServerType oauthServer() {
         return oauthServerType;
-    }
-
-    public String oauthEmail() {
-        return oauthEmail;
     }
 }
