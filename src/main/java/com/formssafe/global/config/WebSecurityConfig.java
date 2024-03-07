@@ -1,5 +1,7 @@
 package com.formssafe.global.config;
 
+import com.formssafe.global.auth.SessionAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -9,8 +11,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableMethodSecurity
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -34,9 +41,34 @@ public class WebSecurityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(request ->
-                request.requestMatchers("/api/v1/**").permitAll()
+                request.requestMatchers("/api/v1/oauth/**").permitAll()
                         .anyRequest().authenticated());
 
+        http.cors(cors -> cors
+                .configurationSource(corsConfigurationSource()));
+
+        http.addFilterBefore(sessionAuthenticationFilter(),
+                UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
+    public SessionAuthenticationFilter sessionAuthenticationFilter() {
+        return new SessionAuthenticationFilter();
     }
 }

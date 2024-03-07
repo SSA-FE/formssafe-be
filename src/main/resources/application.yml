@@ -1,2 +1,27 @@
 server:
   port: 80
+  servlet:
+    session:
+      cookie:
+        name: SESSION_ID
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${db.host}:${db.port}/${db.database}?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: ${db.username}
+    password: ${db.password}
+  jpa:
+    open-in-view: false
+    database: mysql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+oauth:
+  google:
+    client_id: ${oauth.google.client_id}
+    client_secret: ${oauth.google.client-secret}
+    redirect_uri: ${oauth.google.redirect-uri}
+    scope: email, profile
+
