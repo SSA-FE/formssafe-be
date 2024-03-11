@@ -41,7 +41,7 @@ public class WebSecurityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(request ->
-                request.requestMatchers("/api/v1/oauth/**").permitAll()
+                request.requestMatchers("/api/v1/auth/social/**").permitAll()
                         .anyRequest().authenticated());
 
         http.cors(cors -> cors

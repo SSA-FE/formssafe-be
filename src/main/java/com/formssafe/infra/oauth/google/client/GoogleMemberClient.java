@@ -1,8 +1,8 @@
 package com.formssafe.infra.oauth.google.client;
 
-import com.formssafe.domain.member.entity.Member;
 import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.oauth.client.OauthMemberClient;
+import com.formssafe.domain.user.entity.User;
 import com.formssafe.infra.oauth.google.config.GoogleOauthConfig;
 import com.formssafe.infra.oauth.google.dto.GoogleMemberResponse;
 import com.formssafe.infra.oauth.google.dto.GoogleToken;
@@ -26,7 +26,7 @@ public class GoogleMemberClient implements OauthMemberClient {
     }
 
     @Override
-    public Member fetch(String code) {
+    public User fetch(String code) {
         GoogleToken googleToken = googleApiClient.fetchToken(tokenRequestParams(code));
         GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(
                 memberRequestParams(googleToken.accessToken()));

@@ -1,8 +1,8 @@
 package com.formssafe.global.auth;
 
-import com.formssafe.domain.member.dto.LoginMember;
-import com.formssafe.domain.member.entity.Authority;
-import com.formssafe.domain.member.entity.Member;
+import com.formssafe.domain.user.dto.LoginUser;
+import com.formssafe.domain.user.entity.Authority;
+import com.formssafe.domain.user.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,22 +28,22 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
         if (session != null) {
             Object memberValue = session.getAttribute("member");
             if (memberValue != null) {
-                Member member = (Member) memberValue;
+                User user = (User) memberValue;
 
-                UsernamePasswordAuthenticationToken authentication = createMemberAuthenticationToken(member);
+                UsernamePasswordAuthenticationToken authentication = createMemberAuthenticationToken(user);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                log.debug("[{}]: member: {}", request.getRequestURI(), member.nickname());
+                log.debug("[{}]: member: {}", request.getRequestURI(), user.nickname());
             }
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken createMemberAuthenticationToken(Member member) {
-        LoginMember loginMember = LoginMember.fromEntity(member);
+    private UsernamePasswordAuthenticationToken createMemberAuthenticationToken(User user) {
+        LoginUser loginUser = LoginUser.fromEntity(user);
 
-        return new UsernamePasswordAuthenticationToken(loginMember, "",
+        return new UsernamePasswordAuthenticationToken(loginUser, "",
                 List.of(new SimpleGrantedAuthority(Authority.ROLE_USER.name())));
     }
 }
