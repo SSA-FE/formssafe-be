@@ -206,3 +206,6 @@ src/http/test.http
 src/main/resources/privacy.yml
 log/**
 src/main/java/com/formssafe/domain/test
+
+.gradle/**
+.idea/**

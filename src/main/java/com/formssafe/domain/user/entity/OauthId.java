@@ -1,4 +1,4 @@
-package com.formssafe.domain.member.entity;
+package com.formssafe.domain.user.entity;
 
 import com.formssafe.domain.oauth.OauthServerType;
 import jakarta.persistence.Column;

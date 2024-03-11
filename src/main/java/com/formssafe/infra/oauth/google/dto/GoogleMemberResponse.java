@@ -2,9 +2,9 @@ package com.formssafe.infra.oauth.google.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.formssafe.domain.member.entity.Authority;
-import com.formssafe.domain.member.entity.Member;
-import com.formssafe.domain.member.entity.OauthId;
+import com.formssafe.domain.user.entity.Authority;
+import com.formssafe.domain.user.entity.User;
+import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.oauth.OauthServerType;
 import java.time.LocalDateTime;
 
@@ -18,8 +18,8 @@ public record GoogleMemberResponse(String sub,
                                    Boolean emailVerified,
                                    String locale) {
 
-    public Member toEntity() {
-        return Member.builder()
+    public User toEntity() {
+        return User.builder()
                 .oauthId(new OauthId(sub, OauthServerType.GOOGLE))
                 .nickname(name)
                 .email(email)
