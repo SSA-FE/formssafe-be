@@ -61,6 +61,4 @@ public class AuthController {
     void logout(HttpServletRequest request) {
         sessionService.deleteSession(request);
     }
-
-
 }
