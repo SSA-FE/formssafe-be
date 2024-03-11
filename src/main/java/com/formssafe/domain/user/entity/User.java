@@ -1,4 +1,4 @@
-package com.formssafe.domain.member.entity;
+package com.formssafe.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,7 @@
 package com.formssafe.global.exception.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class ExceptionResponse {
     private final int status;
     private final String message;
