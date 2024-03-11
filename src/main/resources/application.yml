@@ -4,6 +4,9 @@ server:
     session:
       cookie:
         name: SESSION_ID
+        http-only: true
+        path: /
+      timeout: 3600
 
 spring:
   datasource:
@@ -17,6 +20,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
 
 oauth:
   google:
