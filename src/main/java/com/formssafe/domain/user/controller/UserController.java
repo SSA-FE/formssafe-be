@@ -1,6 +1,6 @@
 package com.formssafe.domain.user.controller;
 
-import com.formssafe.domain.user.dto.UserDto;
+import com.formssafe.domain.user.dto.UserResponse;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,7 +28,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "닉네임 변경 완료",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = UserDto.class),
+                    schema = @Schema(implementation = UserResponse.Profile.class),
                     examples = @ExampleObject(value = "{\"userId\": 1, \"nickname\": \"exampleNickname\", \"imageUrl\": \"https://example.com/example.jpg\", \"email\": \"example@example.com\"}")
             ))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
@@ -36,8 +36,8 @@ public class UserController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/profile")
-    public ResponseEntity<UserDto> getUserProfile(@RequestHeader("auth") String sessionId) {
-        UserDto userProfile = new UserDto(1, "1", "https://1.com/1.jpg", "1@1.com");
+    public ResponseEntity<UserResponse.Profile> getUserProfile(@RequestHeader("auth") String sessionId) {
+        UserResponse.Profile userProfile = new UserResponse.Profile(1L, "1", "https://1.com/1.jpg", "1@1.com");
         return ResponseEntity.ok(userProfile);
     }
 
