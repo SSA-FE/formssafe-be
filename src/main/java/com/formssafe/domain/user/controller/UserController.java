@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Operation(summary="프로필 가져오기", description="세션의 정보로부터 프로필 정보 가져와서 return")
     @ApiResponses(value={
-            @ApiResponse(responseCode = "200", description = "닉네임 변경 완료",
+            @ApiResponse(responseCode = "200", description = "프로필 불러오기 완료",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserDto.class),
