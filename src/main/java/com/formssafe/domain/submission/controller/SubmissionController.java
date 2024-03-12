@@ -32,7 +32,7 @@ public class SubmissionController {
             schema = @Schema(implementation = ExceptionResponse.class),
             examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PostMapping("/{formId}/submission")
-    public void formParticipate(@RequestHeader("auth") String sessionId, @RequestBody SubmissionRequest submissionRequest, @PathVariable int formId){
+    public void createSubmission(@RequestHeader("auth") String sessionId, @RequestBody SubmissionRequest submissionRequest, @PathVariable int formId){
         return;
     }
     @Operation(summary="설문 참여하기(수정)", description="임시 조정된 설문 참여")
@@ -46,7 +46,7 @@ public class SubmissionController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PutMapping("/{formId}/submission")
-    public void formParticipateModify(@RequestHeader("auth") String sessionId, @RequestBody SubmissionRequest submissionRequest, @PathVariable int formId){
+    public void modifySubmission(@RequestHeader("auth") String sessionId, @RequestBody SubmissionRequest submissionRequest, @PathVariable int formId){
         return;
     }
 }
