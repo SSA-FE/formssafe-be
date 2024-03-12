@@ -43,10 +43,6 @@ dependencies {
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-
-    //swagger
-    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
-
 }
 
 tasks.named('bootBuildImage') {

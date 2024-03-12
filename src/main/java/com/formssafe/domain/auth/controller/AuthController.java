@@ -7,7 +7,6 @@ import com.formssafe.domain.oauth.service.OAuthService;
 import com.formssafe.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -58,10 +57,8 @@ public class AuthController {
     }
 
     @Operation(summary = "로그아웃", description = "세션에 해당되는 사용자 로그아웃(세션 기록 삭제)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그아웃 완료"),
-            @ApiResponse(responseCode = "400", description = "session 미존재")
-    })
+    @ApiResponse(responseCode = "200", description = "로그아웃 완료")
+    @ApiResponse(responseCode = "400", description = "session 미존재")
     @GetMapping("/logout")
     @ResponseBody
     void logout(HttpServletRequest request) {
