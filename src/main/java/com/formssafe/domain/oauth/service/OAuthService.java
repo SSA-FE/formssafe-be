@@ -1,10 +1,10 @@
 package com.formssafe.domain.oauth.service;
 
-import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.oauth.authcode.AuthCodeRequestUrlProviderComposite;
 import com.formssafe.domain.oauth.client.OauthMemberClientComposite;
+import com.formssafe.domain.user.entity.User;
+import com.formssafe.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

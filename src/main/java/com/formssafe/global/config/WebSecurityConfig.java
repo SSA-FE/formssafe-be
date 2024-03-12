@@ -27,7 +27,6 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer configure() {
         return web -> web.ignoring()
                 .requestMatchers("/swagger-ui/**",
-                        "/v3/api-docs/",
                         "/swagger-resources/**",
                         "/v3/api-docs/**",
                         "/api-docs/**");
@@ -42,7 +41,7 @@ public class WebSecurityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(request ->
-                request.requestMatchers("/api/v1/oauth/**").permitAll()
+                request.requestMatchers("/api/v1/auth/social/**").permitAll()
                         .anyRequest().authenticated());
 
         http.cors(cors -> cors

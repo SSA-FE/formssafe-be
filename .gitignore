@@ -204,8 +204,10 @@ $RECYCLE.BIN/
 # Custom
 src/http/test.http
 src/main/resources/privacy.yml
+src/test/resources/privacy.yml
 log/**
 src/main/java/com/formssafe/domain/test
 
 .gradle/**
 .idea/**
+build/**
