@@ -23,16 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "users", description = "사용자 관련 API")
 public class UserController {
-
-    @Operation(summary = "프로필 가져오기", description = "세션의 정보로부터 프로필 정보 가져와서 return")
-    @ApiResponse(responseCode = "200", description = "닉네임 변경 완료",
+    @Operation(summary="프로필 가져오기", description="세션의 정보로부터 프로필 정보 가져와서 return")
+    @ApiResponse(responseCode = "200", description = "프로필 불러오기 완료",
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = UserResponse.Profile.class),
                     examples = @ExampleObject(value = "{\"userId\": 1, \"nickname\": \"exampleNickname\", \"imageUrl\": \"https://example.com/example.jpg\", \"email\": \"example@example.com\"}")
-            ))
+                    ))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
-            content = @Content(mediaType = "application/json",
+            content = @Content(
+                    mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/profile")
