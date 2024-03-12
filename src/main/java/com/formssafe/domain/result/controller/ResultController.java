@@ -1,7 +1,11 @@
 package com.formssafe.domain.result.controller;
 
+import com.formssafe.domain.result.dto.ResultResponse;
+import com.formssafe.domain.result.dto.TotalResponse;
+import com.formssafe.domain.submission.dto.Response;
 import com.formssafe.domain.user.dto.UserDto;
 import com.formssafe.global.exception.response.ExceptionResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,29 +14,49 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.xml.transform.Result;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/forms")
 @RequiredArgsConstructor
 @Tag(name = "result", description ="설문 응답 결과 조회 관련 api")
 public class ResultController {
-
-    @ApiResponse(responseCode = "200", description = "닉네임 변경 완료",
+    @Operation(summary="설문 결과 조회", description="설문 응답 결과 전체 조회")
+    @ApiResponse(responseCode = "200", description = "설문 응답결과 조회 성공",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = UserDto.class),
-                    examples = @ExampleObject(value = "{\"userId\": 1, \"nickname\": \"exampleNickname\", \"imageUrl\": \"https://example.com/example.jpg\", \"email\": \"example@example.com\"}")))
+                    schema = @Schema(implementation = ResultResponse.class)))
+    @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
-    @GetMapping("/profile")
-    public ResponseEntity<UserDto> getUserProfile(@RequestHeader("auth") String sessionId) {
-        UserDto userProfile = new UserDto(1, "1", "https://1.com/1.jpg", "1@1.com");
-        return ResponseEntity.ok(userProfile);
+    @GetMapping("/{formId}/result")
+    public ResponseEntity<ResultResponse> getTotalResult(@RequestHeader("auth") String sessionId, @PathVariable int formId) {
+        ResultResponse resultResponse = new ResultResponse(1, 1,new ArrayList<TotalResponse>(){{add(new TotalResponse(1, new ArrayList<Response>(){{add(new Response(1, 1));}}, LocalDateTime.now()));}});
+        return ResponseEntity.ok(resultResponse);
+    }
+    @Operation(summary="설문 응답 결과 다운로드", description="엑셀 파일 제공 예정")
+
+    @ApiResponse(responseCode = "200", description = "설문 응답 결과 다운로드 링크 제공 or 자동 다운로드")
+    @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
+    @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
+    @GetMapping("/{formId}/result/download")
+    public void resultDownload(@RequestHeader("auth") String sessionId, @PathVariable int formId) {
+        return;
     }
 }
