@@ -1,8 +1,8 @@
 package com.formssafe.infra.oauth.google.client;
 
-import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.oauth.client.OauthMemberClient;
+import com.formssafe.domain.user.entity.User;
 import com.formssafe.infra.oauth.google.config.GoogleOauthConfig;
 import com.formssafe.infra.oauth.google.dto.GoogleMemberResponse;
 import com.formssafe.infra.oauth.google.dto.GoogleToken;

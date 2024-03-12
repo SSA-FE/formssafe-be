@@ -7,6 +7,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
                 ),
         }
 )
-public class OauthId {
+public class OauthId implements Serializable {
 
     @Column(nullable = false, name = "oauth_server_id")
     private String oauthServerId;
