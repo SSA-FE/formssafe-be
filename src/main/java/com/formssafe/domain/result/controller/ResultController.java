@@ -2,24 +2,20 @@ package com.formssafe.domain.result.controller;
 
 import com.formssafe.domain.result.dto.ResultResponse;
 import com.formssafe.domain.result.dto.TotalResponse;
-import com.formssafe.domain.submission.dto.Response;
-import com.formssafe.domain.user.dto.UserDto;
+import com.formssafe.domain.submission.dto.Submission;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.transform.Result;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/forms")
@@ -41,7 +37,7 @@ public class ResultController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/{formId}/result")
     public ResponseEntity<ResultResponse> getTotalResult(@RequestHeader("auth") String sessionId, @PathVariable int formId) {
-        ResultResponse resultResponse = new ResultResponse(1, 1,new ArrayList<TotalResponse>(){{add(new TotalResponse(1, new ArrayList<Response>(){{add(new Response(1, 1));}}, LocalDateTime.now()));}});
+        ResultResponse resultResponse = new ResultResponse(1, 1,new ArrayList<TotalResponse>(){{add(new TotalResponse(1, new ArrayList<Submission>(){{add(new Submission(1, 1));}}, LocalDateTime.now()));}});
         return ResponseEntity.ok(resultResponse);
     }
     @Operation(summary="설문 응답 결과 다운로드", description="엑셀 파일 제공 예정")

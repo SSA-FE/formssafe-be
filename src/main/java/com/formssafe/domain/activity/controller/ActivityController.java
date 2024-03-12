@@ -1,9 +1,7 @@
 package com.formssafe.domain.activity.controller;
 
 import com.formssafe.domain.activity.dto.SelfSubmissionResponse;
-import com.formssafe.domain.result.dto.ResultResponse;
-import com.formssafe.domain.result.dto.TotalResponse;
-import com.formssafe.domain.submission.dto.Response;
+import com.formssafe.domain.submission.dto.Submission;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @RestController
@@ -38,7 +35,7 @@ public class ActivityController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/forms/{formId}/responses")
     public ResponseEntity<SelfSubmissionResponse> getSelfResponse(@RequestHeader("auth") String sessionId, @PathVariable int formId) {
-        SelfSubmissionResponse selfSubmissionResponse = new SelfSubmissionResponse(1, new ArrayList<Response>(){{add(new Response(1, 1));}}, true);
+        SelfSubmissionResponse selfSubmissionResponse = new SelfSubmissionResponse(1, new ArrayList<Submission>(){{add(new Submission(1, 1));}}, true);
         //나중에 수정할 것임
         if(true) {
         return ResponseEntity.ok(selfSubmissionResponse);
