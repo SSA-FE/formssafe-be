@@ -1,6 +1,6 @@
 package com.formssafe.domain.user.controller;
 
-import com.formssafe.domain.user.dto.UserDto;
+import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +27,7 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "프로필 불러오기 완료",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = UserDto.class),
+                    schema = @Schema(implementation = UserProfileDto.class),
                     examples = @ExampleObject(value = "{\"userId\": 1, \"nickname\": \"exampleNickname\", \"imageUrl\": \"https://example.com/example.jpg\", \"email\": \"example@example.com\"}")
                     ))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
@@ -36,9 +36,9 @@ public class UserController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/profile")
-    public ResponseEntity<UserDto> getUserProfile(@RequestHeader("auth") String sessionId) {
-        UserDto userProfile = new UserDto(1, "1", "https://1.com/1.jpg", "1@1.com");
-        return ResponseEntity.ok(userProfile);
+    public ResponseEntity<UserProfileDto> getUserProfile(@RequestHeader("auth") String sessionId) {
+        UserProfileDto userProfileDto = new UserProfileDto(1L, "1", "https://1.com/1.jpg", "1@1.com");
+        return ResponseEntity.ok(userProfileDto);
     }
 
     @Operation(summary = "닉네임 변경하기", description = "변경하고자하는 닉네임을 Request로 받아서 변경시켜줌")

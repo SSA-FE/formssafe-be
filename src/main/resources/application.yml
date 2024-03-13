@@ -3,9 +3,9 @@ server:
   servlet:
     session:
       cookie:
+        path: /
         name: SESSION_ID
         http-only: true
-        path: /
       timeout: 3600
 
 spring:

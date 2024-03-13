@@ -1,0 +1,116 @@
+### 설문 전체 조회
+GET http://localhost:80/api/v1/forms?keyword=form&sort=responseCnt&category=c1,c2,c3&status=progress&tag=t1,t2&
+    pageNum=10
+Cookie: SESSION_ID=YjBmNTYxNTMtMTYxMS00ZjBiLTlkODktZWM2ZmI5MTRkOTJi;
+
+### 설문 상세 조회
+GET http://localhost:80/api/v1/forms/1
+Cookie: SESSION_ID=YjBmNTYxNTMtMTYxMS00ZjBiLTlkODktZWM2ZmI5MTRkOTJi;
+
+### 설문 등록
+POST http://localhost:80/api/v1/forms
+Content-Type: application/json
+Cookie: SESSION_ID=YjBmNTYxNTMtMTYxMS00ZjBiLTlkODktZWM2ZmI5MTRkOTJi;
+
+{
+  "title": "title1",
+  "description": "description",
+  "image": [
+    "url1",
+    "url2",
+    "url3"
+  ],
+  "startDate": "2024-02-29T00:00:00",
+  "endDate": "2024-03-01T00:00:00",
+  "expectTime": 5,
+  "emailVisibility": false,
+  "privacyDisposalDate": "2024-03-10T00:00:00",
+  "questions": [
+    {
+      "type": "short",
+      "title": "question1",
+      "description": "questionDescription",
+      "isRequired": true,
+      "isPrivacy": false
+    },
+    {
+      "type": "multipleChoice",
+      "title": "question1",
+      "description": "questionDescription",
+      "options": [
+        "option1",
+        "option2"
+      ],
+      "isRequired": true,
+      "isPrivacy": false
+    }
+  ],
+  "tags": [
+    "tag1",
+    "tag2"
+  ],
+  "reward": {
+    "name": "청소기",
+    "category": "가전제품",
+    "count": 2
+  },
+  "isTemp": false
+}
+
+### 설문 수정
+PUT http://localhost:80/api/v1/forms/1
+Content-Type: application/json
+Cookie: SESSION_ID=YjBmNTYxNTMtMTYxMS00ZjBiLTlkODktZWM2ZmI5MTRkOTJi;
+
+{
+  "title": "update",
+  "description": "description",
+  "image": [
+    "url1",
+    "url2",
+    "url3"
+  ],
+  "startDate": "2024-02-29T00:00:00",
+  "endDate": "2024-03-01T00:00:00",
+  "expectTime": 5,
+  "emailVisibility": false,
+  "privacyDisposalDate": "2024-03-10T00:00:00",
+  "questions": [
+    {
+      "type": "short",
+      "title": "question1",
+      "description": "questionDescription",
+      "options": [
+        "option1",
+        "option2"
+      ],
+      "isRequired": true,
+      "isPrivacy": false
+    },
+    {
+      "type": "multipleChoice",
+      "title": "question1",
+      "description": "questionDescription",
+      "isRequired": true,
+      "isPrivacy": false
+    }
+  ],
+  "tags": [
+    "tag1",
+    "tag2"
+  ],
+  "reward": {
+    "name": "청소기",
+    "category": "가전제품",
+    "count": 2
+  },
+  "isTemp": false
+}
+
+### 설문 마감
+PATCH http://localhost:80/api/v1/forms/1/close
+Cookie: SESSION_ID=YjBmNTYxNTMtMTYxMS00ZjBiLTlkODktZWM2ZmI5MTRkOTJi;
+
+### 설문 삭제
+DELETE http://localhost:80/api/v1/forms/1
+Cookie: SESSION_ID=YjBmNTYxNTMtMTYxMS00ZjBiLTlkODktZWM2ZmI5MTRkOTJi;
