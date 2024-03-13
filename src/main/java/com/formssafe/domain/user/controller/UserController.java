@@ -1,5 +1,6 @@
 package com.formssafe.domain.user.controller;
 
+import com.formssafe.domain.submission.dto.SubmissionRequest;
 import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,13 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -51,8 +46,8 @@ public class UserController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
-    @PatchMapping("/{userId}")
-    public void patchNickname(@RequestHeader("auth") String sessionId, @PathVariable int userId) {
+    @PatchMapping("")
+    public void patchNickname(@RequestHeader("auth") String sessionId, @RequestBody String nickname) {
         // TODO: 3/11/24 닉네임 수정
     }
 
