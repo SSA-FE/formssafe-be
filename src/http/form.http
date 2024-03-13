@@ -3,7 +3,7 @@ GET http://localhost:80/api/v1/forms?keyword=form&sort=responseCnt&category=c1,c
     pageNum=10
 Cookie: SESSION_ID=YjBmNTYxNTMtMTYxMS00ZjBiLTlkODktZWM2ZmI5MTRkOTJi;
 
-### 설문 질문 조회
+### 설문 상세 조회
 GET http://localhost:80/api/v1/forms/1
 Cookie: SESSION_ID=YjBmNTYxNTMtMTYxMS00ZjBiLTlkODktZWM2ZmI5MTRkOTJi;
 

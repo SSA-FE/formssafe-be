@@ -16,6 +16,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/activity")
 @RequiredArgsConstructor
-@Tag(name = "activity", description = "자신의 활동 조회")
+@Tag(name = "activity", description = "내 활동 조회 API")
 public class ActivityController {
 
     private final ActivityService activityService;
@@ -57,13 +58,23 @@ public class ActivityController {
         }
     }
 
-    @GetMapping("/forms")
+    @Operation(summary = "내가 등록한 설문 전체 조회", description = "내가 등록한 설문을 목록으로 조회한다.")
+    @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
+    @GetMapping(path = "/forms", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Page<FormListDto> getCreatedFormList(@ModelAttribute ActivityParam.SearchDto param) {
         return activityService.getCreatedFormList(param);
     }
 
-    @GetMapping("/responses")
+    @Operation(summary = "내가 참여한 설문 전체 조회", description = "내가 참여한 설문을 목록으로 조회한다.")
+    @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
+    @GetMapping(path = "/responses", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Page<FormListDto> getParticipatedFormList(@ModelAttribute ActivityParam.SearchDto param) {
         return activityService.getParticipatedFormList(param);
