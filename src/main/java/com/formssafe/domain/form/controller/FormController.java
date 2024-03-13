@@ -31,8 +31,8 @@ public class FormController {
     private final FormService formService;
 
     @GetMapping
-    Page<ListDto> getFormList(@ModelAttribute SearchDto params) {
-        return formService.getList(params);
+    Page<ListDto> getFormList(@ModelAttribute SearchDto param) {
+        return formService.getList(param);
     }
 
     @GetMapping("/{id}")
