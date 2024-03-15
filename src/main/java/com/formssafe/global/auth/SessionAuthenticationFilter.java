@@ -2,7 +2,6 @@ package com.formssafe.global.auth;
 
 import com.formssafe.domain.user.dto.LoginUser;
 import com.formssafe.domain.user.entity.Authority;
-import com.formssafe.domain.user.entity.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,22 +25,22 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session != null) {
-            Object memberValue = session.getAttribute("member");
-            if (memberValue != null) {
-                User user = (User) memberValue;
+            Object userIdValue = session.getAttribute("userId");
+            if (userIdValue != null) {
+                Long userId = Long.parseLong(String.valueOf(userIdValue));
 
-                UsernamePasswordAuthenticationToken authentication = createMemberAuthenticationToken(user);
+                UsernamePasswordAuthenticationToken authentication = createUserAuthenticationToken(userId);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                log.debug("[{}]: member: {}", request.getRequestURI(), user.nickname());
+                log.debug("[{}]: userId: {}", request.getRequestURI(), userId);
             }
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken createMemberAuthenticationToken(User user) {
-        LoginUser loginUser = LoginUser.fromEntity(user);
+    private UsernamePasswordAuthenticationToken createUserAuthenticationToken(Long userId) {
+        LoginUser loginUser = new LoginUser(userId);
 
         return new UsernamePasswordAuthenticationToken(loginUser, "",
                 List.of(new SimpleGrantedAuthority(Authority.ROLE_USER.name())));
