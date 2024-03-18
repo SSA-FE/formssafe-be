@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Component
 @RequiredArgsConstructor
@@ -27,15 +28,18 @@ public class GoogleMemberClient implements OauthMemberClient {
 
     @Override
     public User fetch(String code) {
-        GoogleToken googleToken = googleApiClient.fetchToken(tokenRequestParams(code));
-        GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(
-                memberRequestParams(googleToken.accessToken()));
+//        GoogleToken googleToken = googleApiClient.fetchToken(tokenRequestParams(code));
+        GoogleToken googleToken = googleApiClient.fetchToken("authorization_code", googleOauthConfig.clientId(), googleOauthConfig.clientSecret(),code, googleOauthConfig.redirectUri());
+//        GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(
+//                memberRequestParams(googleToken.accessToken()));
+        GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(googleToken.accessToken());
         log.debug("fetch profile: {} {}", googleMemberResponse.name(), googleMemberResponse.email());
         return googleMemberResponse.toEntity();
     }
 
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
         params.add("grant_type", "authorization_code");
         params.add("client_id", googleOauthConfig.clientId());
         params.add("redirect_uri", googleOauthConfig.redirectUri());
