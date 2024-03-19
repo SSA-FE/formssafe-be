@@ -38,6 +38,9 @@ public class User implements Serializable {
     @Column(nullable = false)
     private LocalDateTime createTime;
 
+    @Column(nullable = false)
+    private String refreshToken;
+
     public Long id() {
         return id;
     }
@@ -65,7 +68,9 @@ public class User implements Serializable {
     public LocalDateTime createTime() {
         return createTime;
     }
+
+    public String getRefreshToken(){return refreshToken;}
     public String toString(){
-        return "[ " + id + ", " + oauthId + ", "+ nickname + ", "+ email + ", " + authority + ", "+ imageUrl + ", " + createTime;
+        return "[ " + id + ", " + oauthId + ", "+ nickname + ", "+ email + ", " + authority + ", "+ imageUrl + ", " + createTime + ", " + refreshToken;
     }
 }

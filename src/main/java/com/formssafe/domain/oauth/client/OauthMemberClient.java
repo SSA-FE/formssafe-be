@@ -8,4 +8,6 @@ public interface OauthMemberClient {
     OauthServerType supportServer();
 
     User fetch(String code);
+
+    void deleteAccount(String code);
 }

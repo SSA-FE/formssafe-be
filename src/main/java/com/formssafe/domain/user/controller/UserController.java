@@ -75,7 +75,7 @@ public class UserController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"사용자가 올바르지 않습니다.\"}")))
     @DeleteMapping("/{userId}")
-    public void deleteId(@RequestHeader("auth") String sessionId, @PathVariable int userId) {
-        // TODO: 3/11/24 회원 탈퇴
+    public void deleteAccount(HttpServletRequest request, @PathVariable long userId) {
+        userService.deleteAccount(request, userId);
     }
 }
