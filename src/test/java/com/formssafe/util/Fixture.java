@@ -3,6 +3,11 @@ package com.formssafe.util;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.oauth.OauthServerType;
+import com.formssafe.domain.question.entity.DescriptiveQuestion;
+import com.formssafe.domain.question.entity.DescriptiveQuestionType;
+import com.formssafe.domain.question.entity.ObjectiveQuestion;
+import com.formssafe.domain.question.entity.ObjectiveQuestionOption;
+import com.formssafe.domain.question.entity.ObjectiveQuestionType;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.tag.entity.FormTag;
@@ -91,6 +96,30 @@ public final class Fixture {
     public static RewardCategory createRewardCategory(String name) {
         return RewardCategory.builder()
                 .rewardCategoryName(name)
+                .build();
+    }
+
+    public static DescriptiveQuestion createDescriptiveQuestion(Form form, DescriptiveQuestionType type, String title) {
+        return DescriptiveQuestion.builder()
+                .form(form)
+                .questionType(type)
+                .title(title)
+                .detail("주관식 질문 설명")
+                .isRequired(false)
+                .isPrivacy(false)
+                .build();
+    }
+
+    public static ObjectiveQuestion createObjectiveQuestion(Form form, ObjectiveQuestionType type,
+                                                            String title, List<ObjectiveQuestionOption> options) {
+        return ObjectiveQuestion.builder()
+                .form(form)
+                .questionType(type)
+                .title(title)
+                .detail("객관식 질문 설명")
+                .questionOption(options)
+                .isRequired(false)
+                .isPrivacy(false)
                 .build();
     }
 }

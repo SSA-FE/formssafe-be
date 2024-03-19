@@ -1,21 +1,19 @@
 package com.formssafe.global.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public final class JsonListConverter {
+public final class JsonConverter {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private JsonListConverter() {
+    private JsonConverter() {
     }
 
-    public static String convertToDatabaseColumn(List<String> entity) {
+    public static <T> String toJson(T entity) {
         try {
             return mapper.writeValueAsString(entity);
         } catch (final JsonProcessingException e) {
@@ -25,12 +23,10 @@ public final class JsonListConverter {
         return null;
     }
 
-    public static List<String> convertToEntityAttribute(String json) {
-
+    public static <T> List<T> toList(String json, Class<T> type) {
         try {
-            return mapper.readValue(json, new TypeReference<>() {
-            });
-        } catch (final IOException e) {
+            return mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, type));
+        } catch (JsonProcessingException e) {
             log.error("JSON reading error", e);
         }
 

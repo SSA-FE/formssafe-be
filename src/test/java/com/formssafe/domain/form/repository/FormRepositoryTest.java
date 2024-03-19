@@ -1,7 +1,9 @@
 package com.formssafe.domain.form.repository;
 
+import static com.formssafe.util.Fixture.createDescriptiveQuestion;
 import static com.formssafe.util.Fixture.createForm;
 import static com.formssafe.util.Fixture.createFormTag;
+import static com.formssafe.util.Fixture.createObjectiveQuestion;
 import static com.formssafe.util.Fixture.createReward;
 import static com.formssafe.util.Fixture.createRewardCategory;
 import static com.formssafe.util.Fixture.createTag;
@@ -9,6 +11,13 @@ import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.question.entity.DescriptiveQuestion;
+import com.formssafe.domain.question.entity.DescriptiveQuestionType;
+import com.formssafe.domain.question.entity.ObjectiveQuestion;
+import com.formssafe.domain.question.entity.ObjectiveQuestionOption;
+import com.formssafe.domain.question.entity.ObjectiveQuestionType;
+import com.formssafe.domain.question.repository.DescriptiveQuestionRepository;
+import com.formssafe.domain.question.repository.ObjectiveQuestionRepository;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
@@ -19,7 +28,7 @@ import com.formssafe.domain.tag.repository.FormTagRepository;
 import com.formssafe.domain.tag.repository.TagRepository;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.global.util.JsonListConverter;
+import com.formssafe.global.util.JsonConverter;
 import com.formssafe.util.Fixture;
 import jakarta.persistence.EntityManager;
 import java.util.List;
@@ -47,6 +56,10 @@ class FormRepositoryTest {
     @Autowired
     private RewardRepository rewardRepository;
     @Autowired
+    private DescriptiveQuestionRepository descriptiveQuestionRepository;
+    @Autowired
+    private ObjectiveQuestionRepository objectiveQuestionRepository;
+    @Autowired
     private EntityManager em;
 
     @Test
@@ -60,7 +73,7 @@ class FormRepositoryTest {
         //when
         Form savedForm = formRepository.save(form);
         //then
-        assertThat(JsonListConverter.convertToEntityAttribute(savedForm.getImageUrl()))
+        assertThat(JsonConverter.toList(savedForm.getImageUrl(), String.class))
                 .isEqualTo(images);
     }
 
@@ -81,11 +94,9 @@ class FormRepositoryTest {
         formTagRepository.saveAll(formTagList);
 
         em.clear();
-
         //when
         Form formResult = formRepository.findById(form.getId())
                 .orElseGet(() -> null);
-
         //then
         assertThat(formResult).isNotNull();
         assertThat(formResult.getTagList())
@@ -108,16 +119,52 @@ class FormRepositoryTest {
         reward = rewardRepository.save(reward);
 
         em.clear();
-
         //when
         Form formResult = formRepository.findById(form.getId())
                 .orElseGet(() -> null);
-
         //then
         assertThat(formResult).isNotNull();
         assertThat(formResult.getReward())
                 .isNotNull()
                 .extracting("rewardName")
                 .isEqualTo("경품1");
+    }
+
+    @Test
+    void 질문이_존재하는_설문을_가져온다() {
+        //given
+        User user = createUser("testUser");
+        user = userRepository.save(user);
+
+        Form form = createForm(user, "설문1", "설문 설명1");
+        form = formRepository.save(form);
+
+        DescriptiveQuestion descriptiveQuestion = createDescriptiveQuestion(form, DescriptiveQuestionType.LONG,
+                "주관식 질문1");
+        descriptiveQuestion = descriptiveQuestionRepository.save(descriptiveQuestion);
+
+        List<ObjectiveQuestionOption> objectiveQuestionOptions = List.of(new ObjectiveQuestionOption(0, "보기1"),
+                new ObjectiveQuestionOption(1, "보기2"));
+        ObjectiveQuestion objectiveQuestion = createObjectiveQuestion(form, ObjectiveQuestionType.CHECKBOX, "객관식 질문1",
+                objectiveQuestionOptions);
+        objectiveQuestion = objectiveQuestionRepository.save(objectiveQuestion);
+
+        em.clear();
+        //when
+        Form formResult = formRepository.findById(form.getId())
+                .orElseGet(() -> null);
+        //then
+        assertThat(formResult).isNotNull();
+        assertThat(formResult.getDescriptiveQuestions())
+                .isNotNull()
+                .hasSize(1)
+                .extracting("title")
+                .containsExactly(descriptiveQuestion.getTitle());
+        assertThat(formResult.getObjectiveQuestions())
+                .isNotNull()
+                .hasSize(1);
+        assertThat(JsonConverter.toList(formResult.getObjectiveQuestions().get(0).getQuestionOption(),
+                ObjectiveQuestionOption.class))
+                .isEqualTo(objectiveQuestionOptions);
     }
 }

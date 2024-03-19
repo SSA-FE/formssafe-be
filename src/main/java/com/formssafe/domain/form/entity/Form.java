@@ -1,10 +1,12 @@
 package com.formssafe.domain.form.entity;
 
+import com.formssafe.domain.question.entity.DescriptiveQuestion;
+import com.formssafe.domain.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.entity.BaseTimeEntity;
-import com.formssafe.global.util.JsonListConverter;
+import com.formssafe.global.util.JsonConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -82,6 +84,14 @@ public class Form extends BaseTimeEntity {
     @OneToOne(mappedBy = "form")
     private Reward reward;
 
+    @Getter
+    @OneToMany(mappedBy = "form")
+    private List<DescriptiveQuestion> descriptiveQuestions = new ArrayList<>();
+
+    @Getter
+    @OneToMany(mappedBy = "form")
+    private List<ObjectiveQuestion> objectiveQuestions = new ArrayList<>();
+
     @Builder
     private Form(Integer id, User user, String title, String detail, List<String> imageUrl, LocalDateTime startDate,
                  LocalDateTime endDate, int expectTime, boolean isEmailVisible, LocalDateTime privacyDisposalDate,
@@ -90,7 +100,7 @@ public class Form extends BaseTimeEntity {
         this.user = user;
         this.title = title;
         this.detail = detail;
-        this.imageUrl = JsonListConverter.convertToDatabaseColumn(imageUrl);
+        this.imageUrl = JsonConverter.toJson(imageUrl);
         this.startDate = startDate;
         this.endDate = endDate;
         this.expectTime = expectTime;
