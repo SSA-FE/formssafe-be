@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -29,46 +28,36 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Form extends BaseTimeEntity {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Getter
     @Column(name = "title", columnDefinition = "text", nullable = false)
     private String title;
 
-    @Getter
     @Column(name = "detail", columnDefinition = "text")
     private String detail;
 
-    @Getter
     @Column(name = "image_url", columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
     private String imageUrl;
 
-    @Getter
     @Column(nullable = false)
     private LocalDateTime startDate;
 
-    @Getter
     @Column(nullable = false)
     private LocalDateTime endDate;
 
-    @Getter
     private int expectTime;
 
     private boolean isEmailVisible;
 
-    @Getter
     private LocalDateTime privacyDisposalDate;
 
-    @Getter
     @Column(nullable = false)
     private FormStatus status;
 
@@ -76,19 +65,15 @@ public class Form extends BaseTimeEntity {
 
     private boolean isDeleted;
 
-    @Getter
     @OneToMany(mappedBy = "form")
     private List<FormTag> tagList = new ArrayList<>();
 
-    @Getter
     @OneToOne(mappedBy = "form")
     private Reward reward;
 
-    @Getter
     @OneToMany(mappedBy = "form")
     private List<DescriptiveQuestion> descriptiveQuestions = new ArrayList<>();
 
-    @Getter
     @OneToMany(mappedBy = "form")
     private List<ObjectiveQuestion> objectiveQuestions = new ArrayList<>();
 
@@ -111,8 +96,48 @@ public class Form extends BaseTimeEntity {
         this.isDeleted = isDeleted;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public int getExpectTime() {
+        return expectTime;
+    }
+
     public boolean isEmailVisible() {
         return isEmailVisible;
+    }
+
+    public LocalDateTime getPrivacyDisposalDate() {
+        return privacyDisposalDate;
+    }
+
+    public FormStatus getStatus() {
+        return status;
     }
 
     public boolean isTemp() {
@@ -121,6 +146,22 @@ public class Form extends BaseTimeEntity {
 
     public boolean isDeleted() {
         return isDeleted;
+    }
+
+    public List<FormTag> getTagList() {
+        return tagList;
+    }
+
+    public Reward getReward() {
+        return reward;
+    }
+
+    public List<DescriptiveQuestion> getDescriptiveQuestions() {
+        return descriptiveQuestions;
+    }
+
+    public List<ObjectiveQuestion> getObjectiveQuestions() {
+        return objectiveQuestions;
     }
 
     @Override

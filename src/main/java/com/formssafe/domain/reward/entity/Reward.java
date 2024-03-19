@@ -11,31 +11,25 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Reward {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
     @Column(nullable = false, unique = true)
     private String rewardName;
 
-    @Getter
     @ManyToOne
     @JoinColumn(name = "reward_category_id", nullable = false)
     private RewardCategory rewardCategory;
 
-    @Getter
     @OneToOne
     private Form form;
 
-    @Getter
     private int count;
 
     @Builder
@@ -45,5 +39,25 @@ public class Reward {
         this.rewardCategory = rewardCategory;
         this.form = form;
         this.count = count;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getRewardName() {
+        return rewardName;
+    }
+
+    public RewardCategory getRewardCategory() {
+        return rewardCategory;
+    }
+
+    public Form getForm() {
+        return form;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

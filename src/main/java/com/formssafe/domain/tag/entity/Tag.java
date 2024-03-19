@@ -10,25 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
     @Column(nullable = false, unique = true)
     private String tagName;
 
-    @Getter
     private int count;
 
-    @Getter
     @OneToMany(mappedBy = "tag")
     private List<FormTag> formTagList = new ArrayList<>();
 
@@ -37,5 +32,21 @@ public class Tag {
         this.id = id;
         this.tagName = tagName;
         this.count = count;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public List<FormTag> getFormTagList() {
+        return formTagList;
     }
 }

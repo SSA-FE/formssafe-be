@@ -1,13 +1,12 @@
 package com.formssafe.domain.question.entity;
 
 import java.util.Objects;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class ObjectiveQuestionOption {
     private Integer id;
     private String detail;
-
-    public ObjectiveQuestionOption() {
-    }
 
     public ObjectiveQuestionOption(Integer id, String detail) {
         this.id = id;

@@ -7,18 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RewardCategory {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter
     @Column(nullable = false, unique = true)
     private String rewardCategoryName;
 
@@ -26,5 +23,13 @@ public class RewardCategory {
     private RewardCategory(Integer id, String rewardCategoryName) {
         this.id = id;
         this.rewardCategoryName = rewardCategoryName;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getRewardCategoryName() {
+        return rewardCategoryName;
     }
 }

@@ -12,13 +12,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DescriptiveQuestion {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -51,6 +49,10 @@ public class DescriptiveQuestion {
         this.detail = detail;
         this.isRequired = isRequired;
         this.isPrivacy = isPrivacy;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public Form getForm() {
