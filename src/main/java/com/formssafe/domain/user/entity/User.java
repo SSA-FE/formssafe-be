@@ -1,24 +1,18 @@
 package com.formssafe.domain.user.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Entity
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "member")
 public class User implements Serializable {
 
     @Id
@@ -70,5 +64,8 @@ public class User implements Serializable {
 
     public LocalDateTime createTime() {
         return createTime;
+    }
+    public String toString(){
+        return "[ " + id + ", " + oauthId + ", "+ nickname + ", "+ email + ", " + authority + ", "+ imageUrl + ", " + createTime;
     }
 }
