@@ -1,10 +1,18 @@
 package com.formssafe.domain.form.repository;
 
+import static com.formssafe.util.Fixture.createForm;
 import static com.formssafe.util.Fixture.createFormTag;
+import static com.formssafe.util.Fixture.createReward;
+import static com.formssafe.util.Fixture.createRewardCategory;
 import static com.formssafe.util.Fixture.createTag;
+import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.reward.entity.Reward;
+import com.formssafe.domain.reward.entity.RewardCategory;
+import com.formssafe.domain.reward.repository.RewardCategoryRepository;
+import com.formssafe.domain.reward.repository.RewardRepository;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.tag.repository.FormTagRepository;
@@ -35,12 +43,16 @@ class FormRepositoryTest {
     @Autowired
     private TagRepository tagRepository;
     @Autowired
+    private RewardCategoryRepository rewardCategoryRepository;
+    @Autowired
+    private RewardRepository rewardRepository;
+    @Autowired
     private EntityManager em;
 
     @Test
     void 이미지url_포함_설문을_저장한다() {
         //given
-        User testUser = Fixture.createUser("testUser");
+        User testUser = createUser("testUser");
         User user = userRepository.save(testUser);
 
         List<String> images = List.of("http://localhost/url1", "http://localhost/url2");
@@ -53,12 +65,12 @@ class FormRepositoryTest {
     }
 
     @Test
-    void 태그포함_설문을_가져온다() {
+    void 태그가_존재하는_설문을_가져온다() {
         //given
-        User user = Fixture.createUser("testUser");
+        User user = createUser("testUser");
         user = userRepository.save(user);
 
-        Form form = Fixture.createForm(user, "설문1", "설문 설명1");
+        Form form = createForm(user, "설문1", "설문 설명1");
         form = formRepository.save(form);
 
         List<Tag> tagList = List.of(createTag("tag1"), createTag("tag2"));
@@ -76,8 +88,36 @@ class FormRepositoryTest {
 
         //then
         assertThat(formResult).isNotNull();
-        System.out.println(formResult.getTagList().get(0));
         assertThat(formResult.getTagList())
                 .hasSize(2);
+    }
+
+    @Test
+    void 경품이_존재하는_설문을_가져온다() {
+        //given
+        User user = createUser("testUser");
+        user = userRepository.save(user);
+
+        Form form = createForm(user, "설문1", "설문 설명1");
+        form = formRepository.save(form);
+
+        RewardCategory rewardCategory = createRewardCategory("경품카테고리1");
+        rewardCategory = rewardCategoryRepository.save(rewardCategory);
+
+        Reward reward = createReward("경품1", form, rewardCategory, 5);
+        reward = rewardRepository.save(reward);
+
+        em.clear();
+
+        //when
+        Form formResult = formRepository.findById(form.getId())
+                .orElseGet(() -> null);
+
+        //then
+        assertThat(formResult).isNotNull();
+        assertThat(formResult.getReward())
+                .isNotNull()
+                .extracting("rewardName")
+                .isEqualTo("경품1");
     }
 }

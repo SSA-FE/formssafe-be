@@ -1,5 +1,6 @@
 package com.formssafe.domain.form.entity;
 
+import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.entity.BaseTimeEntity;
@@ -12,9 +13,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +25,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Form extends BaseTimeEntity {
     @Getter
     @Id
@@ -74,6 +77,10 @@ public class Form extends BaseTimeEntity {
     @Getter
     @OneToMany(mappedBy = "form")
     private List<FormTag> tagList = new ArrayList<>();
+
+    @Getter
+    @OneToOne(mappedBy = "form")
+    private Reward reward;
 
     @Builder
     private Form(Integer id, User user, String title, String detail, List<String> imageUrl, LocalDateTime startDate,

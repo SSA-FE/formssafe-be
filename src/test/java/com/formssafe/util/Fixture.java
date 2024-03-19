@@ -3,6 +3,8 @@ package com.formssafe.util;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.oauth.OauthServerType;
+import com.formssafe.domain.reward.entity.Reward;
+import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.user.entity.Authority;
@@ -74,6 +76,21 @@ public final class Fixture {
         return FormTag.builder()
                 .form(form)
                 .tag(tag)
+                .build();
+    }
+
+    public static Reward createReward(String name, Form form, RewardCategory category, int count) {
+        return Reward.builder()
+                .rewardName(name)
+                .form(form)
+                .rewardCategory(category)
+                .count(count)
+                .build();
+    }
+
+    public static RewardCategory createRewardCategory(String name) {
+        return RewardCategory.builder()
+                .rewardCategoryName(name)
                 .build();
     }
 }
