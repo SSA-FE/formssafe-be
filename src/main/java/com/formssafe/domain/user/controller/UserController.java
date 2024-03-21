@@ -1,6 +1,7 @@
 package com.formssafe.domain.user.controller;
 
 import com.formssafe.domain.submission.dto.SubmissionRequest;
+import com.formssafe.domain.user.dto.UserRequest.NicknamePatchDto;
 import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
 import com.formssafe.domain.user.service.UserService;
 import com.formssafe.global.exception.response.ExceptionResponse;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Tag(name = "users", description = "사용자 관련 API")
 public class UserController {
+
     private final UserService userService;
+
     @Operation(summary="프로필 가져오기", description="세션의 정보로부터 프로필 정보 가져와서 return")
     @ApiResponse(responseCode = "200", description = "프로필 불러오기 완료",
             content = @Content(
@@ -56,7 +59,7 @@ public class UserController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PatchMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public void patchNickname(HttpServletRequest request, @RequestBody String nickname) {
+    public void patchNickname(HttpServletRequest request, @RequestBody NicknamePatchDto nickname) {
         userService.patchNickname(request, nickname);
     }
 
