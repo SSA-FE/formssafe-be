@@ -5,8 +5,8 @@ import com.formssafe.domain.oauth.client.OauthMemberClient;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.infra.oauth.google.config.GoogleOauthConfig;
 import com.formssafe.infra.oauth.google.dto.GoogleMemberResponse;
-import com.formssafe.infra.oauth.google.dto.GoogleAccessToken;
-import com.formssafe.infra.oauth.google.dto.GoogleRefreshToken;
+import com.formssafe.infra.oauth.google.dto.GoogleAccessTokenByCode;
+import com.formssafe.infra.oauth.google.dto.GoogleAccessTokenByRefreshToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,21 +29,21 @@ public class GoogleMemberClient implements OauthMemberClient {
     @Override
     public User fetch(String code) {
 //        GoogleAccessToken googleToken = googleApiClient.fetchToken(tokenRequestParams(code));
-        GoogleAccessToken googleAccessToken = googleApiClient.fetchToken("authorization_code", googleOauthConfig.clientId(), googleOauthConfig.clientSecret(),code, googleOauthConfig.redirectUri());
+        GoogleAccessTokenByCode googleAccessTokenByCode = googleApiClient.fetchToken("authorization_code", googleOauthConfig.clientId(), googleOauthConfig.clientSecret(),code, googleOauthConfig.redirectUri());
 //        GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(
 //                memberRequestParams(googleToken.accessToken()));
-        log.info(googleAccessToken.toString());
-        GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(googleAccessToken.accessToken());
-        googleMemberResponse.setRefreshToken(googleAccessToken.refreshToken());
+        log.info(googleAccessTokenByCode.toString());
+        GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(googleAccessTokenByCode.accessToken());
+        googleMemberResponse.setRefreshToken(googleAccessTokenByCode.refreshToken());
         log.debug("fetch profile: {} {} {}", googleMemberResponse.getName(), googleMemberResponse.getEmail(), googleMemberResponse.getRefreshToken());
         return googleMemberResponse.toEntity();
     }
     @Override
     public void deleteAccount(String refreshToken){
-        GoogleRefreshToken googleRefreshToken = googleApiClient.refreshToken("refresh_token", googleOauthConfig.clientId(), googleOauthConfig.clientSecret(), refreshToken);
-        log.info(googleRefreshToken.toString());
+        GoogleAccessTokenByRefreshToken googleAccessTokenByRefreshToken = googleApiClient.refreshToken("refresh_token", googleOauthConfig.clientId(), googleOauthConfig.clientSecret(), refreshToken);
+        log.info(googleAccessTokenByRefreshToken.toString());
 
-        googleApiClient.deleteAccount(googleRefreshToken.accessToken());
+        googleApiClient.deleteAccount(googleAccessTokenByRefreshToken.accessToken());
     }
     private MultiValueMap<String, String> tokenRequestParams(String authCode) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
