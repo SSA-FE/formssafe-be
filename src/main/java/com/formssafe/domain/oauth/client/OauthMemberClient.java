@@ -9,5 +9,5 @@ public interface OauthMemberClient {
 
     User fetch(String code);
 
-    void deleteAccount(String code);
+    void deleteAccount(String refreshToken);
 }

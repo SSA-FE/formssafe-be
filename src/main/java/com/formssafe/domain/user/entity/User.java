@@ -8,9 +8,6 @@ import java.time.LocalDateTime;
 import lombok.*;
 
 @Entity
-@Setter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
 public class User implements Serializable {
@@ -70,7 +67,23 @@ public class User implements Serializable {
     }
 
     public String getRefreshToken(){return refreshToken;}
+
+    public void updateNickname(String nickname){
+        this.nickname = nickname;
+    }
+
     public String toString(){
         return "[ " + id + ", " + oauthId + ", "+ nickname + ", "+ email + ", " + authority + ", "+ imageUrl + ", " + createTime + ", " + refreshToken;
+    }
+    @Builder
+    public User(Long id, OauthId oauthId, String nickname, String email, Authority authority, String imageUrl, LocalDateTime createTime, String refreshToken){
+        this.id = id;
+        this.oauthId = oauthId;
+        this.nickname = nickname;
+        this.email = email;
+        this.authority = authority;
+        this.imageUrl = imageUrl;
+        this.createTime = createTime;
+        this.refreshToken = refreshToken;
     }
 }

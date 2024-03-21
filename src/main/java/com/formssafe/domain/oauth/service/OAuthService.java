@@ -47,7 +47,7 @@ public class OAuthService {
             nickname = generateRandomNickname();
         }while(userRepository.existsByNickname(nickname));
 
-        oauthUser.setNickname(nickname);
+        oauthUser.updateNickname(nickname);
 
         User user = userRepository.findByOauthId(oauthUser.oauthId())
                 .orElseGet(() -> userRepository.save(oauthUser));
