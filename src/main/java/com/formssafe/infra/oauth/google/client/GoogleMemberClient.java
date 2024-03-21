@@ -2,6 +2,8 @@ package com.formssafe.infra.oauth.google.client;
 
 import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.oauth.client.OauthMemberClient;
+import com.formssafe.domain.user.entity.Authority;
+import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.infra.oauth.google.config.GoogleOauthConfig;
 import com.formssafe.infra.oauth.google.dto.GoogleMemberResponse;
@@ -12,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -34,9 +38,16 @@ public class GoogleMemberClient implements OauthMemberClient {
 //                memberRequestParams(googleToken.accessToken()));
         log.info(googleAccessTokenByCode.toString());
         GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(googleAccessTokenByCode.accessToken());
-        googleMemberResponse.setRefreshToken(googleAccessTokenByCode.refreshToken());
-        log.debug("fetch profile: {} {} {}", googleMemberResponse.getName(), googleMemberResponse.getEmail(), googleMemberResponse.getRefreshToken());
-        return googleMemberResponse.toEntity();
+
+        return User.builder()
+                .oauthId(new OauthId(googleMemberResponse.sub(), OauthServerType.GOOGLE))
+                .nickname(googleMemberResponse.name())
+                .email(googleMemberResponse.email())
+                .imageUrl(googleMemberResponse.picture())
+                .authority(Authority.ROLE_USER)
+                .createTime(LocalDateTime.now())
+                .refreshToken(googleAccessTokenByCode.refreshToken())
+                .build();
     }
     @Override
     public void deleteAccount(String refreshToken){

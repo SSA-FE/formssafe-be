@@ -12,41 +12,25 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @JsonNaming(SnakeCaseStrategy.class)
-@Setter
-@Getter
-public class GoogleMemberResponse {
-    private String sub;
-    private String name;
-    private String givenName;
-    private String familyName;
-    private String picture;
-    private String email;
-    private Boolean emailVerified;
-    private String locale;
-    private String refreshToken;
-    public GoogleMemberResponse(){}
+public record GoogleMemberResponse (
+        String sub,
+         String name,
+        String givenName,
+        String familyName,
+        String picture,
+        String email,
+        Boolean emailVerified,
+        String locale
+){
 
-    public GoogleMemberResponse(String sub, String name, String givenName, String familyName, String picture, String email, Boolean emailVerified, String locale) {
-        this.sub = sub;
-        this.name = name;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.picture = picture;
-        this.email = email;
-        this.emailVerified = emailVerified;
-        this.locale = locale;
-        this.refreshToken = null;
-    }
-
-    public User toEntity() {
-        return User.builder()
-                .oauthId(new OauthId(sub, OauthServerType.GOOGLE))
-                .nickname(name)
-                .email(email)
-                .imageUrl(picture)
-                .authority(Authority.ROLE_USER)
-                .createTime(LocalDateTime.now())
-                .refreshToken(refreshToken)
-                .build();
-    }
+//    public User toEntity() {
+//        return User.builder()
+//                .oauthId(new OauthId(sub, OauthServerType.GOOGLE))
+//                .nickname(name)
+//                .email(email)
+//                .imageUrl(picture)
+//                .authority(Authority.ROLE_USER)
+//                .createTime(LocalDateTime.now())
+//                .build();
+//    }
 }
