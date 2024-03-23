@@ -9,6 +9,8 @@ import com.formssafe.global.entity.BaseTimeEntity;
 import com.formssafe.global.util.JsonConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -59,14 +61,17 @@ public class Form extends BaseTimeEntity {
     private LocalDateTime privacyDisposalDate;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private FormStatus status;
+
+    private int responseCnt;
 
     private boolean isTemp;
 
     private boolean isDeleted;
 
     @OneToMany(mappedBy = "form")
-    private List<FormTag> tagList = new ArrayList<>();
+    private List<FormTag> formTagList = new ArrayList<>();
 
     @OneToOne(mappedBy = "form")
     private Reward reward;
@@ -80,7 +85,7 @@ public class Form extends BaseTimeEntity {
     @Builder
     private Form(Integer id, User user, String title, String detail, List<String> imageUrl, LocalDateTime startDate,
                  LocalDateTime endDate, int expectTime, boolean isEmailVisible, LocalDateTime privacyDisposalDate,
-                 FormStatus status, boolean isTemp, boolean isDeleted) {
+                 FormStatus status, int responseCnt, boolean isTemp, boolean isDeleted) {
         this.id = id;
         this.user = user;
         this.title = title;
@@ -92,6 +97,7 @@ public class Form extends BaseTimeEntity {
         this.isEmailVisible = isEmailVisible;
         this.privacyDisposalDate = privacyDisposalDate;
         this.status = status;
+        this.responseCnt = responseCnt;
         this.isTemp = isTemp;
         this.isDeleted = isDeleted;
     }
@@ -140,6 +146,10 @@ public class Form extends BaseTimeEntity {
         return status;
     }
 
+    public int getResponseCnt() {
+        return responseCnt;
+    }
+
     public boolean isTemp() {
         return isTemp;
     }
@@ -148,8 +158,8 @@ public class Form extends BaseTimeEntity {
         return isDeleted;
     }
 
-    public List<FormTag> getTagList() {
-        return tagList;
+    public List<FormTag> getFormTagList() {
+        return formTagList;
     }
 
     public Reward getReward() {
@@ -180,7 +190,7 @@ public class Form extends BaseTimeEntity {
                 ", status=" + status +
                 ", isTemp=" + isTemp +
                 ", isDeleted=" + isDeleted +
-                ", tagList=" + tagList +
+                ", tagList=" + formTagList +
                 '}';
     }
 }

@@ -5,6 +5,7 @@ import com.formssafe.domain.form.dto.FormRequest;
 import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
 import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.service.FormService;
+import com.formssafe.domain.user.dto.LoginUser;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -60,8 +62,9 @@ public class FormController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    FormDetailDto getForm(@PathVariable Long id) {
-        return formService.get(id);
+    FormDetailDto getForm(@PathVariable Integer id,
+                          @AuthenticationPrincipal LoginUser loginUser) {
+        return formService.get(loginUser, id);
     }
 
     @Operation(summary = "설문 등록", description = "새로운 설문을 등록한다.")

@@ -99,24 +99,32 @@ public final class Fixture {
                 .build();
     }
 
-    public static DescriptiveQuestion createDescriptiveQuestion(Form form, DescriptiveQuestionType type, String title) {
+    public static DescriptiveQuestion createDescriptiveQuestion(Form form,
+                                                                DescriptiveQuestionType type,
+                                                                String title,
+                                                                int position) {
         return DescriptiveQuestion.builder()
                 .form(form)
                 .questionType(type)
                 .title(title)
                 .detail("주관식 질문 설명")
+                .position(position)
                 .isRequired(false)
                 .isPrivacy(false)
                 .build();
     }
 
-    public static ObjectiveQuestion createObjectiveQuestion(Form form, ObjectiveQuestionType type,
-                                                            String title, List<ObjectiveQuestionOption> options) {
+    public static ObjectiveQuestion createObjectiveQuestion(Form form,
+                                                            ObjectiveQuestionType type,
+                                                            String title,
+                                                            int position,
+                                                            List<ObjectiveQuestionOption> options) {
         return ObjectiveQuestion.builder()
                 .form(form)
                 .questionType(type)
                 .title(title)
                 .detail("객관식 질문 설명")
+                .position(position)
                 .questionOption(options)
                 .isRequired(false)
                 .isPrivacy(false)

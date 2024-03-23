@@ -1,5 +1,6 @@
 package com.formssafe.domain.user.dto;
 
+import com.formssafe.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class UserResponse {
@@ -22,5 +23,9 @@ public class UserResponse {
     public record UserAuthorDto(
             @Schema(description = "사용자 ID") Long userId,
             @Schema(description = "사용자 별명") String nickname) {
+
+        public static UserAuthorDto from(User user) {
+            return new UserAuthorDto(user.id(), user.nickname());
+        }
     }
 }

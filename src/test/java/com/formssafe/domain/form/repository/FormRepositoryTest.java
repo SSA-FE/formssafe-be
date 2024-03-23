@@ -99,7 +99,7 @@ class FormRepositoryTest {
                 .orElseGet(() -> null);
         //then
         assertThat(formResult).isNotNull();
-        assertThat(formResult.getTagList())
+        assertThat(formResult.getFormTagList())
                 .hasSize(2);
     }
 
@@ -139,13 +139,17 @@ class FormRepositoryTest {
         Form form = createForm(user, "설문1", "설문 설명1");
         form = formRepository.save(form);
 
-        DescriptiveQuestion descriptiveQuestion = createDescriptiveQuestion(form, DescriptiveQuestionType.LONG,
-                "주관식 질문1");
+        DescriptiveQuestion descriptiveQuestion = createDescriptiveQuestion(form,
+                DescriptiveQuestionType.LONG,
+                "주관식 질문1",
+                1);
+
         descriptiveQuestion = descriptiveQuestionRepository.save(descriptiveQuestion);
 
         List<ObjectiveQuestionOption> objectiveQuestionOptions = List.of(new ObjectiveQuestionOption(0, "보기1"),
                 new ObjectiveQuestionOption(1, "보기2"));
         ObjectiveQuestion objectiveQuestion = createObjectiveQuestion(form, ObjectiveQuestionType.CHECKBOX, "객관식 질문1",
+                2,
                 objectiveQuestionOptions);
         objectiveQuestion = objectiveQuestionRepository.save(objectiveQuestion);
 

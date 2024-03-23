@@ -1,11 +1,15 @@
 package com.formssafe.domain.form.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.question.dto.QuestionResponse.QuestionDetailDto;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
 import com.formssafe.domain.user.dto.UserResponse;
+import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
+import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,15 +21,15 @@ public final class FormResponse {
 
     @Schema(description = "설문 상세 조회 응답 DTO")
     public record FormDetailDto(@Schema(description = "설문 id")
-                                Long id,
+                                    Integer id,
                                 @Schema(description = "설문 제목")
                                 String title,
                                 @Schema(description = "설문 설명")
                                 String description,
                                 @Schema(description = "설문 설명 이미지 목록")
-                                String[] image,
+                                    List<String> image,
                                 @Schema(description = "설문 등록자")
-                                UserResponse.UserAuthorDto author,
+                                    UserAuthorDto author,
                                 @Schema(description = "설문 시작 시각")
                                 LocalDateTime startDate,
                                 @Schema(description = "설문 마감 시각")
@@ -39,6 +43,7 @@ public final class FormResponse {
                                 @Schema(description = "설문 문항 목록")
                                 List<QuestionDetailDto> questions,
                                 @Schema(description = "설문 경품")
+                                    @JsonInclude(JsonInclude.Include.NON_NULL)
                                 RewardListDto reward,
                                 @Schema(description = "설문 태그 목록")
                                 List<TagListDto> tags,
@@ -48,11 +53,35 @@ public final class FormResponse {
                                 int responseCnt,
                                 @Schema(description = "설문 상태가 rewarded인 경우, 경품에 추첨된 인원 목록")
                                 List<UserListDto> recipients) {
+
+        public static FormDetailDto from(Form form,
+                                         UserAuthorDto authorDto,
+                                         List<QuestionDetailDto> questions,
+                                         RewardListDto reward,
+                                         List<TagListDto> tags,
+                                         List<UserListDto> recipients) {
+            return new FormDetailDto(form.getId(),
+                    form.getTitle(),
+                    form.getDetail(),
+                    JsonConverter.toList(form.getImageUrl(), String.class),
+                    authorDto,
+                    form.getStartDate(),
+                    form.getEndDate(),
+                    form.getExpectTime(),
+                    form.isEmailVisible(),
+                    form.getPrivacyDisposalDate(),
+                    questions,
+                    reward,
+                    tags,
+                    form.getStatus().displayName(),
+                    form.getResponseCnt(),
+                    recipients);
+        }
     }
 
     @Schema(description = "설문 목록 조회 응답 DTO")
     public record FormListDto(@Schema(description = "설문 id")
-                              Long id,
+                                  Integer id,
                               @Schema(description = "설문 제목")
                               String title,
                               @Schema(description = "설문 썸네일")
