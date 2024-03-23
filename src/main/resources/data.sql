@@ -14,7 +14,7 @@ VALUES (1, '설문 조사 제목1', '설문 설명 2', '[
   "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1"
 ]', 1,
         '2024-02-02T13:00:00', '2024-02-04T13:00:00', 10, null, false,
-        0, 'DONE', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00');
+        0, 'REWARDED', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00');
 
 INSERT INTO tag (id, tag_name, count)
 VALUES (1, 'tag1', 1),

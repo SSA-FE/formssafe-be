@@ -21,6 +21,7 @@ import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.exception.type.DataNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -63,16 +64,21 @@ public class FormService {
         Form form = getForm(id);
         UserAuthorDto userAuthorDto = getAuthor(form);
         List<TagListDto> tagListDtos = getTagList(form);
-        RewardListDto rewardListDto = getReward(form);
+
         List<QuestionDetailDto> questionDetailDtos = getQuestionList(form);
-        List<UserListDto> userListDtos = getRewardRecipientList(form);
+
+        RewardListDto rewardListDto = getReward(form);
+        List<UserListDto> rewardRecipientsDtos = Collections.emptyList();
+        if (rewardListDto != null) {
+            rewardRecipientsDtos = getRewardRecipientList(form);
+        }
 
         return FormDetailDto.from(form,
                 userAuthorDto,
                 questionDetailDtos,
                 rewardListDto,
                 tagListDtos,
-                userListDtos);
+                rewardRecipientsDtos);
     }
 
     private UserAuthorDto getAuthor(Form form) {
@@ -119,6 +125,10 @@ public class FormService {
     }
 
     private List<UserListDto> getRewardRecipientList(Form form) {
+        if (FormStatus.REWARDED != form.getStatus()) {
+            return Collections.emptyList();
+        }
+
         return form.getRewardRecipientList().stream()
                 .map(RewardRecipient::getUser)
                 .map(UserListDto::from)
