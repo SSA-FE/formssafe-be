@@ -8,21 +8,13 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.question.dto.QuestionResponse.QuestionDetailDto;
-import com.formssafe.domain.question.entity.DescriptiveQuestion;
-import com.formssafe.domain.question.entity.ObjectiveQuestion;
-import com.formssafe.domain.question.repository.DescriptiveQuestionRepository;
-import com.formssafe.domain.question.repository.ObjectiveQuestionRepository;
+import com.formssafe.domain.question.entity.Question;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
-import com.formssafe.domain.reward.repository.RewardCategoryRepository;
-import com.formssafe.domain.reward.repository.RewardRepository;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
 import com.formssafe.domain.tag.entity.FormTag;
-import com.formssafe.domain.tag.repository.FormTagRepository;
-import com.formssafe.domain.tag.repository.TagRepository;
-import com.formssafe.domain.user.dto.LoginUser;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
@@ -30,6 +22,7 @@ import com.formssafe.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,12 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FormService {
     private final FormRepository formRepository;
     private final UserRepository userRepository;
-    private final ObjectiveQuestionRepository objectiveQuestionRepository;
-    private final DescriptiveQuestionRepository descriptiveQuestionRepository;
-    private final FormTagRepository formTagRepository;
-    private final TagRepository tagRepository;
-    private final RewardCategoryRepository rewardCategoryRepository;
-    private final RewardRepository rewardRepository;
 
     public Page<FormListDto> getList(SearchDto params) {
         log.debug(params.toString());
@@ -74,52 +61,64 @@ public class FormService {
         return new PageImpl<>(List.of(formListResponse1Dto, formListResponse2Dto));
     }
 
-    public FormDetailDto get(LoginUser loginUser, Integer id) {
-        log.debug("logined: {}", loginUser);
-
-        User user = userRepository.findById(loginUser.id())
-                .orElseGet(() -> User.builder()
-                        .id(0L)
-                        .nickname("탈퇴한 사용자")
-                        .build()
-                );
-        UserAuthorDto userAuthorDto = UserAuthorDto.from(user);
-
-        Form form = formRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id + "번 설문이 존재하지 않습니다."));
-
-        List<TagListDto> tagListDto = form.getFormTagList().stream()
-                .map(FormTag::getTag)
-                .map(TagListDto::from)
-                .toList();
-
-        Reward reward = form.getReward();
-        RewardListDto rewardListDto = null;
-        if (reward != null) {
-            rewardListDto = RewardListDto.from(reward, reward.getRewardCategory());
-        }
-
-        List<DescriptiveQuestion> descriptiveQuestions = form.getDescriptiveQuestionList();
-        List<ObjectiveQuestion> objectiveQuestions = form.getObjectiveQuestionList();
-
-        List<QuestionDetailDto> questions = new ArrayList<>(descriptiveQuestions.stream()
-                .map(QuestionDetailDto::from)
-                .toList());
-        questions.addAll(objectiveQuestions.stream()
-                .map(QuestionDetailDto::from)
-                .toList());
-
-        List<UserListDto> userListDto = form.getRewardRecipientList().stream()
-                .map(RewardRecipient::getUser)
-                .map(UserListDto::from)
-                .toList();
+    public FormDetailDto get(Integer id) {
+        Form form = getForm(id);
+        UserAuthorDto userAuthorDto = getAuthor(form);
+        List<TagListDto> tagListDtos = getTagList(form);
+        RewardListDto rewardListDto = getReward(form);
+        List<QuestionDetailDto> questionDetailDtos = getQuestionList(form);
+        List<UserListDto> userListDtos = getRewardRecipientList(form);
 
         return FormDetailDto.from(form,
                 userAuthorDto,
-                questions,
+                questionDetailDtos,
                 rewardListDto,
-                tagListDto,
-                userListDto);
+                tagListDtos,
+                userListDtos);
+    }
+
+    private UserAuthorDto getAuthor(Form form) {
+        User author = form.getUser();
+        return UserAuthorDto.from(author);
+    }
+
+    private Form getForm(Integer id) {
+        return formRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(id + "번 설문이 존재하지 않습니다."));
+    }
+
+    private List<TagListDto> getTagList(Form form) {
+        return form.getFormTagList().stream()
+                .map(FormTag::getTag)
+                .map(TagListDto::from)
+                .toList();
+    }
+
+    private RewardListDto getReward(Form form) {
+        Reward reward = form.getReward();
+        if (reward == null) {
+            return null;
+        }
+
+        return RewardListDto.from(reward, reward.getRewardCategory());
+    }
+
+    private List<QuestionDetailDto> getQuestionList(Form form) {
+        List<Question> questions = new ArrayList<>();
+        questions.addAll(form.getDescriptiveQuestionList());
+        questions.addAll(form.getObjectiveQuestionList());
+        questions.sort(Comparator.comparingInt(Question::getPosition));
+
+        return questions.stream()
+                .map(QuestionDetailDto::from)
+                .toList();
+    }
+
+    private List<UserListDto> getRewardRecipientList(Form form) {
+        return form.getRewardRecipientList().stream()
+                .map(RewardRecipient::getUser)
+                .map(UserListDto::from)
+                .toList();
     }
 
     public void create(FormCreateDto request) {

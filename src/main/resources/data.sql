@@ -26,7 +26,7 @@ VALUES (1, 1, 1),
 
 INSERT INTO descriptive_question (id, form_id, question_type, title, detail, is_privacy, is_required, position)
 VALUES (1, 1, 'SHORT', '주관식 단답형 질문1', '주관식 단답형 질문 설명1', false, false, 1),
-       (2, 1, 'LONG', '주관식 장문형 질문2', '주관식 장문형 질문 설명2', false, false, 2);
+       (2, 1, 'LONG', '주관식 장문형 질문2', '주관식 장문형 질문 설명2', false, false, 3);
 
 INSERT INTO objective_question (id, form_id, question_type, title, detail, question_option, is_privacy, is_required,
                                 position)
@@ -35,7 +35,7 @@ VALUES (1, 1, 'SINGLE', '객관식 단일 질문1', '객관식 단일 질문 설
                 json_object('id', 1, 'detail', '1 - 1'),
                 json_object('id', 2, 'detail', '1 - 2'),
                 json_object('id', 3, 'detail', '1 - 3')),
-        false, false, 3),
+        false, false, 2),
        (2, 1, 'CHECKBOX', '객관식 체크박스 질문2', '객관식 체크박스 질문 설명2',
         json_array(
                 json_object('id', 1, 'detail', '2 - 1'),
