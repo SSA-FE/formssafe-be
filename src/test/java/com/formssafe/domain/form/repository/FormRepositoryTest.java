@@ -159,15 +159,15 @@ class FormRepositoryTest {
                 .orElseGet(() -> null);
         //then
         assertThat(formResult).isNotNull();
-        assertThat(formResult.getDescriptiveQuestions())
+        assertThat(formResult.getDescriptiveQuestionList())
                 .isNotNull()
                 .hasSize(1)
                 .extracting("title")
                 .containsExactly(descriptiveQuestion.getTitle());
-        assertThat(formResult.getObjectiveQuestions())
+        assertThat(formResult.getObjectiveQuestionList())
                 .isNotNull()
                 .hasSize(1);
-        assertThat(JsonConverter.toList(formResult.getObjectiveQuestions().get(0).getQuestionOption(),
+        assertThat(JsonConverter.toList(formResult.getObjectiveQuestionList().get(0).getQuestionOption(),
                 ObjectiveQuestionOption.class))
                 .isEqualTo(objectiveQuestionOptions);
     }

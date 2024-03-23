@@ -3,6 +3,7 @@ package com.formssafe.domain.form.entity;
 import com.formssafe.domain.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.reward.entity.Reward;
+import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.entity.BaseTimeEntity;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -77,10 +79,14 @@ public class Form extends BaseTimeEntity {
     private Reward reward;
 
     @OneToMany(mappedBy = "form")
-    private List<DescriptiveQuestion> descriptiveQuestions = new ArrayList<>();
+    private List<DescriptiveQuestion> descriptiveQuestionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "form")
-    private List<ObjectiveQuestion> objectiveQuestions = new ArrayList<>();
+    private List<ObjectiveQuestion> objectiveQuestionList = new ArrayList<>();
+
+    @Getter
+    @OneToMany(mappedBy = "form")
+    private List<RewardRecipient> rewardRecipientList = new ArrayList<>();
 
     @Builder
     private Form(Integer id, User user, String title, String detail, List<String> imageUrl, LocalDateTime startDate,
@@ -166,12 +172,16 @@ public class Form extends BaseTimeEntity {
         return reward;
     }
 
-    public List<DescriptiveQuestion> getDescriptiveQuestions() {
-        return descriptiveQuestions;
+    public List<DescriptiveQuestion> getDescriptiveQuestionList() {
+        return descriptiveQuestionList;
     }
 
-    public List<ObjectiveQuestion> getObjectiveQuestions() {
-        return objectiveQuestions;
+    public List<ObjectiveQuestion> getObjectiveQuestionList() {
+        return objectiveQuestionList;
+    }
+
+    public List<RewardRecipient> getRewardRecipientList() {
+        return rewardRecipientList;
     }
 
     @Override

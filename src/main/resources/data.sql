@@ -1,7 +1,10 @@
-INSERT INTO user (create_time, authority, email, image_url, nickname, oauth_server, oauth_server_id)
-VALUES ('2024-02-02T13:00:00', 'ROLE_USER', 'test@example.com',
+INSERT INTO user (id, create_time, authority, email, image_url, nickname, oauth_server, oauth_server_id)
+VALUES (1, '2024-02-02T13:00:00', 'ROLE_USER', 'test@example.com',
         'https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1',
-        'test', 'GOOGLE', '123');
+        'test', 'GOOGLE', '123'),
+       (2, '2024-02-02T13:00:00', 'ROLE_USER', 'test2@example.com',
+        'https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1240w,f_auto,q_auto:best/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg',
+        'test2', 'GOOGLE', '1234');
 
 INSERT INTO form (id, title, detail, image_url, user_id, start_date, end_date, expect_time, privacy_disposal_date,
                   is_email_visible, response_cnt, status, is_deleted, is_temp,
@@ -11,7 +14,7 @@ VALUES (1, '설문 조사 제목1', '설문 설명 2', '[
   "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1"
 ]', 1,
         '2024-02-02T13:00:00', '2024-02-04T13:00:00', 10, null, false,
-        0, 'NOT_STARTED', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00');
+        0, 'DONE', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00');
 
 INSERT INTO tag (id, tag_name, count)
 VALUES (1, 'tag1', 1),
@@ -53,4 +56,7 @@ VALUES (1, '커피'),
        (4, '식품');
 
 INSERT INTO reward (id, form_id, reward_category_id, reward_name, count)
-VALUES (1, 1, 1, '스타벅스 아이스 아메리카노 T', 5);
+VALUES (1, 1, 1, '스타벅스 아이스 아메리카노 T', 1);
+
+INSERT INTO reward_recipient (id, form_id, user_id)
+VALUES (1, 1, 2);

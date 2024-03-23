@@ -14,6 +14,7 @@ import com.formssafe.domain.question.repository.DescriptiveQuestionRepository;
 import com.formssafe.domain.question.repository.ObjectiveQuestionRepository;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.reward.entity.Reward;
+import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.reward.repository.RewardRepository;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
@@ -23,12 +24,12 @@ import com.formssafe.domain.tag.repository.FormTagRepository;
 import com.formssafe.domain.tag.repository.TagRepository;
 import com.formssafe.domain.user.dto.LoginUser;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
+import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,8 +99,8 @@ public class FormService {
             rewardListDto = RewardListDto.from(reward, reward.getRewardCategory());
         }
 
-        List<DescriptiveQuestion> descriptiveQuestions = form.getDescriptiveQuestions();
-        List<ObjectiveQuestion> objectiveQuestions = form.getObjectiveQuestions();
+        List<DescriptiveQuestion> descriptiveQuestions = form.getDescriptiveQuestionList();
+        List<ObjectiveQuestion> objectiveQuestions = form.getObjectiveQuestionList();
 
         List<QuestionDetailDto> questions = new ArrayList<>(descriptiveQuestions.stream()
                 .map(QuestionDetailDto::from)
@@ -108,12 +109,17 @@ public class FormService {
                 .map(QuestionDetailDto::from)
                 .toList());
 
+        List<UserListDto> userListDto = form.getRewardRecipientList().stream()
+                .map(RewardRecipient::getUser)
+                .map(UserListDto::from)
+                .toList();
+
         return FormDetailDto.from(form,
                 userAuthorDto,
                 questions,
                 rewardListDto,
                 tagListDto,
-                Collections.emptyList());
+                userListDto);
     }
 
     public void create(FormCreateDto request) {
