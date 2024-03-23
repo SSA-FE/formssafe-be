@@ -18,8 +18,7 @@ import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.formssafe.global.exception.type.DataNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -37,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class FormService {
     private final FormRepository formRepository;
-    private final UserRepository userRepository;
 
     public Page<FormListDto> getList(SearchDto params) {
         log.debug(params.toString());
@@ -83,8 +81,14 @@ public class FormService {
     }
 
     private Form getForm(Integer id) {
-        return formRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id + "번 설문이 존재하지 않습니다."));
+        Form form = formRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
+
+        if (form.isDeleted()) {
+            throw new DataNotFoundException(id + "번 설문이 존재하지 않습니다.");
+        }
+
+        return form;
     }
 
     private List<TagListDto> getTagList(Form form) {
