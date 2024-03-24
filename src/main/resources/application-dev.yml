@@ -1,6 +1,6 @@
 spring:
   config:
-    import: classpath:privacy.yml
+    import: /home/ubuntu/web/privacy.yml
     activate:
       on-profile: dev
   jpa:
@@ -8,9 +8,6 @@ spring:
       ddl-auto: update
     defer-datasource-initialization: true
     show-sql: true
-  sql:
-    init:
-      mode: always
 
 logging:
   file:

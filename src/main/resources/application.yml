@@ -9,8 +9,6 @@ server:
       timeout: 3600
 
 spring:
-  config:
-    import: classpath:privacy.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${db.host}:${db.port}/${db.database}?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
