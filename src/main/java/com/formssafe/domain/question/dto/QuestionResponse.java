@@ -5,6 +5,7 @@ import com.formssafe.domain.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.question.entity.ObjectiveQuestionOption;
 import com.formssafe.domain.question.entity.Question;
+import com.formssafe.global.exception.type.DtoConvertException;
 import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
@@ -27,7 +28,8 @@ public final class QuestionResponse {
             } else if (question instanceof ObjectiveQuestion oq) {
                 return fromObjectiveQuestion(oq);
             }
-            return null;
+
+            throw new DtoConvertException("Question 엔티티를 DTO로 변환할 수 없습니다.: " + question.getClass());
         }
 
         private static QuestionDetailDto fromDescriptiveQuestion(DescriptiveQuestion question) {
