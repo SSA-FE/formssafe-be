@@ -23,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
 
     @Bean
-    @Profile(value = {"local", "default"})
+    @Profile(value = {"local", "default", "dev"})
     public WebSecurityCustomizer configure() {
         return web -> web.ignoring()
                 .requestMatchers("/swagger-ui/**",
