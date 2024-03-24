@@ -4,15 +4,27 @@ import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
 import com.formssafe.domain.form.dto.FormResponse.FormListDto;
+import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
+import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.question.dto.QuestionResponse.QuestionDetailDto;
+import com.formssafe.domain.question.entity.Question;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
+import com.formssafe.domain.reward.entity.Reward;
+import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
+import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
+import com.formssafe.domain.user.entity.User;
+import com.formssafe.global.exception.type.DataNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,8 +33,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 @Slf4j
 public class FormService {
+    private final FormRepository formRepository;
 
     public Page<FormListDto> getList(SearchDto params) {
         log.debug(params.toString());
@@ -46,15 +60,79 @@ public class FormService {
         return new PageImpl<>(List.of(formListResponse1Dto, formListResponse2Dto));
     }
 
-    public FormDetailDto get(Long id) {
-        return new FormDetailDto(id, "title1", "description1",
-                new String[]{"url1", "url2", "url3"}, new UserAuthorDto(1L, "author"),
-                LocalDateTime.of(2024, 2, 29, 0, 0), LocalDateTime.of(2024, 3, 1, 0, 0),
-                5, true, LocalDateTime.of(2024, 3, 10, 0, 0),
-                List.of(new QuestionDetailDto(1L, "short", "title1", "description1", null, true, true)),
-                new RewardListDto("coffee", "coffee", 5),
-                List.of(new TagListDto(1L, "tag1")), FormStatus.DONE.displayName(), 3,
-                List.of(new UserListDto(2L, "a"), new UserListDto(3L, "b")));
+    public FormDetailDto getFormDetail(Long id) {
+        Form form = getForm(id);
+        UserAuthorDto userAuthorDto = getAuthor(form);
+        List<TagListDto> tagListDtos = getTagList(form);
+
+        List<QuestionDetailDto> questionDetailDtos = getQuestionList(form);
+
+        List<UserListDto> rewardRecipientsDtos = Collections.emptyList();
+        RewardListDto rewardDto = getReward(form);
+        if (rewardDto != null) {
+            rewardRecipientsDtos = getRewardRecipientList(form);
+        }
+
+        return FormDetailDto.from(form,
+                userAuthorDto,
+                questionDetailDtos,
+                rewardDto,
+                tagListDtos,
+                rewardRecipientsDtos);
+    }
+
+    private UserAuthorDto getAuthor(Form form) {
+        User author = form.getUser();
+        return UserAuthorDto.from(author);
+    }
+
+    private Form getForm(Long id) {
+        Form form = formRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
+
+        if (form.isDeleted()) {
+            throw new DataNotFoundException(id + "번 설문이 존재하지 않습니다.");
+        }
+
+        return form;
+    }
+
+    private List<TagListDto> getTagList(Form form) {
+        return form.getFormTagList().stream()
+                .map(FormTag::getTag)
+                .map(TagListDto::from)
+                .toList();
+    }
+
+    private RewardListDto getReward(Form form) {
+        Reward reward = form.getReward();
+        if (reward == null) {
+            return null;
+        }
+
+        return RewardListDto.from(reward, reward.getRewardCategory());
+    }
+
+    private List<QuestionDetailDto> getQuestionList(Form form) {
+        List<Question> questions = new ArrayList<>();
+        questions.addAll(form.getDescriptiveQuestionList());
+        questions.addAll(form.getObjectiveQuestionList());
+        questions.sort(Comparator.comparingInt(Question::getPosition));
+
+        return questions.stream()
+                .map(QuestionDetailDto::from)
+                .toList();
+    }
+
+    private List<UserListDto> getRewardRecipientList(Form form) {
+        if (FormStatus.REWARDED != form.getStatus()) {
+            return Collections.emptyList();
+        }
+
+        return form.getRewardRecipientList().stream()
+                .map(RewardRecipient::getUser)
+                .map(UserListDto::from)
+                .toList();
     }
 
     public void create(FormCreateDto request) {

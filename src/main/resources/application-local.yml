@@ -5,12 +5,12 @@ spring:
       on-profile: local
   jpa:
     show-sql: true
-    #    hibernate:
-    #      ddl-auto: create
-    #    defer-datasource-initialization: true
-    properties:
-      hibernate:
-        format_sql: true
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 
 logging:
   file:
@@ -20,5 +20,4 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %highlight(%-5level) %cyan(%logger{36}.%M) - %msg%n"
   level:
     com:
-      formssafe:
-        debug
+      formssafe: debug

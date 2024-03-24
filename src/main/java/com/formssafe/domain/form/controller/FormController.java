@@ -61,7 +61,7 @@ public class FormController {
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     FormDetailDto getForm(@PathVariable Long id) {
-        return formService.get(id);
+        return formService.getFormDetail(id);
     }
 
     @Operation(summary = "설문 등록", description = "새로운 설문을 등록한다.")

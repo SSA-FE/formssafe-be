@@ -17,11 +17,11 @@ public class ExceptionResponse {
         return new ExceptionResponse(status, message);
     }
 
-    public int status() {
+    public int getStatus() {
         return status;
     }
 
-    public String message() {
+    public String getMessage() {
         return message;
     }
 }
