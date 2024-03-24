@@ -41,42 +41,42 @@ public class FormService {
     public Page<FormListDto> getList(SearchDto params) {
         log.debug(params.toString());
 
-        FormListDto formListResponse1Dto = new FormListDto(1, "title1", "thumbnail1",
+        FormListDto formListResponse1Dto = new FormListDto(1L, "title1", "thumbnail1",
                 new UserAuthorDto(1L, "minji"), 10, 2, 2,
                 LocalDateTime.of(2024, 2, 29, 0, 0), LocalDateTime.of(2024, 3, 1, 0, 0),
                 new RewardListDto("냉장고", "가전제품", 3),
-                new TagCountDto[]{new TagCountDto(1, "tag1", 3),
-                        new TagCountDto(2, "tag2", 3)},
+                new TagCountDto[]{new TagCountDto(1L, "tag1", 3),
+                        new TagCountDto(2L, "tag2", 3)},
                 FormStatus.PROGRESS.displayName());
 
-        FormListDto formListResponse2Dto = new FormListDto(1, "title2", "thumbnail2",
+        FormListDto formListResponse2Dto = new FormListDto(1L, "title2", "thumbnail2",
                 new UserAuthorDto(2L, "hyukjin"), 5, 3, 3,
                 LocalDateTime.of(2024, 2, 29, 0, 0), LocalDateTime.of(2024, 3, 1, 0, 0),
                 new RewardListDto("청소기", "가전제품", 2),
-                new TagCountDto[]{new TagCountDto(2, "tag2", 3),
-                        new TagCountDto(4, "tag4", 3)},
+                new TagCountDto[]{new TagCountDto(2L, "tag2", 3),
+                        new TagCountDto(4L, "tag4", 3)},
                 FormStatus.DONE.displayName());
 
         return new PageImpl<>(List.of(formListResponse1Dto, formListResponse2Dto));
     }
 
-    public FormDetailDto get(Integer id) {
+    public FormDetailDto getFormDetail(Long id) {
         Form form = getForm(id);
         UserAuthorDto userAuthorDto = getAuthor(form);
         List<TagListDto> tagListDtos = getTagList(form);
 
         List<QuestionDetailDto> questionDetailDtos = getQuestionList(form);
 
-        RewardListDto rewardListDto = getReward(form);
         List<UserListDto> rewardRecipientsDtos = Collections.emptyList();
-        if (rewardListDto != null) {
+        RewardListDto rewardDto = getReward(form);
+        if (rewardDto != null) {
             rewardRecipientsDtos = getRewardRecipientList(form);
         }
 
         return FormDetailDto.from(form,
                 userAuthorDto,
                 questionDetailDtos,
-                rewardListDto,
+                rewardDto,
                 tagListDtos,
                 rewardRecipientsDtos);
     }
@@ -86,7 +86,7 @@ public class FormService {
         return UserAuthorDto.from(author);
     }
 
-    private Form getForm(Integer id) {
+    private Form getForm(Long id) {
         Form form = formRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
 

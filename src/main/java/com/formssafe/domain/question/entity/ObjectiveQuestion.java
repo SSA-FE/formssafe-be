@@ -25,7 +25,7 @@ public class ObjectiveQuestion extends Question {
     private String questionOption;
 
     @Builder
-    private ObjectiveQuestion(Integer id,
+    private ObjectiveQuestion(Long id,
                               Form form,
                               ObjectiveQuestionType questionType,
                               String title,

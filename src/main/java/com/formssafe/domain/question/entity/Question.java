@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public abstract class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+    protected Long id;
 
     @ManyToOne
     @JoinColumn(name = "form_id", nullable = false)
@@ -33,7 +33,7 @@ public abstract class Question {
 
     protected boolean isPrivacy;
 
-    protected Question(Integer id,
+    protected Question(Long id,
                        Form form,
                        String title,
                        String detail,
@@ -49,7 +49,7 @@ public abstract class Question {
         this.isPrivacy = isPrivacy;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

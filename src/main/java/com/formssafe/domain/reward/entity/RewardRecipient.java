@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class RewardRecipient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -29,13 +29,13 @@ public class RewardRecipient {
     private Form form;
 
     @Builder
-    private RewardRecipient(Integer id, User user, Form form) {
+    private RewardRecipient(Long id, User user, Form form) {
         this.id = id;
         this.user = user;
         this.form = form;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String tagName;
@@ -28,13 +28,13 @@ public class Tag {
     private List<FormTag> formTagList = new ArrayList<>();
 
     @Builder
-    private Tag(Integer id, String tagName, int count) {
+    private Tag(Long id, String tagName, int count) {
         this.id = id;
         this.tagName = tagName;
         this.count = count;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

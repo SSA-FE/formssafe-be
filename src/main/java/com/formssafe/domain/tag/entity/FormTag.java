@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class FormTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "form_id", nullable = false)
@@ -27,13 +27,13 @@ public class FormTag {
     private Tag tag;
 
     @Builder
-    private FormTag(Integer id, Form form, Tag tag) {
+    private FormTag(Long id, Form form, Tag tag) {
         this.id = id;
         this.form = form;
         this.tag = tag;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

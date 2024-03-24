@@ -5,15 +5,15 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class ObjectiveQuestionOption {
-    private Integer id;
+    private Long id;
     private String detail;
 
-    public ObjectiveQuestionOption(Integer id, String detail) {
+    public ObjectiveQuestionOption(Long id, String detail) {
         this.id = id;
         this.detail = detail;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

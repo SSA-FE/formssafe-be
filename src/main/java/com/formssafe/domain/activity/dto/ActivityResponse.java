@@ -13,7 +13,7 @@ public final class ActivityResponse {
 
     @Schema(description = "설문 목록 조회 응답")
     public record FormListDto(@Schema(description = "설문 id")
-                                  Integer id,
+                                  Long id,
                               @Schema(description = "설문 제목")
                               String title,
                               @Schema(description = "설문 썸네일")

@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class QuestionResponse {
 
-    public record QuestionDetailDto(@Schema(description = "설문 문항 id") Integer id,
+    public record QuestionDetailDto(@Schema(description = "설문 문항 id") Long id,
                                     @Schema(description = "설문 문항 타입") String type,
                                     @Schema(description = "설문 문항 질문") String title,
                                     @Schema(description = "설문 문항 설명") String description,

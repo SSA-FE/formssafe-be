@@ -17,7 +17,7 @@ public class DescriptiveQuestion extends Question {
     private DescriptiveQuestionType questionType;
 
     @Builder
-    private DescriptiveQuestion(Integer id,
+    private DescriptiveQuestion(Long id,
                                 Form form,
                                 DescriptiveQuestionType questionType,
                                 String title,

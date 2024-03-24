@@ -34,7 +34,7 @@ import org.hibernate.type.SqlTypes;
 public class Form extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -89,7 +89,7 @@ public class Form extends BaseTimeEntity {
     private List<RewardRecipient> rewardRecipientList = new ArrayList<>();
 
     @Builder
-    private Form(Integer id, User user, String title, String detail, List<String> imageUrl, LocalDateTime startDate,
+    private Form(Long id, User user, String title, String detail, List<String> imageUrl, LocalDateTime startDate,
                  LocalDateTime endDate, int expectTime, boolean isEmailVisible, LocalDateTime privacyDisposalDate,
                  FormStatus status, int responseCnt, boolean isTemp, boolean isDeleted) {
         this.id = id;
@@ -108,7 +108,7 @@ public class Form extends BaseTimeEntity {
         this.isDeleted = isDeleted;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

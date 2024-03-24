@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 public class RewardCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String rewardCategoryName;
 
     @Builder
-    private RewardCategory(Integer id, String rewardCategoryName) {
+    private RewardCategory(Long id, String rewardCategoryName) {
         this.id = id;
         this.rewardCategoryName = rewardCategoryName;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 

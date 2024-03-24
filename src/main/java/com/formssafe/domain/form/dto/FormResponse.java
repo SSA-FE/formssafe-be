@@ -21,7 +21,7 @@ public final class FormResponse {
 
     @Schema(description = "설문 상세 조회 응답 DTO")
     public record FormDetailDto(@Schema(description = "설문 id")
-                                    Integer id,
+                                    Long id,
                                 @Schema(description = "설문 제목")
                                 String title,
                                 @Schema(description = "설문 설명")
@@ -81,7 +81,7 @@ public final class FormResponse {
 
     @Schema(description = "설문 목록 조회 응답 DTO")
     public record FormListDto(@Schema(description = "설문 id")
-                                  Integer id,
+                                  Long id,
                               @Schema(description = "설문 제목")
                               String title,
                               @Schema(description = "설문 썸네일")

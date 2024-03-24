@@ -5,7 +5,7 @@ import com.formssafe.domain.tag.entity.FormTag;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FormTagRepository extends JpaRepository<FormTag, Integer> {
+public interface FormTagRepository extends JpaRepository<FormTag, Long> {
 
     List<FormTag> findAllByForm(Form form);
 }
