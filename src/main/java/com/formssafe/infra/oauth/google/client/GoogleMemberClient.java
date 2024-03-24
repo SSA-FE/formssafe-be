@@ -39,15 +39,8 @@ public class GoogleMemberClient implements OauthMemberClient {
         log.info(googleAccessTokenByCode.toString());
         GoogleMemberResponse googleMemberResponse = googleApiClient.fetchProfile(googleAccessTokenByCode.accessToken());
 
-        return User.builder()
-                .oauthId(new OauthId(googleMemberResponse.sub(), OauthServerType.GOOGLE))
-                .nickname(googleMemberResponse.name())
-                .email(googleMemberResponse.email())
-                .imageUrl(googleMemberResponse.picture())
-                .authority(Authority.ROLE_USER)
-                .createTime(LocalDateTime.now())
-                .refreshToken(googleAccessTokenByCode.refreshToken())
-                .build();
+        //TODO : 테스트 하기
+        return googleMemberResponse.toEntity(googleAccessTokenByCode.refreshToken());
     }
     @Override
     public void deleteAccount(String refreshToken){

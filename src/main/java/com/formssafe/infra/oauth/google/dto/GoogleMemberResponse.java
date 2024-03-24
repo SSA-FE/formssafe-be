@@ -23,14 +23,15 @@ public record GoogleMemberResponse (
         String locale
 ){
 
-//    public User toEntity() {
-//        return User.builder()
-//                .oauthId(new OauthId(sub, OauthServerType.GOOGLE))
-//                .nickname(name)
-//                .email(email)
-//                .imageUrl(picture)
-//                .authority(Authority.ROLE_USER)
-//                .createTime(LocalDateTime.now())
-//                .build();
-//    }
+    public User toEntity(String refreshToken) {
+        return User.builder()
+                .oauthId(new OauthId(sub, OauthServerType.GOOGLE))
+                .nickname(name)
+                .email(email)
+                .imageUrl(picture)
+                .authority(Authority.ROLE_USER)
+                .createTime(LocalDateTime.now())
+                .refreshToken(refreshToken)
+                .build();
+    }
 }

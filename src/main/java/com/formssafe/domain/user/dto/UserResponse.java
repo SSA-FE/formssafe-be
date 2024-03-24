@@ -13,6 +13,7 @@ public class UserResponse {
             @Schema(description = "사용자 별명") String nickname,
             @Schema(description = "이미지 URL") String imageUrl,
             @Schema(description = "이메일 주소") String email) {
+
         public static UserProfileDto convertEntityToDto(User user){
             return new UserProfileDto(user.id(), user.nickname(), user.imageUrl(),user.email());
         }

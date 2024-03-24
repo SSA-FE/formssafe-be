@@ -38,6 +38,18 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String refreshToken;
 
+    @Builder
+    private User(Long id, OauthId oauthId, String nickname, String email, Authority authority, String imageUrl, LocalDateTime createTime, String refreshToken){
+        this.id = id;
+        this.oauthId = oauthId;
+        this.nickname = nickname;
+        this.email = email;
+        this.authority = authority;
+        this.imageUrl = imageUrl;
+        this.createTime = createTime;
+        this.refreshToken = refreshToken;
+    }
+
     public Long id() {
         return id;
     }
@@ -74,16 +86,5 @@ public class User implements Serializable {
 
     public String toString(){
         return "[ " + id + ", " + oauthId + ", "+ nickname + ", "+ email + ", " + authority + ", "+ imageUrl + ", " + createTime + ", " + refreshToken;
-    }
-    @Builder
-    public User(Long id, OauthId oauthId, String nickname, String email, Authority authority, String imageUrl, LocalDateTime createTime, String refreshToken){
-        this.id = id;
-        this.oauthId = oauthId;
-        this.nickname = nickname;
-        this.email = email;
-        this.authority = authority;
-        this.imageUrl = imageUrl;
-        this.createTime = createTime;
-        this.refreshToken = refreshToken;
     }
 }
