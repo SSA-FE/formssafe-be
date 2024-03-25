@@ -1,4 +1,4 @@
-package com.formssafe.domain.auth.controller;
+package com.formssafe.domain.form.auth.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
