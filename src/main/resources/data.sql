@@ -1,10 +1,11 @@
-INSERT INTO user (id, create_time, authority, email, image_url, nickname, oauth_server, oauth_server_id)
+INSERT INTO member (id, create_time, authority, email, image_url, nickname, oauth_server, oauth_server_id,
+                    refresh_token)
 VALUES (1, '2024-02-02T13:00:00', 'ROLE_USER', 'test@example.com',
         'https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1',
-        'test', 'GOOGLE', '123'),
+        'test', 'GOOGLE', '123', "refresh_token1"),
        (2, '2024-02-02T13:00:00', 'ROLE_USER', 'test2@example.com',
         'https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1240w,f_auto,q_auto:best/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg',
-        'test2', 'GOOGLE', '1234');
+        'test2', 'GOOGLE', '1234', "refresh_token2");
 
 INSERT INTO form (id, title, detail, image_url, user_id, start_date, end_date, expect_time, privacy_disposal_date,
                   is_email_visible, response_cnt, status, is_deleted, is_temp,
