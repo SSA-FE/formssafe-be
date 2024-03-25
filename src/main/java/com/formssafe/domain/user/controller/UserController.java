@@ -1,7 +1,10 @@
 package com.formssafe.domain.user.controller;
 
 import com.formssafe.domain.submission.dto.SubmissionRequest;
+import com.formssafe.domain.user.dto.UserRequest;
+import com.formssafe.domain.user.dto.UserRequest.NicknameUpdateDto;
 import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
+import com.formssafe.domain.user.service.UserService;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,15 +12,24 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "users", description = "사용자 관련 API")
 public class UserController {
+
+    private final UserService userService;
+
     @Operation(summary="프로필 가져오기", description="세션의 정보로부터 프로필 정보 가져와서 return")
     @ApiResponse(responseCode = "200", description = "프로필 불러오기 완료",
             content = @Content(
@@ -31,9 +43,10 @@ public class UserController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/profile")
-    public ResponseEntity<UserProfileDto> getUserProfile(@RequestHeader("auth") String sessionId) {
-        UserProfileDto userProfileDto = new UserProfileDto(1L, "1", "https://1.com/1.jpg", "1@1.com");
-        return ResponseEntity.ok(userProfileDto);
+    @ResponseStatus(HttpStatus.OK)
+    public UserProfileDto getUserProfile(HttpServletRequest request) {
+        //TODO : error 처리
+        return userService.getProfile(request);
     }
 
     @Operation(summary = "닉네임 변경하기", description = "변경하고자하는 닉네임을 Request로 받아서 변경시켜줌")
@@ -47,8 +60,9 @@ public class UserController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PatchMapping("")
-    public void patchNickname(@RequestHeader("auth") String sessionId, @RequestBody String nickname) {
-        // TODO: 3/11/24 닉네임 수정
+    @ResponseStatus(HttpStatus.OK)
+    public void updateNickname(HttpServletRequest request, @RequestBody NicknameUpdateDto nickname) {
+        userService.updateNickname(request, nickname);
     }
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
@@ -66,7 +80,8 @@ public class UserController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"사용자가 올바르지 않습니다.\"}")))
     @DeleteMapping("/{userId}")
-    public void deleteId(@RequestHeader("auth") String sessionId, @PathVariable int userId) {
-        // TODO: 3/11/24 회원 탈퇴
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAccount(HttpServletRequest request, @PathVariable long userId) {
+        userService.deleteAccount(request, userId);
     }
 }

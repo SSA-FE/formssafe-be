@@ -1,6 +1,6 @@
 package com.formssafe.global.auth;
 
-import com.formssafe.domain.user.dto.LoginUser;
+import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.Authority;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,7 +40,7 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken createUserAuthenticationToken(Long userId) {
-        LoginUser loginUser = new LoginUser(userId);
+        LoginUserDto loginUser = new LoginUserDto(userId);
 
         return new UsernamePasswordAuthenticationToken(loginUser, "",
                 List.of(new SimpleGrantedAuthority(Authority.ROLE_USER.name())));
