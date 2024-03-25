@@ -31,6 +31,7 @@ import org.hibernate.type.SqlTypes;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Form extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,7 +85,6 @@ public class Form extends BaseTimeEntity {
     @OneToMany(mappedBy = "form")
     private List<ObjectiveQuestion> objectiveQuestionList = new ArrayList<>();
 
-    @Getter
     @OneToMany(mappedBy = "form")
     private List<RewardRecipient> rewardRecipientList = new ArrayList<>();
 
@@ -106,82 +106,6 @@ public class Form extends BaseTimeEntity {
         this.responseCnt = responseCnt;
         this.isTemp = isTemp;
         this.isDeleted = isDeleted;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public int getExpectTime() {
-        return expectTime;
-    }
-
-    public boolean isEmailVisible() {
-        return isEmailVisible;
-    }
-
-    public LocalDateTime getPrivacyDisposalDate() {
-        return privacyDisposalDate;
-    }
-
-    public FormStatus getStatus() {
-        return status;
-    }
-
-    public int getResponseCnt() {
-        return responseCnt;
-    }
-
-    public boolean isTemp() {
-        return isTemp;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public List<FormTag> getFormTagList() {
-        return formTagList;
-    }
-
-    public Reward getReward() {
-        return reward;
-    }
-
-    public List<DescriptiveQuestion> getDescriptiveQuestionList() {
-        return descriptiveQuestionList;
-    }
-
-    public List<ObjectiveQuestion> getObjectiveQuestionList() {
-        return objectiveQuestionList;
-    }
-
-    public List<RewardRecipient> getRewardRecipientList() {
-        return rewardRecipientList;
     }
 
     @Override

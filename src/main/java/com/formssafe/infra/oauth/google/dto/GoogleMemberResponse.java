@@ -6,19 +6,24 @@ import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.user.entity.Authority;
 import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @JsonNaming(SnakeCaseStrategy.class)
-public record GoogleMemberResponse(String sub,
-                                   String name,
-                                   String givenName,
-                                   String familyName,
-                                   String picture,
-                                   String email,
-                                   Boolean emailVerified,
-                                   String locale) {
+public record GoogleMemberResponse (
+        String sub,
+         String name,
+        String givenName,
+        String familyName,
+        String picture,
+        String email,
+        Boolean emailVerified,
+        String locale
+){
 
-    public User toEntity() {
+    public User toEntity(String refreshToken) {
         return User.builder()
                 .oauthId(new OauthId(sub, OauthServerType.GOOGLE))
                 .nickname(name)
@@ -26,6 +31,7 @@ public record GoogleMemberResponse(String sub,
                 .imageUrl(picture)
                 .authority(Authority.ROLE_USER)
                 .createTime(LocalDateTime.now())
+                .refreshToken(refreshToken)
                 .build();
     }
 }
