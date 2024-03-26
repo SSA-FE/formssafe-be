@@ -29,7 +29,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/**",
                         "/v3/api-docs/**",
-                        "/api-docs/**");
+                        "/api-docs/**",
+                        "/api-docs");
     }
 
     @Bean
