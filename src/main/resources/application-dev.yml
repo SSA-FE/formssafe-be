@@ -3,6 +3,8 @@ server:
     session:
       cookie:
         domain: api.formssafe.com
+        same-site: none
+        secure: true
 
 spring:
   config:
