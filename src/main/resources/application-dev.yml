@@ -1,3 +1,9 @@
+server:
+  servlet:
+    session:
+      cookie:
+        domain: api.formssafe.com
+
 spring:
   config:
     import: /home/ubuntu/web/privacy.yml
@@ -16,5 +22,4 @@ logging:
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %highlight(%-5level) %cyan(%logger{36}.%M) - %msg%n"
   level:
-    com:
-      formssafe: debug
+    root: debug
