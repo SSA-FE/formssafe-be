@@ -50,16 +50,16 @@ public class AuthController {
     @PostMapping("/social/login/{oauthServerType}")
     void login(@PathVariable OauthServerType oauthServerType,
                @RequestBody AuthCode authCode,
-               HttpServletRequest request) {
+               HttpServletRequest request, HttpServletResponse response) {
         User user = oauthService.loginOrSignup(oauthServerType, authCode.code());
-        sessionService.createSession(request, user);
+        sessionService.createSession(request, response, user);
     }
 
     @Operation(summary = "로그아웃", description = "세션에 해당되는 사용자 로그아웃(세션 기록 삭제)")
     @ApiResponse(responseCode = "200", description = "로그아웃 완료")
     @ApiResponse(responseCode = "400", description = "session 미존재")
     @GetMapping("/logout")
-    void logout(HttpServletRequest request) {
-        sessionService.deleteSession(request);
+    void logout(HttpServletRequest request, HttpServletResponse response) {
+        sessionService.deleteSession(request, response);
     }
 }
