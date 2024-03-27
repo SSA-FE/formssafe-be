@@ -6,14 +6,12 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.formssafe.domain.file.dto.FileResponseDto;
+import java.net.URL;
+import java.util.Date;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.net.URL;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +22,7 @@ public class FileService {
 
     private final AmazonS3 amazonS3;
 
-    public FileResponseDto getPresignedUrl(String prefix, String fileName) {
+    public FileResponseDto createPresignedUrl(String prefix, String fileName) {
         if (!prefix.isEmpty()) {
             fileName = createPath(prefix, fileName);
         }
