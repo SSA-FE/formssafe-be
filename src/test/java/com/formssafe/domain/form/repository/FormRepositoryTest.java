@@ -146,8 +146,8 @@ class FormRepositoryTest {
 
         descriptiveQuestion = descriptiveQuestionRepository.save(descriptiveQuestion);
 
-        List<ObjectiveQuestionOption> objectiveQuestionOptions = List.of(new ObjectiveQuestionOption(0, "보기1"),
-                new ObjectiveQuestionOption(1, "보기2"));
+        List<ObjectiveQuestionOption> objectiveQuestionOptions = List.of(new ObjectiveQuestionOption(1L, "보기1"),
+                new ObjectiveQuestionOption(2L, "보기2"));
         ObjectiveQuestion objectiveQuestion = createObjectiveQuestion(form, ObjectiveQuestionType.CHECKBOX, "객관식 질문1",
                 2,
                 objectiveQuestionOptions);

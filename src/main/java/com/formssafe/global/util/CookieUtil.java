@@ -23,12 +23,14 @@ public final class CookieUtil {
                 .findFirst();
     }
 
-    public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
+    public static void addCookie(HttpServletResponse response, String name, String value, String domain) {
         Cookie cookie = new Cookie(name, value);
 
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(maxAge);
+        cookie.setSecure(true);
+        cookie.setDomain(domain);
+        cookie.setMaxAge(-1);
 
         response.addCookie(cookie);
     }

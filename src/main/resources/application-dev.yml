@@ -1,0 +1,27 @@
+server:
+  servlet:
+    session:
+      cookie:
+        domain: api.formssafe.com
+        same-site: none
+        secure: true
+
+spring:
+  config:
+    import: /home/ubuntu/web/privacy.yml
+    activate:
+      on-profile: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    show-sql: true
+
+logging:
+  file:
+    path: ${user.dir}/../log
+    name: ${user.dir}/../log/formssafe
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %highlight(%-5level) %cyan(%logger{36}.%M) - %msg%n"
+  level:
+    root: debug

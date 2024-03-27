@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,13 +24,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
 
     @Bean
-    @Profile(value = {"local", "default"})
+    @Profile(value = {"local", "default", "dev"})
     public WebSecurityCustomizer configure() {
         return web -> web.ignoring()
                 .requestMatchers("/swagger-ui/**",
                         "/swagger-resources/**",
                         "/v3/api-docs/**",
-                        "/api-docs/**");
+                        "/api-docs/**",
+                        "/api-docs");
     }
 
     @Bean
@@ -50,6 +52,8 @@ public class WebSecurityConfig {
         http.addFilterBefore(sessionAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 
+        http.requestCache(RequestCacheConfigurer::disable);
+
         return http.build();
     }
 
@@ -57,7 +61,7 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);
