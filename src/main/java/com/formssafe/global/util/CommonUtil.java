@@ -5,6 +5,7 @@ import java.util.Random;
 
 public class CommonUtil {
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
+    public static final int PAGE_SIZE = 10;
     private static final int NICKNAME_LENGTH = 12;
     public static String generateRandomNickname(){
         Random random = new Random();

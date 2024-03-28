@@ -125,6 +125,7 @@ public class Form extends BaseTimeEntity {
                 ", isTemp=" + isTemp +
                 ", isDeleted=" + isDeleted +
                 ", tagList=" + formTagList +
+                ", reward=" + reward +
                 '}';
     }
 }

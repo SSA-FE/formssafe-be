@@ -60,4 +60,11 @@ public class Reward {
     public int getCount() {
         return count;
     }
+
+    public String toString(){
+        return "Reward:{" +
+                "id = " + id +
+                ", rewardName = " + rewardName +
+                ", rewardCategory = " + rewardCategory;
+    }
 }
