@@ -12,22 +12,18 @@ import com.formssafe.domain.question.entity.Question;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
-import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.exception.type.DataNotFoundException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,26 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class FormService {
     private final FormRepository formRepository;
 
-    public Page<FormListDto> getList(SearchDto params) {
-        log.debug(params.toString());
+    public List<FormListDto> getList(SearchDto searchDto) {
+        log.info(searchDto.toString());
 
-        FormListDto formListResponse1Dto = new FormListDto(1L, "title1", "thumbnail1",
-                new UserAuthorDto(1L, "minji"), 10, 2, 2,
-                LocalDateTime.of(2024, 2, 29, 0, 0), LocalDateTime.of(2024, 3, 1, 0, 0),
-                new RewardListDto("냉장고", "가전제품", 3),
-                new TagCountDto[]{new TagCountDto(1L, "tag1", 3),
-                        new TagCountDto(2L, "tag2", 3)},
-                FormStatus.PROGRESS.displayName());
-
-        FormListDto formListResponse2Dto = new FormListDto(1L, "title2", "thumbnail2",
-                new UserAuthorDto(2L, "hyukjin"), 5, 3, 3,
-                LocalDateTime.of(2024, 2, 29, 0, 0), LocalDateTime.of(2024, 3, 1, 0, 0),
-                new RewardListDto("청소기", "가전제품", 2),
-                new TagCountDto[]{new TagCountDto(2L, "tag2", 3),
-                        new TagCountDto(4L, "tag4", 3)},
-                FormStatus.DONE.displayName());
-
-        return new PageImpl<>(List.of(formListResponse1Dto, formListResponse2Dto));
+        List<Form> result = formRepository.findFormAllFiltered(searchDto);
+        return result.stream()
+                .map(FormListDto::from)
+                .toList();
     }
 
     public FormDetailDto getFormDetail(Long id) {

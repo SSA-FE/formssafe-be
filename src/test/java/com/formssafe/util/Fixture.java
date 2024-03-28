@@ -33,6 +33,7 @@ public final class Fixture {
                         "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1")
                 .authority(Authority.ROLE_USER)
                 .createTime(LocalDateTime.now())
+                .refreshToken("test_refreshToken")
                 .build();
     }
 
