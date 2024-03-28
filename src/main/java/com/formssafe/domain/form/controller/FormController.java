@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Tag(name = "form", description = "설문 CRUD API")
 @RestController
 @RequestMapping("/api/v1/forms")
@@ -45,7 +47,7 @@ public class FormController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    Page<FormListDto> getFormList(@ModelAttribute SearchDto param) {
+    List<FormListDto> getFormList(@ModelAttribute SearchDto param) {
         return formService.getList(param);
     }
 

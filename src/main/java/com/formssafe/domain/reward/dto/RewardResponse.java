@@ -11,6 +11,7 @@ public final class RewardResponse {
                                 @Schema(description = "설문 경품 개수") int count) {
 
         public static RewardListDto from(Reward reward, RewardCategory rewardCategory) {
+            if(reward==null) return null;
             return new RewardListDto(reward.getRewardName(),
                     rewardCategory.getRewardCategoryName(),
                     reward.getCount());
