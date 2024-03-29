@@ -3,6 +3,7 @@ package com.formssafe.domain.reward.entity;
 import com.formssafe.domain.form.entity.Form;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,7 +24,7 @@ public class Reward {
     @Column(nullable = false, unique = true)
     private String rewardName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reward_category_id", nullable = false)
     private RewardCategory rewardCategory;
 

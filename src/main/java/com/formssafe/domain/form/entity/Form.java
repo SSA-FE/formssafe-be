@@ -6,6 +6,7 @@ import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
+import com.formssafe.global.constants.FormConstants;
 import com.formssafe.global.entity.BaseTimeEntity;
 import com.formssafe.global.util.JsonConverter;
 import jakarta.persistence.Column;
@@ -26,6 +27,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -73,6 +75,7 @@ public class Form extends BaseTimeEntity {
 
     private boolean isDeleted;
 
+    @BatchSize(size = FormConstants.PAGE_SIZE)
     @OneToMany(mappedBy = "form")
     private List<FormTag> formTagList = new ArrayList<>();
 

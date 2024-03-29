@@ -1,9 +1,7 @@
 package com.formssafe.domain.form.dto;
 
-import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.service.SortType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -26,17 +24,17 @@ public final class FormParam {
                             @Schema(description = "마지막 formId")
                             Long top) {
         public SortType sortTypeConvertToEnum(String sortType){
-            switch (sortType){
-                case "createDate":
-                    return SortType.CREATE_DATE;
-                case "endDate":
-                    return SortType.END_DATE;
-                case "responseCnt":
-                    return SortType.RESPONSE_CNT;
-                default:
-                    throw new IllegalArgumentException("sortType 입력 오류");
+            if (sortType == null) {
+                return SortType.CREATE_DATE;
             }
+            return switch (sortType) {
+                case "createDate" -> SortType.CREATE_DATE;
+                case "endDate" -> SortType.END_DATE;
+                case "responseCnt" -> SortType.RESPONSE_CNT;
+                default -> throw new IllegalArgumentException("sortType 입력 오류");
+            };
         }
+
         @Override
         public String toString(){
             return "keyword : "+ keyword + ", sort : " + sort + ", category : "+category + ", status : " + status + ", tag : " + tag + ", top : "+ top;

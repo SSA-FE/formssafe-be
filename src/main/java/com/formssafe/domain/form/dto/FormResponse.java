@@ -107,7 +107,7 @@ public final class FormResponse {
         public static FormListDto from(Form form){
             String imageUrl = null;
             if(form.getImageUrl()!=null){
-                imageUrl = JsonConverter.getValueFromKey(form.getImageUrl(), "url");
+                imageUrl = JsonConverter.toList(form.getImageUrl(), String.class).get(0);
             }
 
             RewardListDto rewardListDto = null;

@@ -12,14 +12,12 @@ import com.formssafe.domain.question.entity.Question;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
-import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.exception.type.DataNotFoundException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,8 +25,6 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +37,10 @@ public class FormService {
 
     public List<FormListDto> getList(SearchDto searchDto) {
         log.info(searchDto.toString());
-        return formRepository.findFormAllFiltered(searchDto);
+        List<Form> result = formRepository.findFormAllFiltered(searchDto);
+        return result.stream()
+                .map(FormListDto::from)
+                .toList();
     }
 
     public FormDetailDto getFormDetail(Long id) {
