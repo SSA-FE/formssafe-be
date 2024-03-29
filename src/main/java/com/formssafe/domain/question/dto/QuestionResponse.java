@@ -12,7 +12,7 @@ import java.util.List;
 
 public final class QuestionResponse {
 
-    public record QuestionDetailDto(@Schema(description = "설문 문항 id") Long id,
+    public record QuestionDetailDto(@Schema(description = "설문 문항 id") String id,
                                     @Schema(description = "설문 문항 타입") String type,
                                     @Schema(description = "설문 문항 질문") String title,
                                     @Schema(description = "설문 문항 설명") String description,
@@ -33,7 +33,7 @@ public final class QuestionResponse {
         }
 
         private static QuestionDetailDto fromDescriptiveQuestion(DescriptiveQuestion question) {
-            return new QuestionDetailDto(question.getId(),
+            return new QuestionDetailDto(question.getUuid(),
                     question.getQuestionType().displayName(),
                     question.getTitle(),
                     question.getDetail(),
@@ -43,7 +43,7 @@ public final class QuestionResponse {
         }
 
         private static QuestionDetailDto fromObjectiveQuestion(ObjectiveQuestion question) {
-            return new QuestionDetailDto(question.getId(),
+            return new QuestionDetailDto(question.getUuid(),
                     question.getQuestionType().displayName(),
                     question.getTitle(),
                     question.getDetail(),
