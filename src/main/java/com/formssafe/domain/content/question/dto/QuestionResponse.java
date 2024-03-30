@@ -10,7 +10,7 @@ import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-public final class QuestionResponse {
+public final class QuestionResponse{
 
     public record QuestionDetailDto(@Schema(description = "설문 문항 id") String id,
                                     @Schema(description = "설문 문항 타입") String type,

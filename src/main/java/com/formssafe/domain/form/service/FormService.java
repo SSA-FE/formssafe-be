@@ -1,6 +1,6 @@
 package com.formssafe.domain.form.service;
 
-import com.formssafe.domain.content.dto.ContentResponse.ContentDetailDto;
+import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
@@ -48,7 +48,7 @@ public class FormService {
         UserAuthorDto userAuthorDto = getAuthor(form);
 
         List<TagListDto> tagListDtos = getTagList(form);
-        List<ContentDetailDto> contentDetailDtos = getContentList(form);
+        List<ContentResponseDto> contentDetailDtos = getContentList(form);
         List<UserListDto> rewardRecipientsDtos = Collections.emptyList();
 
         RewardListDto rewardDto = getReward(form);
@@ -107,7 +107,7 @@ public class FormService {
                 .toList();
     }
 
-    private List<ContentDetailDto> getContentList(Form form){
+    private List<ContentResponseDto> getContentList(Form form){
         List<Content> contents = new ArrayList<>();
         contents.addAll(form.getDescriptiveQuestionList());
         contents.addAll(form.getObjectiveQuestionList());
@@ -115,7 +115,7 @@ public class FormService {
         contents.sort(Comparator.comparingInt(Content::getPosition));
 
         return contents.stream()
-                .map(ContentDetailDto::from)
+                .map(ContentResponseDto::from)
                 .toList();
     }
 
