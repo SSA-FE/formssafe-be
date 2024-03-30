@@ -25,25 +25,26 @@ INSERT INTO form_tag (id, form_id, tag_id)
 VALUES (1, 1, 1),
        (2, 1, 2);
 
-INSERT INTO descriptive_question (id, form_id, question_type, title, detail, is_privacy, is_required, position)
-VALUES (1, 1, 'SHORT', '주관식 단답형 질문1', '주관식 단답형 질문 설명1', false, false, 1),
-       (2, 1, 'LONG', '주관식 장문형 질문2', '주관식 장문형 질문 설명2', false, false, 3);
+INSERT INTO descriptive_question (id, uuid, form_id, question_type, title, detail, is_privacy, is_required, position)
+VALUES (1, 'a1f458a7-063d-48a3-b881-a84c948a1378', 1, 'SHORT', '주관식 단답형 질문1', '주관식 단답형 질문 설명1', false, false, 1),
+       (2, 'faae5674-7c0c-4802-9fa4-66437fe495a0', 1, 'LONG', '주관식 장문형 질문2', '주관식 장문형 질문 설명2', false, false, 3);
 
-INSERT INTO objective_question (id, form_id, question_type, title, detail, question_option, is_privacy, is_required,
+INSERT INTO objective_question (id, uuid, form_id, question_type, title, detail, question_option, is_privacy,
+                                is_required,
                                 position)
-VALUES (1, 1, 'SINGLE', '객관식 단일 질문1', '객관식 단일 질문 설명1',
+VALUES (1, '8ca89362-3ba9-4f67-a401-c7a90c03aba8', 1, 'SINGLE', '객관식 단일 질문1', '객관식 단일 질문 설명1',
         json_array(
                 json_object('id', 1, 'detail', '1 - 1'),
                 json_object('id', 2, 'detail', '1 - 2'),
                 json_object('id', 3, 'detail', '1 - 3')),
         false, false, 2),
-       (2, 1, 'CHECKBOX', '객관식 체크박스 질문2', '객관식 체크박스 질문 설명2',
+       (2, '9ede4596-ad8a-4c11-bfc8-b8949636fe91', 1, 'CHECKBOX', '객관식 체크박스 질문2', '객관식 체크박스 질문 설명2',
         json_array(
                 json_object('id', 1, 'detail', '2 - 1'),
                 json_object('id', 2, 'detail', '2 - 2'),
                 json_object('id', 3, 'detail', '2 - 3'))
            , false, false, 4),
-       (3, 1, 'DROPDOWN', '객관식 드롭다운 질문2', '객관식 드롭다운 질문 설명2',
+       (3, '4d89a276-8dd2-4ee9-b8f0-315c22ed4ff9', 1, 'DROPDOWN', '객관식 드롭다운 질문2', '객관식 드롭다운 질문 설명2',
         json_array(
                 json_object('id', 1, 'detail', '3 - 1'),
                 json_object('id', 2, 'detail', '3 - 2'),

@@ -8,15 +8,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
+import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public abstract class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
+
+    @Column(unique = true, updatable = false)
+    protected String uuid;
 
     @ManyToOne
     @JoinColumn(name = "form_id", nullable = false)
@@ -41,39 +47,12 @@ public abstract class Question {
                        boolean isRequired,
                        boolean isPrivacy) {
         this.id = id;
+        this.uuid = UUID.randomUUID().toString();
         this.form = form;
         this.title = title;
         this.detail = detail;
         this.position = position;
         this.isRequired = isRequired;
         this.isPrivacy = isPrivacy;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Form getForm() {
-        return form;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public boolean isRequired() {
-        return isRequired;
-    }
-
-    public boolean isPrivacy() {
-        return isPrivacy;
     }
 }
