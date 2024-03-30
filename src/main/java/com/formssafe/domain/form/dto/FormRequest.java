@@ -1,6 +1,6 @@
 package com.formssafe.domain.form.dto;
 
-import com.formssafe.domain.question.dto.QuestionRequest;
+import com.formssafe.domain.content.question.dto.QuestionRequest;
 import com.formssafe.domain.reward.dto.RewardRequest.RewardCreateDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;

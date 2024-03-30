@@ -1,7 +1,6 @@
 package com.formssafe.domain.form.repository;
 
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
-import com.formssafe.domain.form.dto.FormResponse;
 import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
@@ -13,21 +12,11 @@ import static com.formssafe.domain.tag.entity.QTag.tag;
 import static com.formssafe.domain.user.entity.QUser.user;
 import static com.formssafe.global.util.CommonUtil.PAGE_SIZE;
 
-import com.formssafe.domain.question.dto.QuestionResponse;
-import com.formssafe.domain.tag.dto.TagResponse;
-import com.formssafe.domain.tag.entity.FormTag;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 
 import java.util.List;

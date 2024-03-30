@@ -37,7 +37,7 @@ VALUES (1, '8ca89362-3ba9-4f67-a401-c7a90c03aba8', 1, 'SINGLE', '객관식 단�
                 json_object('id', 1, 'detail', '1 - 1'),
                 json_object('id', 2, 'detail', '1 - 2'),
                 json_object('id', 3, 'detail', '1 - 3')),
-        false, false, 2),
+        false, false, 6),
        (2, '9ede4596-ad8a-4c11-bfc8-b8949636fe91', 1, 'CHECKBOX', '객관식 체크박스 질문2', '객관식 체크박스 질문 설명2',
         json_array(
                 json_object('id', 1, 'detail', '2 - 1'),
@@ -50,6 +50,10 @@ VALUES (1, '8ca89362-3ba9-4f67-a401-c7a90c03aba8', 1, 'SINGLE', '객관식 단�
                 json_object('id', 2, 'detail', '3 - 2'),
                 json_object('id', 3, 'detail', '3 - 3')),
         false, false, 5);
+
+INSERT INTO decoration(id, type, uuid, form_id, detail, position)
+VAlUES (1, 'text', 'b9e48460-ee66-11ee-91e5-39a1c9090735', 1, '여기서부터는 확인용 decoration 입니다.', 2),
+(2, 'text', '21e0b63d-832e-44b5-ba8c-98b8278bb8da',1, '설문조사가 종료되었습니다', 7);
 
 INSERT INTO reward_category (id, reward_category_name)
 VALUES (1, '커피'),

@@ -1,5 +1,7 @@
 package com.formssafe.domain.form.service;
 
+import com.formssafe.domain.content.dto.ContentResponse.ContentDetailDto;
+import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
@@ -7,19 +9,18 @@ import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
-import com.formssafe.domain.question.dto.QuestionResponse.QuestionDetailDto;
-import com.formssafe.domain.question.entity.Question;
+import com.formssafe.domain.content.question.dto.QuestionResponse.QuestionDetailDto;
+import com.formssafe.domain.content.question.entity.Question;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
-import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.exception.type.DataNotFoundException;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,8 +28,6 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,11 +46,11 @@ public class FormService {
     public FormDetailDto getFormDetail(Long id) {
         Form form = getForm(id);
         UserAuthorDto userAuthorDto = getAuthor(form);
+
         List<TagListDto> tagListDtos = getTagList(form);
-
-        List<QuestionDetailDto> questionDetailDtos = getQuestionList(form);
-
+        List<ContentDetailDto> contentDetailDtos = getContentList(form);
         List<UserListDto> rewardRecipientsDtos = Collections.emptyList();
+
         RewardListDto rewardDto = getReward(form);
         if (rewardDto != null) {
             rewardRecipientsDtos = getRewardRecipientList(form);
@@ -59,7 +58,7 @@ public class FormService {
 
         return FormDetailDto.from(form,
                 userAuthorDto,
-                questionDetailDtos,
+                contentDetailDtos,
                 rewardDto,
                 tagListDtos,
                 rewardRecipientsDtos);
@@ -105,6 +104,18 @@ public class FormService {
 
         return questions.stream()
                 .map(QuestionDetailDto::from)
+                .toList();
+    }
+
+    private List<ContentDetailDto> getContentList(Form form){
+        List<Content> contents = new ArrayList<>();
+        contents.addAll(form.getDescriptiveQuestionList());
+        contents.addAll(form.getObjectiveQuestionList());
+        contents.addAll(form.getDecorationList());
+        contents.sort(Comparator.comparingInt(Content::getPosition));
+
+        return contents.stream()
+                .map(ContentDetailDto::from)
                 .toList();
     }
 
