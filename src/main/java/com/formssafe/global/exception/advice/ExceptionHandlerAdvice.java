@@ -1,6 +1,7 @@
 package com.formssafe.global.exception.advice;
 
 import com.formssafe.global.exception.response.ExceptionResponse;
+import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
 import com.formssafe.global.exception.type.SessionNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +12,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(basePackages = {
         "com.formssafe.domain.auth.controller",
-        "com.formssafe.domain.oauth.controller",
         "com.formssafe.domain.form.controller",
+        "com.formssafe.domain.user.controller",
+        "com.formssafe.domain.file.controller",
+        "com.formssafe.domain.activity.controller",
+        "com.formssafe.domain.result.controller",
+        "com.formssafe.domain.submission.controller",
 })
 @Slf4j
 public class ExceptionHandlerAdvice {
@@ -29,5 +34,19 @@ public class ExceptionHandlerAdvice {
         log.error("Error: ", e);
         return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.NOT_FOUND.value(), e.getMessage()),
                 HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException e) {
+        log.error("Error: ", e);
+        return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.BAD_REQUEST.value(), e.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleException(Exception e) {
+        log.error("Error: ", e);
+        return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
