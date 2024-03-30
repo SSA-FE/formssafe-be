@@ -26,6 +26,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -106,6 +107,10 @@ public class Form extends BaseTimeEntity {
         this.responseCnt = responseCnt;
         this.isTemp = isTemp;
         this.isDeleted = isDeleted;
+    }
+
+    public void changeStatus(@NonNull FormStatus newStatus) {
+        this.status = newStatus;
     }
 
     @Override
