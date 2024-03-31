@@ -1,4 +1,4 @@
-package com.formssafe.domain.question.entity;
+package com.formssafe.domain.content.question.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

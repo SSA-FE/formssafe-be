@@ -1,12 +1,11 @@
 package com.formssafe.domain.form.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.question.dto.QuestionResponse.QuestionDetailDto;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
-import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.user.dto.UserResponse;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
@@ -22,7 +21,7 @@ public final class FormResponse {
 
     @Schema(description = "설문 상세 조회 응답 DTO")
     public record FormDetailDto(@Schema(description = "설문 id")
-                                    Long id,
+                                Long id,
                                 @Schema(description = "설문 제목")
                                 String title,
                                 @Schema(description = "설문 설명")
@@ -42,9 +41,9 @@ public final class FormResponse {
                                 @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각")
                                 LocalDateTime privacyDisposalDate,
                                 @Schema(description = "설문 문항 목록")
-                                List<QuestionDetailDto> questions,
+                                List<ContentResponseDto> contents,
                                 @Schema(description = "설문 경품")
-                                    @JsonInclude(JsonInclude.Include.NON_NULL)
+                                @JsonInclude(JsonInclude.Include.NON_NULL)
                                 RewardListDto reward,
                                 @Schema(description = "설문 태그 목록")
                                 List<TagListDto> tags,
@@ -57,7 +56,7 @@ public final class FormResponse {
 
         public static FormDetailDto from(Form form,
                                          UserAuthorDto authorDto,
-                                         List<QuestionDetailDto> questions,
+                                         List<ContentResponseDto> contents,
                                          RewardListDto reward,
                                          List<TagListDto> tags,
                                          List<UserListDto> recipients) {
@@ -71,7 +70,7 @@ public final class FormResponse {
                     form.getExpectTime(),
                     form.isEmailVisible(),
                     form.getPrivacyDisposalDate(),
-                    questions,
+                    contents,
                     reward,
                     tags,
                     form.getStatus().displayName(),
@@ -90,8 +89,8 @@ public final class FormResponse {
                               UserResponse.UserAuthorDto author,
                               @Schema(description = "설문 참여 예상 시간")
                               int expectTime,
-//                              @Schema(description = "설문 문항 개수")
-//                              int questionCnt,
+                              @Schema(description = "설문 문항 개수")
+                              int questionCnt,
                               @Schema(description = "설문 응답 개수")
                               int responseCnt,
                               @Schema(description = "설문 시작 시각")
@@ -120,7 +119,7 @@ public final class FormResponse {
                 tagCountDtos = TagCountDto.from(form.getFormTagList());
             }
             return new FormListDto(form.getId(), form.getTitle(), imageUrl,
-                   UserAuthorDto.from(form.getUser()), form.getExpectTime(), form.getResponseCnt(),
+                   UserAuthorDto.from(form.getUser()), form.getExpectTime(), form.getQuestionCnt(),form.getResponseCnt(),
                     form.getStartDate(), form.getEndDate(), rewardListDto, tagCountDtos, form.getStatus().displayName());
         }
     }

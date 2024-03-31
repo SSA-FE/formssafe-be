@@ -1,5 +1,6 @@
-package com.formssafe.domain.question.entity;
+package com.formssafe.domain.content.question.entity;
 
+import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.form.entity.Form;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -16,24 +17,9 @@ import lombok.NoArgsConstructor;
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public abstract class Question {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
-
-    @Column(unique = true, updatable = false)
-    protected String uuid;
-
-    @ManyToOne
-    @JoinColumn(name = "form_id", nullable = false)
-    protected Form form;
-
+public abstract class Question extends Content {
     @Column(nullable = false)
     protected String title;
-
-    protected String detail;
-
-    protected int position;
 
     protected boolean isRequired;
 
@@ -46,12 +32,8 @@ public abstract class Question {
                        int position,
                        boolean isRequired,
                        boolean isPrivacy) {
-        this.id = id;
-        this.uuid = UUID.randomUUID().toString();
-        this.form = form;
+        super(id, form, detail, position);
         this.title = title;
-        this.detail = detail;
-        this.position = position;
         this.isRequired = isRequired;
         this.isPrivacy = isPrivacy;
     }
