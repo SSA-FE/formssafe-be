@@ -5,16 +5,12 @@ spring:
       on-profile: local
   jpa:
     hibernate:
-<<<<<<< HEAD
       ddl-auto: create
     defer-datasource-initialization: true
     show-sql: true
   sql:
     init:
       mode: always
-=======
-      ddl-auto: update
->>>>>>> a72edcc133cd75210271c57c35ad92247a234072
 
 logging:
   file:
