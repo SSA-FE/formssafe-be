@@ -23,9 +23,14 @@ VALUES (1, '설문 조사 제목1', '설문 설명 1', '[
         0, 'NOT_STARTED', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00');
 
 INSERT INTO form_batch_start (id, service_time, form_id)
-VALUES (1, '2024-03-31T15:14:00', 2),
-       (2, '2024-03-31T15:15:00', 3),
-       (3, '2024-03-31T15:15:00', 4);
+VALUES (1, '2024-03-31T16:49:00', 2),
+       (2, '2024-03-31T16:50:00', 3),
+       (3, '2024-03-31T16:50:00', 4);
+
+INSERT INTO form_batch_end (id, service_time, form_id)
+VALUES (1, '2024-03-31T16:50:00', 2),
+       (2, '2024-03-31T16:51:00', 3),
+       (3, '2024-03-31T16:51:00', 4);
 
 INSERT INTO tag (id, tag_name, count)
 VALUES (1, 'tag1', 1),

@@ -71,6 +71,24 @@ public final class Fixture {
                 .build();
     }
 
+    public static Form createForm(User author, String title, String detail, LocalDateTime startTime,
+                                  FormStatus status) {
+        return Form.builder()
+                .user(author)
+                .title(title)
+                .imageUrl(new ArrayList<>())
+                .detail(detail)
+                .startDate(startTime)
+                .endDate(startTime.plusDays(2))
+                .expectTime(10)
+                .isEmailVisible(false)
+                .privacyDisposalDate(null)
+                .status(status)
+                .isTemp(false)
+                .isDeleted(false)
+                .build();
+    }
+
     public static Form createFormWithImages(User author, String title, String detail, List<String> images) {
         return Form.builder()
                 .user(author)

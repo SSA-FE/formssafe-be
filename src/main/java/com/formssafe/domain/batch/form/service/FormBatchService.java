@@ -1,6 +1,8 @@
 package com.formssafe.domain.batch.form.service;
 
+import com.formssafe.domain.batch.form.entity.FormBatchEnd;
 import com.formssafe.domain.batch.form.entity.FormBatchStart;
+import com.formssafe.domain.batch.form.repository.FormBatchEndRepository;
 import com.formssafe.domain.batch.form.repository.FormBatchStartRepository;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class FormBatchService {
     private final FormBatchStartRepository formBatchStartRepository;
+    private final FormBatchEndRepository formBatchEndRepository;
 
     @Transactional
     public void startForm(LocalDateTime now) {
@@ -32,5 +35,21 @@ public class FormBatchService {
         }
 
         log.info("Auto start forms end.");
+    }
+
+    @Transactional
+    public void endForm(LocalDateTime now) {
+        now = now.withSecond(0).withNano(0);
+        List<FormBatchEnd> formBatchEndList = formBatchEndRepository.findByServiceTime(now);
+        log.info("Auto end forms start: {}", formBatchEndList.stream()
+                .map(FormBatchEnd::getForm)
+                .map(Form::getId).toList());
+
+        for (FormBatchEnd formBatchEnd : formBatchEndList) {
+            Form startForm = formBatchEnd.getForm();
+            startForm.changeStatus(FormStatus.DONE);
+        }
+
+        log.info("Auto end forms end.");
     }
 }

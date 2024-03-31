@@ -17,4 +17,9 @@ public class ScheduledJobConfiguration {
     public void scheduledStartForm() {
         formBatchService.startForm(LocalDateTime.now());
     }
+
+    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul")
+    public void scheduledEndForm() {
+        formBatchService.endForm(LocalDateTime.now());
+    }
 }
