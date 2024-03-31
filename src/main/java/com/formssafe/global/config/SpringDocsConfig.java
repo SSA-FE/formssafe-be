@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         servers = {
-                @Server(url = "http://localhost:8080", description = "local server URL"),
-                @Server(url = "https://api.formssafe.com", description = "dev server URL")
+                @Server(url = "https://api.formssafe.com", description = "dev server URL"),
+                @Server(url = "http://localhost:8080", description = "local server URL")
         }
 )
 public class SpringDocsConfig {

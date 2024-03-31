@@ -2,7 +2,7 @@ server:
   servlet:
     session:
       cookie:
-        domain: api.formssafe.com
+        domain: formssafe.com
         same-site: none
         secure: true
 
