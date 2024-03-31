@@ -7,6 +7,7 @@ import com.formssafe.domain.batch.form.repository.FormBatchStartRepository;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,26 +23,49 @@ public class FormBatchService {
     private final FormBatchEndRepository formBatchEndRepository;
 
     @Transactional
-    public void startForm(LocalDateTime now) {
+    public List<Form> startForm(LocalDateTime now) {
+        log.info("Auto start forms start");
+
         now = now.withSecond(0).withNano(0);
         List<FormBatchStart> formBatchStartList = formBatchStartRepository.findByServiceTime(now);
-        log.info("Auto start forms start: {}", formBatchStartList.stream()
+        log.info("start forms: {}", formBatchStartList.stream()
                 .map(FormBatchStart::getForm)
                 .map(Form::getId).toList());
 
+        List<Form> startedForms = new ArrayList<>();
         for (FormBatchStart formBatchStart : formBatchStartList) {
             Form startForm = formBatchStart.getForm();
             startForm.changeStatus(FormStatus.PROGRESS);
+            startedForms.add(startForm);
         }
-
         log.info("Auto start forms end.");
+
+        return startedForms;
+    }
+
+    @Transactional
+    public void registerEndForm(List<Form> startedForms) {
+        log.info("Register form to form end batch table: {}", startedForms.stream()
+                .map(Form::getId).toList());
+
+        List<FormBatchEnd> endForms = startedForms.stream()
+                .map(form -> FormBatchEnd.builder()
+                        .serviceTime(form.getEndDate())
+                        .form(form)
+                        .build())
+                .toList();
+
+        formBatchEndRepository.saveAll(endForms);
+        log.info("Register form to form end batch table end");
     }
 
     @Transactional
     public void endForm(LocalDateTime now) {
+        log.info("Auto end forms start");
+
         now = now.withSecond(0).withNano(0);
         List<FormBatchEnd> formBatchEndList = formBatchEndRepository.findByServiceTime(now);
-        log.info("Auto end forms start: {}", formBatchEndList.stream()
+        log.info("end forms: {}", formBatchEndList.stream()
                 .map(FormBatchEnd::getForm)
                 .map(Form::getId).toList());
 
