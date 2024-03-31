@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,11 @@ public class FormBatchStart {
 
     @OneToOne
     private Form form;
+
+    @Builder
+    private FormBatchStart(Long id, LocalDateTime serviceTime, Form form) {
+        this.id = id;
+        this.serviceTime = serviceTime;
+        this.form = form;
+    }
 }

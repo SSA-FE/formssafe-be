@@ -12,6 +12,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,7 +39,7 @@ public class Form extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -77,7 +78,7 @@ public class Form extends BaseTimeEntity {
     @OneToMany(mappedBy = "form")
     private List<FormTag> formTagList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "form")
+    @OneToOne(mappedBy = "form", fetch = FetchType.LAZY)
     private Reward reward;
 
     @OneToMany(mappedBy = "form")
