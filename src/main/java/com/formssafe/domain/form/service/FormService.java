@@ -38,7 +38,7 @@ public class FormService {
 
     public List<FormListDto> getList(SearchDto searchDto) {
         log.info(searchDto.toString());
-        List<Form> result = formRepository.findFormAllFiltered(searchDto);
+        List<Form> result = formRepository.findFormWithFiltered(searchDto);
         return result.stream()
                 .map(FormListDto::from)
                 .toList();

@@ -59,7 +59,7 @@ class FormRepositoryCustomImplTest {
         //given
         SearchDto searchDto = new SearchDto(keyword, null, null, null, null, null);
         //when
-        List<Form> formAllFiltered = formRepository.findFormAllFiltered(searchDto);
+        List<Form> formAllFiltered = formRepository.findFormWithFiltered(searchDto);
         //then
         for (Form f : formAllFiltered) {
             assertThat(f.getTitle().contains(keyword) || f.getDetail().contains(keyword)).isTrue();
@@ -72,7 +72,7 @@ class FormRepositoryCustomImplTest {
         //given
         SearchDto searchDto = new SearchDto(null, null, null, status.displayName(), null, null);
         //when
-        List<Form> formAllFiltered = formRepository.findFormAllFiltered(searchDto);
+        List<Form> formAllFiltered = formRepository.findFormWithFiltered(searchDto);
         //then
         for (Form f : formAllFiltered) {
             assertThat(f.getStatus()).isEqualTo(status);
@@ -85,7 +85,7 @@ class FormRepositoryCustomImplTest {
         //given
         SearchDto searchDto = new SearchDto(null, null, null, null, tagList, null);
         //when
-        List<Form> result = formRepository.findFormAllFiltered(searchDto);
+        List<Form> result = formRepository.findFormWithFiltered(searchDto);
         //then
         for (Form f : result) {
             assertThat(f.getFormTagList().stream()
@@ -102,7 +102,7 @@ class FormRepositoryCustomImplTest {
         //given
         SearchDto searchDto = new SearchDto(null, null, categoryList, null, null, null);
         //when
-        List<Form> result = formRepository.findFormAllFiltered(searchDto);
+        List<Form> result = formRepository.findFormWithFiltered(searchDto);
         //then
         for (Form f : result) {
             assertThat(f.getReward().getRewardCategory().getRewardCategoryName()).isIn(categoryList);
@@ -119,7 +119,7 @@ class FormRepositoryCustomImplTest {
             expected.add(i);
         }
         //when
-        List<Form> result = formRepository.findFormAllFiltered(searchDto);
+        List<Form> result = formRepository.findFormWithFiltered(searchDto);
         //then
         assertThat(result).hasSize(PAGE_SIZE)
                 .extracting("id")

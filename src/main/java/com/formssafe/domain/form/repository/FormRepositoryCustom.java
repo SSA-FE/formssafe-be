@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FormRepositoryCustom {
 
-    List<Form> findFormAllFiltered(SearchDto searchDto);
+    List<Form> findFormWithFiltered(SearchDto searchDto);
 }
