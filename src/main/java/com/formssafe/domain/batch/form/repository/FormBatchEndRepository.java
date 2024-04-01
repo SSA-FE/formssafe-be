@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface FormBatchEndRepository extends JpaRepository<FormBatchEnd, Long> {
 
@@ -14,5 +15,5 @@ public interface FormBatchEndRepository extends JpaRepository<FormBatchEnd, Long
                 LEFT JOIN FETCH f.reward
             where fbs.serviceTime = :time
             """)
-    List<FormBatchEnd> findByServiceTime(LocalDateTime time);
+    List<FormBatchEnd> findByServiceTime(@Param("time") LocalDateTime time);
 }
