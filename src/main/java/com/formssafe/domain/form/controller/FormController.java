@@ -47,6 +47,7 @@ public class FormController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
     List<FormListDto> getFormList(@ModelAttribute SearchDto param) {
         return formService.getList(param);
     }

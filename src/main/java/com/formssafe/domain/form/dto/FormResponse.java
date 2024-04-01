@@ -49,6 +49,8 @@ public final class FormResponse {
                                 List<TagListDto> tags,
                                 @Schema(description = "설문 상태")
                                 String status,
+                                @Schema(description = "설문 질문 개수")
+                                int questionCnt,
                                 @Schema(description = "설문 응답 개수")
                                 int responseCnt,
                                 @Schema(description = "설문 상태가 rewarded인 경우, 경품에 추첨된 인원 목록")
@@ -74,6 +76,7 @@ public final class FormResponse {
                     reward,
                     tags,
                     form.getStatus().displayName(),
+                    form.getQuestionCnt(),
                     form.getResponseCnt(),
                     recipients);
         }
