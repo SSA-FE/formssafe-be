@@ -24,7 +24,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Form> findFormAllFiltered(SearchDto searchDto) {
+    public List<Form> findFormWithFiltered(SearchDto searchDto) {
         OrderSpecifier<?> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
 
         return jpaQueryFactory.select(form)
@@ -58,7 +58,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
     }
 
     private BooleanExpression matchStatus(String status) {
-        return status != null ? form.status.eq(FormStatus.convertor(status)) : null;
+        return status != null ? form.status.eq(FormStatus.from(status)) : null;
     }
 
     private BooleanExpression containsTag(List<String> tags) {
