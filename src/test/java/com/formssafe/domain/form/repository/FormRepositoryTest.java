@@ -166,6 +166,6 @@ class FormRepositoryTest {
                 .hasSize(1);
         assertThat(JsonConverter.toList(formResult.getObjectiveQuestionList().get(0).getQuestionOption(),
                 ObjectiveQuestionOption.class))
-                .isEqualTo(objectiveQuestionOptions);
+                .containsExactlyElementsOf(objectiveQuestionOptions);
     }
 }
