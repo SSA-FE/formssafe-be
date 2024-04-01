@@ -1,4 +1,4 @@
-package com.formssafe.domain.question.dto;
+package com.formssafe.domain.content.question.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Arrays;

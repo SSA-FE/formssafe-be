@@ -1,33 +1,23 @@
 package com.formssafe.domain.form.entity;
 
-import com.formssafe.domain.question.entity.DescriptiveQuestion;
-import com.formssafe.domain.question.entity.ObjectiveQuestion;
+import com.formssafe.domain.content.decoration.entity.Decoration;
+import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
+import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
+import com.formssafe.global.constants.FormConstants;
 import com.formssafe.global.entity.BaseTimeEntity;
 import com.formssafe.global.util.JsonConverter;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+
+import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -69,12 +59,15 @@ public class Form extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private FormStatus status;
 
+    private int questionCnt;
+
     private int responseCnt;
 
     private boolean isTemp;
 
     private boolean isDeleted;
 
+    @BatchSize(size = FormConstants.PAGE_SIZE)
     @OneToMany(mappedBy = "form")
     private List<FormTag> formTagList = new ArrayList<>();
 
@@ -88,12 +81,15 @@ public class Form extends BaseTimeEntity {
     private List<ObjectiveQuestion> objectiveQuestionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "form")
+    List<Decoration> decorationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "form")
     private List<RewardRecipient> rewardRecipientList = new ArrayList<>();
 
     @Builder
     private Form(Long id, User user, String title, String detail, List<String> imageUrl, LocalDateTime startDate,
                  LocalDateTime endDate, int expectTime, boolean isEmailVisible, LocalDateTime privacyDisposalDate,
-                 FormStatus status, int responseCnt, boolean isTemp, boolean isDeleted) {
+                 FormStatus status, int questionCnt, int responseCnt, boolean isTemp, boolean isDeleted) {
         this.id = id;
         this.user = user;
         this.title = title;
@@ -105,6 +101,7 @@ public class Form extends BaseTimeEntity {
         this.isEmailVisible = isEmailVisible;
         this.privacyDisposalDate = privacyDisposalDate;
         this.status = status;
+        this.questionCnt = questionCnt;
         this.responseCnt = responseCnt;
         this.isTemp = isTemp;
         this.isDeleted = isDeleted;
@@ -131,6 +128,7 @@ public class Form extends BaseTimeEntity {
                 ", isTemp=" + isTemp +
                 ", isDeleted=" + isDeleted +
                 ", tagList=" + formTagList +
+                ", reward=" + reward +
                 '}';
     }
 }

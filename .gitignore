@@ -9,6 +9,7 @@
 src/main/resources/privacy.yml
 src/main/resources/application-user.yml
 src/test/resources/privacy.yml
+**/generated
 log/**
 src/main/java/com/formssafe/domain/test
 src/http

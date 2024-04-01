@@ -44,4 +44,7 @@ public class FormTag {
     public Tag getTag() {
         return tag;
     }
+    public String toString(){
+        return "Form id : " + id;
+    }
 }
