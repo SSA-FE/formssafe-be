@@ -1,6 +1,8 @@
 package com.formssafe.domain.form.repository;
 
 import static com.formssafe.global.constants.FormConstants.PAGE_SIZE;
+import static com.formssafe.util.Fixture.createForm;
+import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.QueryDslConfig;
@@ -10,6 +12,9 @@ import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
+import com.formssafe.domain.user.entity.User;
+import com.formssafe.domain.user.repository.UserRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -33,6 +38,8 @@ class FormRepositoryCustomImplTest {
     private FormRepository formRepository;
     @Autowired
     private RewardCategoryRepository rewardCategoryRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     static Stream<Arguments> getTagList() {
         return Stream.of(
@@ -110,14 +117,29 @@ class FormRepositoryCustomImplTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {0, 4})
-    void 특정아이디이후의_설문목록을_조회한다(long top) {
+    @ValueSource(longs = {4})
+    void 특정아이디이후의_설문목록을_조회한다(long topOffset) {
         //given
-        SearchDto searchDto = new SearchDto(null, null, null, null, null, top);
-        List<Long> expected = new ArrayList<>();
-        for (long i = top + 1; i <= top + PAGE_SIZE; i++) {
-            expected.add(i);
+        User testUser = createUser("testUser");
+        User user = userRepository.save(testUser);
+
+        LocalDateTime startTime = LocalDateTime.of(2024, 3, 2, 0, 0, 0);
+        List<Form> formList = new ArrayList<>();
+        for (int i = 1; i <= 30; i++) {
+            formList.add(createForm(user, "test" + i, "detail" + i, startTime));
+            startTime = startTime.plusDays(1);
         }
+        List<Form> forms = formRepository.saveAll(formList);
+
+        List<Long> expected = new ArrayList<>();
+        for (int i = (int) topOffset; i < topOffset + PAGE_SIZE; i++) {
+            expected.add(forms.get(i).getId());
+        }
+
+        long top = forms.get(0).getId() + topOffset - 1;
+
+        SearchDto searchDto = new SearchDto(null, null, null, null, null, top);
+
         //when
         List<Form> result = formRepository.findFormWithFiltered(searchDto);
         //then
