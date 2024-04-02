@@ -44,6 +44,24 @@ public class FormBatchService {
     }
 
     @Transactional
+    public void registerStartFormManually(Form form) {
+        FormBatchStart formBatchStart = FormBatchStart.builder()
+                .form(form)
+                .serviceTime(form.getStartDate())
+                .build();
+        formBatchStartRepository.save(formBatchStart);
+    }
+
+    @Transactional
+    public void registerEndFormManually(Form form) {
+        FormBatchEnd formBatchEnd = FormBatchEnd.builder()
+                .form(form)
+                .serviceTime(form.getStartDate())
+                .build();
+        formBatchEndRepository.save(formBatchEnd);
+    }
+
+    @Transactional
     public void registerEndForm(List<Form> startedForms) {
         log.info("Register form to form end batch table: {}", startedForms.stream()
                 .map(Form::getId).toList());

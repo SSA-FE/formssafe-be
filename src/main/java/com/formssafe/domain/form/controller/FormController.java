@@ -4,7 +4,9 @@ import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.dto.FormRequest;
 import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
 import com.formssafe.domain.form.dto.FormResponse.FormListDto;
+import com.formssafe.domain.form.service.FormCreateService;
 import com.formssafe.domain.form.service.FormService;
+import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,11 +15,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,16 +33,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @Tag(name = "form", description = "설문 CRUD API")
 @RestController
 @RequestMapping("/api/v1/forms")
 @Slf4j
 @RequiredArgsConstructor
 public class FormController {
-
     private final FormService formService;
+    private final FormCreateService formCreateService;
 
     @Operation(summary = "설문 전체 조회", description = "모든 설문을 목록으로 조회한다.")
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
@@ -74,8 +75,9 @@ public class FormController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    void createForm(@Valid @RequestBody FormRequest.FormCreateDto request) {
-        formService.create(request);
+    void createForm(@Valid @RequestBody FormRequest.FormCreateDto request,
+                    @AuthenticationPrincipal LoginUserDto loginUser) {
+        formCreateService.run(request, loginUser);
     }
 
     @Operation(summary = "설문 수동 마감", description = "해당 id의 설문을 수동으로 마감한다.")
