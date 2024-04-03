@@ -56,7 +56,7 @@ public class FormBatchService {
     public void registerEndFormManually(Form form) {
         FormBatchEnd formBatchEnd = FormBatchEnd.builder()
                 .form(form)
-                .serviceTime(form.getStartDate())
+                .serviceTime(form.getEndDate())
                 .build();
         formBatchEndRepository.save(formBatchEnd);
     }

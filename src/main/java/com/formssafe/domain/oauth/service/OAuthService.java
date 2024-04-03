@@ -5,13 +5,11 @@ import com.formssafe.domain.oauth.authcode.AuthCodeRequestUrlProviderComposite;
 import com.formssafe.domain.oauth.client.OauthMemberClientComposite;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.global.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.formssafe.global.util.CommonUtil;
-
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -39,9 +37,9 @@ public class OAuthService {
 
         oauthUser.updateNickname(nickname);
 
-        User user = userRepository.findByOauthId(oauthUser.oauthId())
+        User user = userRepository.findByOauthId(oauthUser.getOauthId())
                 .orElseGet(() -> userRepository.save(oauthUser));
-        log.debug("logined member: {} {}", user.id(), user.nickname());
+        log.debug("logined member: {} {}", user.getId(), user.getNickname());
 
         return user;
     }

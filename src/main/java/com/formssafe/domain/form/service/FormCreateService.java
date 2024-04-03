@@ -35,23 +35,14 @@ public class FormCreateService {
     private final FormBatchService formBatchService;
 
     @Transactional
-    public void run(FormCreateDto request, LoginUserDto loginUser) {
+    public void execute(FormCreateDto request, LoginUserDto loginUser) {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다.: " + loginUser.id()));
 
-        validate(request);
-
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startDate = request.startDate();
-        if (startDate == null) {
-            startDate = LocalDateTime.now();
-        }
-        FormStatus status = startDate.isBefore(now) ? FormStatus.PROGRESS : FormStatus.NOT_STARTED;
         int questionCnt = getQuestionCnt(request.contents());
+        validate(request, questionCnt);
 
-        Form form = request.toForm(user, questionCnt, startDate, status);
-        form = formRepository.save(form);
-
+        Form form = createForm(request, user, questionCnt);
         contentService.createContents(request.contents(), form);
         tagService.createOrUpdateTags(request.tags(), form);
         if (request.reward() != null) {
@@ -65,11 +56,28 @@ public class FormCreateService {
                 formBatchService.registerEndFormManually(form);
             }
         }
-
-        // TODO: 4/2/24 privacy 배치 테이블에 저장
     }
 
-    private void validate(FormCreateDto request) {
+    private Form createForm(FormCreateDto request, User user, int questionCnt) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDate = request.startDate();
+        if (startDate == null) {
+            startDate = now;
+        }
+        FormStatus status = startDate.isAfter(now) ? FormStatus.NOT_STARTED : FormStatus.PROGRESS;
+
+        Form form = request.toForm(user, questionCnt, startDate, status);
+        form = formRepository.save(form);
+        return form;
+    }
+
+    private int getQuestionCnt(List<ContentCreateDto> questions) {
+        return (int) questions.stream()
+                .filter(q -> !DecorationType.exists(q.type()))
+                .count();
+    }
+
+    private void validate(FormCreateDto request, int questionCnt) {
         if (request.endDate().isBefore(request.startDate())) {
             throw new BadRequestException("시작 시각은 마감 시각 전 시각이어야 합니다.");
         }
@@ -77,11 +85,9 @@ public class FormCreateService {
         if (request.privacyDisposalDate() != null && request.endDate().isBefore(request.privacyDisposalDate())) {
             throw new BadRequestException("개인 정보 폐기 시각은 마감 시각 후여야 합니다.");
         }
-    }
 
-    private int getQuestionCnt(List<ContentCreateDto> questions) {
-        return (int) questions.stream()
-                .filter(q -> !DecorationType.exists(q.type()))
-                .count();
+        if (!request.isTemp() && questionCnt == 0) {
+            throw new BadRequestException("설문에는 하나 이상의 설문 문항이 포함되어야 합니다.");
+        }
     }
 }

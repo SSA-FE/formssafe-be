@@ -77,7 +77,7 @@ public class FormController {
     @ResponseStatus(HttpStatus.OK)
     void createForm(@Valid @RequestBody FormRequest.FormCreateDto request,
                     @AuthenticationPrincipal LoginUserDto loginUser) {
-        formCreateService.run(request, loginUser);
+        formCreateService.execute(request, loginUser);
     }
 
     @Operation(summary = "설문 수동 마감", description = "해당 id의 설문을 수동으로 마감한다.")

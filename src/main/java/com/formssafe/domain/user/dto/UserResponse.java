@@ -15,7 +15,7 @@ public class UserResponse {
             @Schema(description = "이메일 주소") String email) {
 
         public static UserProfileDto convertEntityToDto(User user){
-            return new UserProfileDto(user.id(), user.nickname(), user.imageUrl(),user.email());
+            return new UserProfileDto(user.getId(), user.getNickname(), user.getImageUrl(), user.getEmail());
         }
     }
 
@@ -24,7 +24,7 @@ public class UserResponse {
             @Schema(description = "사용자 별명") String nickname) {
 
         public static UserListDto from(User user) {
-            return new UserListDto(user.id(), user.nickname());
+            return new UserListDto(user.getId(), user.getNickname());
         }
     }
 
@@ -33,7 +33,7 @@ public class UserResponse {
             @Schema(description = "사용자 별명") String nickname) {
 
         public static UserAuthorDto from(User user) {
-            return new UserAuthorDto(user.id(), user.nickname());
+            return new UserAuthorDto(user.getId(), user.getNickname());
         }
     }
 }
