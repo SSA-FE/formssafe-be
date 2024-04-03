@@ -40,10 +40,11 @@ public class FormCreateService {
                 .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다.: " + loginUser.id()));
 
         LocalDateTime now = LocalDateTime.now();
+        log.info("now: {}, startDate: {}, endDate: {}", now, request.startDate(), request.endDate());
         int questionCnt = getQuestionCnt(request.contents());
         validate(request, questionCnt, now);
 
-        Form form = createForm(request, user, questionCnt);
+        Form form = createForm(request, user, questionCnt, now);
         contentService.createContents(request.contents(), form);
         tagService.createOrUpdateTags(request.tags(), form);
         if (request.reward() != null) {
@@ -59,8 +60,7 @@ public class FormCreateService {
         }
     }
 
-    private Form createForm(FormCreateDto request, User user, int questionCnt) {
-        LocalDateTime now = LocalDateTime.now();
+    private Form createForm(FormCreateDto request, User user, int questionCnt, LocalDateTime now) {
         LocalDateTime startDate = request.startDate();
         if (startDate == null) {
             startDate = now;
