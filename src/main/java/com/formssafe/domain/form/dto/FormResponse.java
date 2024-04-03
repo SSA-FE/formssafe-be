@@ -106,9 +106,9 @@ public final class FormResponse {
                               List<TagCountDto> tags,
                               @Schema(description = "설문 상태")
                               String status) {
-        public static FormListDto from(Form form){
+        public static FormListDto from(Form form) {
             String imageUrl = null;
-            if(form.getImageUrl()!=null){
+            if (!form.getImageUrl().equals("null")) {
                 imageUrl = JsonConverter.toList(form.getImageUrl(), String.class).get(0);
             }
 
@@ -122,8 +122,10 @@ public final class FormResponse {
                 tagCountDtos = TagCountDto.from(form.getFormTagList());
             }
             return new FormListDto(form.getId(), form.getTitle(), imageUrl,
-                   UserAuthorDto.from(form.getUser()), form.getExpectTime(), form.getQuestionCnt(),form.getResponseCnt(),
-                    form.getStartDate(), form.getEndDate(), rewardListDto, tagCountDtos, form.getStatus().displayName());
+                    UserAuthorDto.from(form.getUser()), form.getExpectTime(), form.getQuestionCnt(),
+                    form.getResponseCnt(),
+                    form.getStartDate(), form.getEndDate(), rewardListDto, tagCountDtos,
+                    form.getStatus().displayName());
         }
     }
 }
