@@ -4,7 +4,7 @@ import static com.formssafe.util.Fixture.createForm;
 import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.formssafe.config.QueryDslConfig;
+import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.batch.form.entity.FormBatchStart;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.repository.FormRepository;
@@ -14,14 +14,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(QueryDslConfig.class)
-class FormBatchStartRepositoryTest {
+class FormBatchStartRepositoryTest extends IntegrationTestConfig {
     @Autowired
     private FormBatchStartRepository formBatchStartRepository;
     @Autowired

@@ -5,6 +5,7 @@ import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.batch.form.entity.FormBatchEnd;
 import com.formssafe.domain.batch.form.entity.FormBatchStart;
 import com.formssafe.domain.batch.form.repository.FormBatchEndRepository;
@@ -18,6 +19,7 @@ import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.reward.repository.RewardRepository;
+import com.formssafe.domain.tag.dto.TagRequest.TagUpdateDto;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.tag.repository.TagRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
@@ -29,14 +31,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Transactional
-class FormCreateServiceTest {
+class FormCreateServiceTest extends IntegrationTestConfig {
     @Autowired
     private FormCreateService formCreateService;
     @Autowired
@@ -72,7 +68,7 @@ class FormCreateServiceTest {
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of("tag1", "tag13"),
+                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -116,7 +112,7 @@ class FormCreateServiceTest {
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of("tag1", "tag13"),
+                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -160,7 +156,7 @@ class FormCreateServiceTest {
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of("tag1", "tag13"),
+                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
                 new RewardCreateDto("경품1", "invalid", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -182,7 +178,7 @@ class FormCreateServiceTest {
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of("tag1", "tag13"),
+                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
                 new RewardCreateDto("경품1", "invalid", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -204,7 +200,7 @@ class FormCreateServiceTest {
                 List.of(createContentCreate("invalid", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of("tag1", "tag13"),
+                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -224,7 +220,7 @@ class FormCreateServiceTest {
                 startDate, endDate, 10,
                 false, null,
                 List.of(),
-                List.of("tag1", "tag13"),
+                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());

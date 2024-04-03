@@ -39,8 +39,9 @@ public class FormCreateService {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다.: " + loginUser.id()));
 
+        LocalDateTime now = LocalDateTime.now();
         int questionCnt = getQuestionCnt(request.contents());
-        validate(request, questionCnt);
+        validate(request, questionCnt, now);
 
         Form form = createForm(request, user, questionCnt);
         contentService.createContents(request.contents(), form);
@@ -77,7 +78,11 @@ public class FormCreateService {
                 .count();
     }
 
-    private void validate(FormCreateDto request, int questionCnt) {
+    private void validate(FormCreateDto request, int questionCnt, LocalDateTime now) {
+        if (!request.endDate().isAfter(now)) {
+            throw new BadRequestException("마감 시각은 현재 시각 후여야 합니다.");
+        }
+
         if (request.endDate().isBefore(request.startDate())) {
             throw new BadRequestException("시작 시각은 마감 시각 전 시각이어야 합니다.");
         }

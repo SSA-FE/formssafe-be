@@ -1,6 +1,7 @@
 package com.formssafe.domain.tag.service;
 
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.tag.dto.TagRequest.TagUpdateDto;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.tag.repository.FormTagRepository;
@@ -21,9 +22,10 @@ public class TagService {
     private final FormTagRepository formTagRepository;
 
     @Transactional
-    public void createOrUpdateTags(List<String> tags, Form form) {
+    public void createOrUpdateTags(List<TagUpdateDto> tags, Form form) {
         List<Tag> tagList = new ArrayList<>();
-        for (String tagName : tags) {
+        for (TagUpdateDto dto : tags) {
+            String tagName = dto.name();
             tagRepository.updateCount(tagName);
             tagList.add(tagRepository.findByTagName(tagName)
                     .orElseThrow(() -> new IllegalStateException("태그가 존재하지 않습니다.: " + tagName)));
