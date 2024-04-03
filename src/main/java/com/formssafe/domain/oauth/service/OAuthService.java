@@ -5,13 +5,11 @@ import com.formssafe.domain.oauth.authcode.AuthCodeRequestUrlProviderComposite;
 import com.formssafe.domain.oauth.client.OauthMemberClientComposite;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.global.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.formssafe.global.util.CommonUtil;
-
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +28,12 @@ public class OAuthService {
 
 
     @Transactional
-    public User loginOrSignup(OauthServerType oauthServerType, String authCode) {
-        User oauthUser = oauthMemberClientComposite.fetch(oauthServerType, authCode);
+    public User loginOrSignup(OauthServerType oauthServerType, String authCode, boolean isLocal) {
+        User oauthUser = oauthMemberClientComposite.fetch(oauthServerType, authCode, isLocal);
         String nickname;
-        do{
+        do {
             nickname = CommonUtil.generateRandomNickname();
-        }while(userRepository.existsByNickname(nickname));
+        } while (userRepository.existsByNickname(nickname));
 
         oauthUser.updateNickname(nickname);
 
