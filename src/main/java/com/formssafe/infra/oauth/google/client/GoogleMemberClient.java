@@ -30,6 +30,7 @@ public class GoogleMemberClient implements OauthMemberClient {
         if (isLocal) {
             redirectUri = "http://localhost:5173/join/";
         }
+        log.info("clientId: {}, code: {}, redirectUri: {}", googleOauthConfig.clientId(), code, redirectUri);
         GoogleAccessTokenByCode googleAccessTokenByCode = googleApiClient.fetchToken("authorization_code",
                 googleOauthConfig.clientId(), googleOauthConfig.clientSecret(), code, redirectUri);
         log.info(googleAccessTokenByCode.toString());
