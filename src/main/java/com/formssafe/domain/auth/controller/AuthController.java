@@ -51,7 +51,9 @@ public class AuthController {
     void login(@PathVariable OauthServerType oauthServerType,
                @RequestBody AuthCode authCode,
                HttpServletRequest request) {
-        boolean isLocal = !request.getRequestURI().contains("formssafe.com");
+        String referer = request.getHeader("referer");
+        log.info("referer: {}", referer);
+        boolean isLocal = !referer.contains("formssafe.com");
         User user = oauthService.loginOrSignup(oauthServerType, authCode.code(), isLocal);
         sessionService.createSession(request, user);
     }
