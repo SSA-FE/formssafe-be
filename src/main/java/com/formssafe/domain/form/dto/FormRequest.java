@@ -42,14 +42,15 @@ public final class FormRequest {
                                 @Schema(description = "설문 임시 저장 여부")
                                 boolean isTemp) {
 
-        public Form toForm(User user, int questionCnt, LocalDateTime startDate, FormStatus status) {
+        public Form toForm(User user, int questionCnt, LocalDateTime startDate, LocalDateTime endDate,
+                           FormStatus status) {
             return Form.builder()
                     .title(title())
                     .detail(description())
                     .imageUrl(image())
                     .user(user)
                     .startDate(startDate)
-                    .endDate(endDate())
+                    .endDate(endDate)
                     .expectTime(expectTime())
                     .isEmailVisible(emailVisibility())
                     .privacyDisposalDate(privacyDisposalDate())

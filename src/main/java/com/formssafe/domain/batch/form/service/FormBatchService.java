@@ -44,19 +44,19 @@ public class FormBatchService {
     }
 
     @Transactional
-    public void registerStartFormManually(Form form) {
+    public void registerStartFormManually(LocalDateTime startDate, Form form) {
         FormBatchStart formBatchStart = FormBatchStart.builder()
+                .serviceTime(startDate)
                 .form(form)
-                .serviceTime(form.getStartDate())
                 .build();
         formBatchStartRepository.save(formBatchStart);
     }
 
     @Transactional
-    public void registerEndFormManually(Form form) {
+    public void registerEndFormManually(LocalDateTime endDate, Form form) {
         FormBatchEnd formBatchEnd = FormBatchEnd.builder()
+                .serviceTime(endDate)
                 .form(form)
-                .serviceTime(form.getEndDate())
                 .build();
         formBatchEndRepository.save(formBatchEnd);
     }

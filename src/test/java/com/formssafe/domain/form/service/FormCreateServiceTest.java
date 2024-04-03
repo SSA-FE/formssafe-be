@@ -62,7 +62,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         //given
         User user = userRepository.save(createUser("testUser"));
 
-        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime startDate = LocalDateTime.now().withSecond(0).withNano(0);
         LocalDateTime endDate = startDate.plusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
                 startDate, endDate, 10,
@@ -112,7 +112,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         //given
         User user = userRepository.save(createUser("testUser"));
 
-        LocalDateTime startDate = LocalDateTime.now().plusMinutes(1);
+        LocalDateTime startDate = LocalDateTime.now().plusMinutes(1).withSecond(0).withNano(0);
         LocalDateTime endDate = startDate.plusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
                 startDate, endDate, 10,
