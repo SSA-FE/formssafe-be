@@ -25,6 +25,7 @@ import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +49,8 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     private FormBatchStartRepository formBatchStartRepository;
     @Autowired
     private RewardCategoryRepository rewardCategoryRepository;
+    @Autowired
+    private EntityManager em;
 
     @BeforeEach
     void setUp() {
@@ -75,12 +78,18 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         formCreateService.execute(formCreateDto, loginUserDto);
 
         //then
+        em.flush();
+        em.clear();
+
         List<Form> result = formRepository.findAll();
         assertThat(result).hasSize(1);
 
         Form resultForm = result.get(0);
         assertThat(resultForm.getUser().getId()).isEqualTo(user.getId());
         assertThat(resultForm.getStatus()).isEqualTo(FormStatus.PROGRESS);
+        assertThat(resultForm.getDecorationList().get(0).getPosition()).isEqualTo(1);
+        assertThat(resultForm.getDescriptiveQuestionList().get(0).getPosition()).isEqualTo(2);
+        assertThat(resultForm.getObjectiveQuestionList().get(0).getPosition()).isEqualTo(3);
 
         Tag tag13 = tagRepository.findByTagName("tag13").orElseThrow(IllegalStateException::new);
         assertThat(tag13.getCount()).isEqualTo(1);
