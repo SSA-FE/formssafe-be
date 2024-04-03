@@ -4,7 +4,6 @@ import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.reward.dto.RewardRequest.RewardCreateDto;
-import com.formssafe.domain.tag.dto.TagRequest.TagUpdateDto;
 import com.formssafe.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -37,7 +36,7 @@ public final class FormRequest {
                                 @Schema(description = "설문 문항 목록")
                                     List<ContentCreateDto> contents,
                                 @Schema(description = "설문 태그 목록")
-                                    List<TagUpdateDto> tags,
+                                    List<String> tags,
                                 @Schema(description = "설문 경품")
                                 RewardCreateDto reward,
                                 @Schema(description = "설문 임시 저장 여부")

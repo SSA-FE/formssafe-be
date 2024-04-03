@@ -19,7 +19,6 @@ import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.reward.repository.RewardRepository;
-import com.formssafe.domain.tag.dto.TagRequest.TagUpdateDto;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.tag.repository.TagRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
@@ -68,7 +67,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
+                List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -112,7 +111,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
+                List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -156,7 +155,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
+                List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "invalid", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -178,7 +177,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
+                List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "invalid", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -200,7 +199,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 List.of(createContentCreate("invalid", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
-                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
+                List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());
@@ -220,7 +219,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 startDate, endDate, 10,
                 false, null,
                 List.of(),
-                List.of(new TagUpdateDto("tag1"), new TagUpdateDto("tag13")),
+                List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(user.getId());

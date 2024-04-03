@@ -80,11 +80,12 @@ public class FormCreateService {
 
     private void validate(FormCreateDto request, int questionCnt, LocalDateTime now) {
         if (!request.endDate().isAfter(now)) {
-            throw new BadRequestException("마감 시각은 현재 시각 후여야 합니다.");
+            throw new BadRequestException("마감 시각은 현재 시각 후여야 합니다.: " + request.endDate());
         }
 
         if (request.endDate().isBefore(request.startDate())) {
-            throw new BadRequestException("시작 시각은 마감 시각 전 시각이어야 합니다.");
+            throw new BadRequestException(
+                    "시작 시각은 마감 시각 전 시각이어야 합니다.: " + request.startDate() + " " + request.endDate());
         }
 
         if (request.privacyDisposalDate() != null && request.endDate().isBefore(request.privacyDisposalDate())) {
