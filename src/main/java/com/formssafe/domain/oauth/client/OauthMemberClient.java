@@ -7,7 +7,7 @@ public interface OauthMemberClient {
 
     OauthServerType supportServer();
 
-    User fetch(String code);
+    User fetch(String code, boolean isLocal);
 
     void deleteAccount(String refreshToken);
 }
