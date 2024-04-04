@@ -1,15 +1,25 @@
 package com.formssafe.domain.user.entity;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
+@Getter
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,36 +58,6 @@ public class User implements Serializable {
         this.createTime = createTime;
         this.refreshToken = refreshToken;
     }
-
-    public Long id() {
-        return id;
-    }
-
-    public OauthId oauthId() {
-        return oauthId;
-    }
-
-    public String nickname() {
-        return nickname;
-    }
-
-    public String email() {
-        return email;
-    }
-
-    public Authority authority() {
-        return authority;
-    }
-
-    public String imageUrl() {
-        return imageUrl;
-    }
-
-    public LocalDateTime createTime() {
-        return createTime;
-    }
-
-    public String getRefreshToken(){return refreshToken;}
 
     public void updateNickname(String nickname){
         this.nickname = nickname;

@@ -1,13 +1,14 @@
 package com.formssafe.util;
 
-import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.form.entity.FormStatus;
-import com.formssafe.domain.oauth.OauthServerType;
+import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestionType;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestionOption;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestionType;
+import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.form.entity.FormStatus;
+import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.tag.entity.FormTag;
@@ -43,7 +44,6 @@ public final class Fixture {
                 .title(title)
                 .imageUrl(new ArrayList<>())
                 .detail(detail)
-                .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(2))
                 .expectTime(10)
                 .isEmailVisible(false)
@@ -54,32 +54,14 @@ public final class Fixture {
                 .build();
     }
 
-    public static Form createForm(User author, String title, String detail, LocalDateTime startTime) {
+    public static Form createFormWithEndDate(User author, String title, String detail, LocalDateTime endDate,
+                                             FormStatus status) {
         return Form.builder()
                 .user(author)
                 .title(title)
                 .imageUrl(new ArrayList<>())
                 .detail(detail)
-                .startDate(startTime)
-                .endDate(startTime.plusDays(2))
-                .expectTime(10)
-                .isEmailVisible(false)
-                .privacyDisposalDate(null)
-                .status(FormStatus.NOT_STARTED)
-                .isTemp(false)
-                .isDeleted(false)
-                .build();
-    }
-
-    public static Form createForm(User author, String title, String detail, LocalDateTime startTime,
-                                  FormStatus status) {
-        return Form.builder()
-                .user(author)
-                .title(title)
-                .imageUrl(new ArrayList<>())
-                .detail(detail)
-                .startDate(startTime)
-                .endDate(startTime.plusDays(2))
+                .endDate(endDate)
                 .expectTime(10)
                 .isEmailVisible(false)
                 .privacyDisposalDate(null)
@@ -95,7 +77,6 @@ public final class Fixture {
                 .title(title)
                 .imageUrl(images)
                 .detail(detail)
-                .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(2))
                 .expectTime(10)
                 .isEmailVisible(false)
@@ -165,5 +146,10 @@ public final class Fixture {
                 .isRequired(false)
                 .isPrivacy(false)
                 .build();
+    }
+
+    public static ContentCreateDto createContentCreate(String type, String title, String description,
+                                                       List<String> options, boolean isPrivacy) {
+        return new ContentCreateDto(type, title, description, options, false, isPrivacy);
     }
 }

@@ -11,17 +11,13 @@ public enum ObjectiveQuestionType {
     CHECKBOX("checkbox"),
     DROPDOWN("dropdown");
 
-    private final String displayName;
     private static final Map<String, ObjectiveQuestionType> convertor =
             Arrays.stream(ObjectiveQuestionType.values())
                     .collect(Collectors.toMap(ObjectiveQuestionType::displayName, Function.identity()));
+    private final String displayName;
 
     ObjectiveQuestionType(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String displayName() {
-        return displayName;
     }
 
     public static ObjectiveQuestionType from(String type) {
@@ -29,5 +25,13 @@ public enum ObjectiveQuestionType {
             throw new BadRequestException("유효하지 않은 객관식 질문 타입입니다.: " + type);
         }
         return convertor.get(type);
+    }
+
+    public static boolean exists(String type) {
+        return convertor.containsKey(type);
+    }
+
+    public String displayName() {
+        return displayName;
     }
 }

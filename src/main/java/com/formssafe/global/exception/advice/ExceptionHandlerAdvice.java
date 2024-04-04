@@ -4,6 +4,7 @@ import com.formssafe.global.exception.response.ExceptionResponse;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
 import com.formssafe.global.exception.type.SessionNotFoundException;
+import com.formssafe.global.exception.type.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,13 @@ public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(SessionNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleSessionNotFoundException(SessionNotFoundException e) {
+        log.error("Error: ", e);
+        return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.UNAUTHORIZED.value(), e.getMessage()),
+                HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleUserNotFoundException(UserNotFoundException e) {
         log.error("Error: ", e);
         return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.UNAUTHORIZED.value(), e.getMessage()),
                 HttpStatus.UNAUTHORIZED);

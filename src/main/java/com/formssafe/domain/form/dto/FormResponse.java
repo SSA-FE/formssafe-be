@@ -30,8 +30,6 @@ public final class FormResponse {
                                 List<String> image,
                                 @Schema(description = "설문 등록자")
                                 UserAuthorDto author,
-                                @Schema(description = "설문 시작 시각")
-                                LocalDateTime startDate,
                                 @Schema(description = "설문 마감 시각")
                                 LocalDateTime endDate,
                                 @Schema(description = "설문 참여 예상 시간")
@@ -67,7 +65,6 @@ public final class FormResponse {
                     form.getDetail(),
                     JsonConverter.toList(form.getImageUrl(), String.class),
                     authorDto,
-                    form.getStartDate(),
                     form.getEndDate(),
                     form.getExpectTime(),
                     form.isEmailVisible(),
@@ -96,8 +93,6 @@ public final class FormResponse {
                               int questionCnt,
                               @Schema(description = "설문 응답 개수")
                               int responseCnt,
-                              @Schema(description = "설문 시작 시각")
-                              LocalDateTime startDate,
                               @Schema(description = "설문 마감 시각")
                               LocalDateTime endDate,
                               @Schema(description = "설문 참여 시 받을 수 있는 경품")
@@ -124,7 +119,7 @@ public final class FormResponse {
             return new FormListDto(form.getId(), form.getTitle(), imageUrl,
                     UserAuthorDto.from(form.getUser()), form.getExpectTime(), form.getQuestionCnt(),
                     form.getResponseCnt(),
-                    form.getStartDate(), form.getEndDate(), rewardListDto, tagCountDtos,
+                    form.getEndDate(), rewardListDto, tagCountDtos,
                     form.getStatus().displayName());
         }
     }

@@ -37,9 +37,9 @@ public class OAuthService {
 
         oauthUser.updateNickname(nickname);
 
-        User user = userRepository.findByOauthId(oauthUser.oauthId())
+        User user = userRepository.findByOauthId(oauthUser.getOauthId())
                 .orElseGet(() -> userRepository.save(oauthUser));
-        log.debug("logined member: {} {}", user.id(), user.nickname());
+        log.debug("logined member: {} {}", user.getId(), user.getNickname());
 
         return user;
     }

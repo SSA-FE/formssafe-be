@@ -2,25 +2,25 @@ INSERT INTO member (id, create_time, authority, email, image_url, nickname, oaut
                     refresh_token)
 VALUES (1, '2024-02-02T13:00:00', 'ROLE_USER', 'test@example.com',
         'https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1',
-        'test', 'GOOGLE', '123', "refresh_token1"),
+        'test', 'GOOGLE', '123', 'refresh_token1'),
        (2, '2024-02-02T13:00:00', 'ROLE_USER', 'test2@example.com',
         'https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1240w,f_auto,q_auto:best/rockcms/2022-08/220805-domestic-cat-mjf-1540-382ba2.jpg',
-        'test2', 'GOOGLE', '1234', "refresh_token2");
+        'test2', 'GOOGLE', '1234', 'refresh_token2');
 
-INSERT INTO form (id, title, detail, image_url, user_id, start_date, end_date, expect_time, privacy_disposal_date,
+INSERT INTO form (id, title, detail, image_url, user_id, end_date, expect_time, privacy_disposal_date,
                   is_email_visible, question_cnt, response_cnt, status, is_deleted, is_temp,
                   create_date, modify_date)
 VALUES (1, '설문 조사 제목1', '설문 설명 2', '[
   "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1",
   "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1"
-]', 1, '2024-02-02T13:00:00', '2024-02-04T13:00:00', 10, null, false,
+]', 1, '2024-02-04T13:00:00', 10, null, false,
         7, 0,'REWARDED', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00'),
-       (2, '설문 조사 제목2', '설문 설명 2', null, 1, '2024-03-31T03:05:00', '2024-03-31T20:49:00', 10, null, false,
-        0, 0, 'NOT_STARTED', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00'),
-       (3, '설문 조사 제목3', '설문 설명 3', null, 1, '2024-03-31T03:06:00', '2024-03-31T20:50:00', 10, null, false,
-        0, 0, 'NOT_STARTED', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00'),
-       (4, '설문 조사 제목4', '설문 설명 4', null, 1, '2024-03-31T03:06:00', '2024-03-31T20:50:00', 10, null, false,
-        0, 0, 'NOT_STARTED', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00');
+       (2, '설문 조사 제목2', '설문 설명 2', 'null', 1, '2024-03-31T20:49:00', 10, null, false,
+        0, 0, 'DONE', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00'),
+       (3, '설문 조사 제목3', '설문 설명 3', 'null', 1, '2024-03-31T20:50:00', 10, null, false,
+        0, 0, 'DONE', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00'),
+       (4, '설문 조사 제목4', '설문 설명 4', 'null', 1, '2024-03-31T20:50:00', 10, null, false,
+        0, 0, 'DONE', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00');
 
 INSERT INTO form_batch_start (id, service_time, form_id)
 VALUES (1, '2024-03-31T20:48:00', 2),

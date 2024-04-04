@@ -10,11 +10,10 @@ public enum DescriptiveQuestionType {
     SHORT("short"),
     LONG("long");
 
-    private final String displayName;
     private static final Map<String, DescriptiveQuestionType> convertor =
             Arrays.stream(DescriptiveQuestionType.values())
                     .collect(Collectors.toMap(DescriptiveQuestionType::displayName, Function.identity()));
-
+    private final String displayName;
 
     DescriptiveQuestionType(String displayName) {
         this.displayName = displayName;
@@ -25,6 +24,10 @@ public enum DescriptiveQuestionType {
             throw new BadRequestException("유효하지 않은 주관식 질문 타입입니다.: " + type);
         }
         return convertor.get(type);
+    }
+
+    public static boolean exists(String type) {
+        return convertor.containsKey(type);
     }
 
     public String displayName() {

@@ -21,8 +21,8 @@ public class SessionService {
         }
 
         session = request.getSession();
-        session.setAttribute("userId", user.id());
-        log.debug("new session: {} {} {}", session.getId(), user.id(), user.nickname());
+        session.setAttribute("userId", user.getId());
+        log.debug("new session: {} {} {}", session.getId(), user.getId(), user.getNickname());
     }
 
     public void deleteSession(HttpServletRequest request) {
