@@ -19,7 +19,7 @@ public class FormBatchService {
     private final FormBatchEndRepository formBatchEndRepository;
 
     @Transactional
-    public void registerEndFormManually(LocalDateTime endDate, Form form) {
+    public void registerEndForm(LocalDateTime endDate, Form form) {
         FormBatchEnd formBatchEnd = FormBatchEnd.builder()
                 .serviceTime(endDate)
                 .form(form)

@@ -54,7 +54,7 @@ public class FormCreateService {
         }
 
         if (!request.isTemp() && endDate != null) {
-            formBatchService.registerEndFormManually(endDate, form);
+            formBatchService.registerEndForm(endDate, form);
         }
     }
 

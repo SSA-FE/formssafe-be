@@ -1,6 +1,5 @@
 package com.formssafe.domain.form.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.formssafe.domain.content.decoration.entity.Decoration;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
@@ -55,7 +54,6 @@ public class Form extends BaseTimeEntity {
 
     @Column(name = "image_url", columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
-    @JsonSerialize
     private String imageUrl;
 
     private LocalDateTime endDate;
