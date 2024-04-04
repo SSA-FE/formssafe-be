@@ -66,8 +66,8 @@ public class UserController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/profile")
     @ResponseStatus(HttpStatus.OK)
-    public UserProfileDto getUserProfile(HttpServletRequest request) {
-        return userService.getProfile(request);
+    public UserProfileDto getUserProfile(@AuthenticationPrincipal LoginUserDto loginUser) {
+        return userService.getProfile(loginUser);
     }
 
     @Operation(summary = "닉네임 변경하기", description = "변경하고자하는 닉네임을 Request로 받아서 변경시켜줌")

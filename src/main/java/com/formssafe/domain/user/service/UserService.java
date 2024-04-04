@@ -37,12 +37,12 @@ public class UserService {
         user.activate();
     }
 
-    public UserProfileDto getProfile(HttpServletRequest request){
-        Long userId = getUserIdFromSession(request);
+    public UserProfileDto getProfile(LoginUserDto loginUser) {
+        Long userId = loginUser.id();
         User user = userRepository.findById(userId).orElseThrow(()->
                 new DataNotFoundException("존재하지 않는 userId입니다.: " + userId));
 
-        return UserProfileDto.convertEntityToDto(user);
+        return UserProfileDto.from(user);
     }
 
     private Long getUserIdFromSession(HttpServletRequest request){
