@@ -6,10 +6,6 @@ import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.user.entity.Authority;
 import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @JsonNaming(SnakeCaseStrategy.class)
 public record GoogleMemberResponse (
@@ -30,7 +26,6 @@ public record GoogleMemberResponse (
                 .email(email)
                 .imageUrl(picture)
                 .authority(Authority.ROLE_USER)
-                .createTime(LocalDateTime.now())
                 .refreshToken(refreshToken)
                 .build();
     }

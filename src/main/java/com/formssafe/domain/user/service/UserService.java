@@ -1,13 +1,17 @@
 package com.formssafe.domain.user.service;
 
 import com.formssafe.domain.oauth.client.OauthMemberClientComposite;
+import com.formssafe.domain.user.dto.UserRequest.JoinDto;
+import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.dto.UserRequest.NicknameUpdateDto;
 import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.global.exception.type.DataNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,21 +20,27 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final OauthMemberClientComposite oauthMemberClientComposite;
 
-    public UserService(UserRepository userRepository, OauthMemberClientComposite oauthMemberClientComposite){
-        this.userRepository = userRepository;
-        this.oauthMemberClientComposite = oauthMemberClientComposite;
+    @Transactional
+    public void join(JoinDto request, LoginUserDto loginUser) {
+        Long userId = loginUser.id();
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new DataNotFoundException("존재하지 않는 userId입니다.: " + userId));
+
+        user.updateNickname(request.nickname());
+        user.activate();
     }
 
     public UserProfileDto getProfile(HttpServletRequest request){
         Long userId = getUserIdFromSession(request);
         User user = userRepository.findById(userId).orElseThrow(()->
-             new ResponseStatusException(HttpStatus.BAD_REQUEST, "존재하지 않는 userId입니다."));
+                new DataNotFoundException("존재하지 않는 userId입니다.: " + userId));
 
         return UserProfileDto.convertEntityToDto(user);
     }
