@@ -1,12 +1,13 @@
 package com.formssafe.domain.batch.form.repository;
 
-import static com.formssafe.util.Fixture.createForm;
+import static com.formssafe.util.Fixture.createFormWithEndDate;
 import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.IntegrationTestConfig;
-import com.formssafe.domain.batch.form.entity.FormBatchStart;
+import com.formssafe.domain.batch.form.entity.FormBatchEnd;
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
@@ -15,38 +16,38 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class FormBatchStartRepositoryTest extends IntegrationTestConfig {
+class FormBatchEndRepositoryTest extends IntegrationTestConfig {
     @Autowired
-    private FormBatchStartRepository formBatchStartRepository;
+    private FormBatchEndRepository formBatchEndRepository;
     @Autowired
     private FormRepository formRepository;
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    void 시작해야하는_설문을_가져온다() {
+    void 마감해야하는_설문을_가져온다() {
         //given
         User testUser = createUser("testUser");
         User user = userRepository.save(testUser);
 
-        LocalDateTime startTime = LocalDateTime.of(2024, 3, 2, 0, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2024, 3, 2, 0, 0, 0);
 
-        Form form1 = createForm(user, "test1", "detail1", startTime);
-        Form form2 = createForm(user, "test2", "detail2", startTime);
+        Form form1 = createFormWithEndDate(user, "test1", "detail1", endDate, FormStatus.PROGRESS);
+        Form form2 = createFormWithEndDate(user, "test2", "detail2", endDate, FormStatus.PROGRESS);
         List<Form> forms = formRepository.saveAll(List.of(form1, form2));
 
-        formBatchStartRepository.saveAll(List.of(FormBatchStart.builder()
-                        .serviceTime(startTime)
+        formBatchEndRepository.saveAll(List.of(FormBatchEnd.builder()
+                        .serviceTime(endDate)
                         .form(forms.get(0))
                         .build(),
-                FormBatchStart.builder()
-                        .serviceTime(startTime)
+                FormBatchEnd.builder()
+                        .serviceTime(endDate)
                         .form(forms.get(1))
                         .build()
         ));
         //when
-        List<FormBatchStart> formBatchStartList = formBatchStartRepository.findByServiceTime(startTime);
+        List<FormBatchEnd> formBatchEndList = formBatchEndRepository.findByServiceTime(endDate);
         //then
-        assertThat(formBatchStartList).hasSize(2);
+        assertThat(formBatchEndList).hasSize(2);
     }
 }

@@ -23,6 +23,8 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        log.debug("URI: {}", request.getRequestURI());
+
         HttpSession session = request.getSession(false);
         if (session != null) {
             Object userIdValue = session.getAttribute("userId");
@@ -32,9 +34,11 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authentication = createUserAuthenticationToken(userId);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                log.debug("[{}]: userId: {}", request.getRequestURI(), userId);
+                log.debug("userId {} logined", userId);
             }
+            log.debug("Invalid Session");
         }
+        log.debug("Invalid Session");
 
         filterChain.doFilter(request, response);
     }

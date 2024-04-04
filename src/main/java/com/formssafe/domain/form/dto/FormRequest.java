@@ -15,16 +15,13 @@ public final class FormRequest {
     }
 
     @Schema(description = "설문 등록 요청 DTO",
-            requiredProperties = {"title", "description", "startDate", "endDate", "expectTime", "emailVisibility",
-                    "isTemp"})
+            requiredProperties = {"title"})
     public record FormCreateDto(@Schema(description = "설문 제목")
                                 String title,
                                 @Schema(description = "설문 설명")
                                 String description,
                                 @Schema(description = "설문 설명 이미지 목록")
                                     List<String> image,
-                                @Schema(description = "설문 시작 시각")
-                                LocalDateTime startDate,
                                 @Schema(description = "설문 마감 시각")
                                 LocalDateTime endDate,
                                 @Schema(description = "설문 참여 예상 시간")
@@ -42,14 +39,12 @@ public final class FormRequest {
                                 @Schema(description = "설문 임시 저장 여부")
                                 boolean isTemp) {
 
-        public Form toForm(User user, int questionCnt, LocalDateTime startDate, LocalDateTime endDate,
-                           FormStatus status) {
+        public Form toForm(User user, int questionCnt, LocalDateTime endDate, FormStatus status) {
             return Form.builder()
                     .title(title())
                     .detail(description())
                     .imageUrl(image())
                     .user(user)
-                    .startDate(startDate)
                     .endDate(endDate)
                     .expectTime(expectTime())
                     .isEmailVisible(emailVisibility())
@@ -66,7 +61,6 @@ public final class FormRequest {
                     "title='" + title + '\'' +
                     ", description='" + description + '\'' +
                     ", image=" + image +
-                    ", startDate=" + startDate +
                     ", endDate=" + endDate +
                     ", expectTime=" + expectTime +
                     ", emailVisibility=" + emailVisibility +

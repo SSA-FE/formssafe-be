@@ -120,7 +120,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
         LocalDateTime startTime = LocalDateTime.of(2024, 3, 2, 0, 0, 0);
         List<Form> formList = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
-            formList.add(createForm(user, "test" + i, "detail" + i, startTime));
+            formList.add(createForm(user, "test" + i, "detail" + i));
             startTime = startTime.plusDays(1);
         }
         List<Form> forms = formRepository.saveAll(formList);

@@ -44,7 +44,6 @@ public final class Fixture {
                 .title(title)
                 .imageUrl(new ArrayList<>())
                 .detail(detail)
-                .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(2))
                 .expectTime(10)
                 .isEmailVisible(false)
@@ -55,32 +54,14 @@ public final class Fixture {
                 .build();
     }
 
-    public static Form createForm(User author, String title, String detail, LocalDateTime startTime) {
+    public static Form createFormWithEndDate(User author, String title, String detail, LocalDateTime endDate,
+                                             FormStatus status) {
         return Form.builder()
                 .user(author)
                 .title(title)
                 .imageUrl(new ArrayList<>())
                 .detail(detail)
-                .startDate(startTime)
-                .endDate(startTime.plusDays(2))
-                .expectTime(10)
-                .isEmailVisible(false)
-                .privacyDisposalDate(null)
-                .status(FormStatus.NOT_STARTED)
-                .isTemp(false)
-                .isDeleted(false)
-                .build();
-    }
-
-    public static Form createForm(User author, String title, String detail, LocalDateTime startTime,
-                                  FormStatus status) {
-        return Form.builder()
-                .user(author)
-                .title(title)
-                .imageUrl(new ArrayList<>())
-                .detail(detail)
-                .startDate(startTime)
-                .endDate(startTime.plusDays(2))
+                .endDate(endDate)
                 .expectTime(10)
                 .isEmailVisible(false)
                 .privacyDisposalDate(null)
@@ -96,7 +77,6 @@ public final class Fixture {
                 .title(title)
                 .imageUrl(images)
                 .detail(detail)
-                .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(2))
                 .expectTime(10)
                 .isEmailVisible(false)

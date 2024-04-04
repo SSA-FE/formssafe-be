@@ -36,39 +36,33 @@ public class FormCreateService {
 
     @Transactional
     public void execute(FormCreateDto request, LoginUserDto loginUser) {
+        log.debug("FormCreateService.execute: \nrequest {}\n loginUser {}", request, loginUser);
+
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new UserNotFoundException("유저가 존재하지 않습니다.: " + loginUser.id()));
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startDate = request.startDate().withSecond(0).withNano(0);
-        LocalDateTime endDate = request.endDate().withSecond(0).withNano(0);
-        log.info("now: {}, startDate: {}, endDate: {}", now, startDate, endDate);
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
+        LocalDateTime endDate = request.endDate() == null ? null : request.endDate().withSecond(0).withNano(0);
+        log.info("now: {}, endDate: {}", now, endDate);
 
         int questionCnt = getQuestionCnt(request.contents());
-        validate(request, startDate, endDate, questionCnt, now);
+        validate(request, now, endDate, questionCnt);
 
-        Form form = createForm(request, user, questionCnt, startDate, endDate, now);
+        Form form = createForm(request, user, questionCnt, endDate);
         contentService.createContents(request.contents(), form);
         tagService.createOrUpdateTags(request.tags(), form);
         if (request.reward() != null) {
             rewardService.createReward(request.reward(), form);
         }
 
-        if (!request.isTemp()) {
-            if (form.getStatus().equals(FormStatus.NOT_STARTED)) {
-                formBatchService.registerStartFormManually(startDate, form);
-            } else {
-                formBatchService.registerEndFormManually(endDate, form);
-            }
+        if (!request.isTemp() && endDate != null) {
+            formBatchService.registerEndFormManually(endDate, form);
         }
     }
 
-    private Form createForm(FormCreateDto request, User user, int questionCnt, LocalDateTime startDate,
-                            LocalDateTime endDate, LocalDateTime now) {
-        FormStatus status = startDate.isAfter(now) ? FormStatus.NOT_STARTED : FormStatus.PROGRESS;
-        Form form = request.toForm(user, questionCnt, startDate, endDate, status);
-        form = formRepository.save(form);
-        return form;
+    private Form createForm(FormCreateDto request, User user, int questionCnt, LocalDateTime endDate) {
+        Form form = request.toForm(user, questionCnt, endDate, FormStatus.PROGRESS);
+        return formRepository.save(form);
     }
 
     private int getQuestionCnt(List<ContentCreateDto> questions) {
@@ -77,18 +71,13 @@ public class FormCreateService {
                 .count();
     }
 
-    private void validate(FormCreateDto request, LocalDateTime startDate, LocalDateTime endDate, int questionCnt,
-                          LocalDateTime now) {
-        if (!endDate.isAfter(now)) {
-            throw new BadRequestException("마감 시각은 현재 시각 후여야 합니다.: " + endDate);
+    private void validate(FormCreateDto request, LocalDateTime now, LocalDateTime endDate, int questionCnt) {
+        if (endDate != null && !now.plusMinutes(5L).isBefore(endDate)) {
+            throw new BadRequestException("자동 마감 시각은 현재 시각 5분 후부터 설정할 수 있습니다.: " + endDate);
         }
 
-        if (endDate.isBefore(startDate)) {
-            throw new BadRequestException(
-                    "시작 시각은 마감 시각 전 시각이어야 합니다.: " + startDate + " " + endDate);
-        }
-
-        if (request.privacyDisposalDate() != null && endDate.isBefore(request.privacyDisposalDate())) {
+        if (endDate != null && request.privacyDisposalDate() != null && endDate.isBefore(
+                request.privacyDisposalDate())) {
             throw new BadRequestException("개인 정보 폐기 시각은 마감 시각 후여야 합니다.");
         }
 
