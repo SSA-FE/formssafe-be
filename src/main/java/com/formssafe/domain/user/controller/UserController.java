@@ -41,6 +41,10 @@ public class UserController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"중복된 닉네임이 존재합니다.\"}")))
+    @ApiResponse(responseCode = "400", description = "이미 회원가입 진행됨",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"이미 회원가입하셨습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
