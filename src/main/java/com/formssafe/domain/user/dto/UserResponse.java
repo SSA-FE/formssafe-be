@@ -12,10 +12,12 @@ public class UserResponse {
             @Schema(description = "사용자 ID") Long userId,
             @Schema(description = "사용자 별명") String nickname,
             @Schema(description = "이미지 URL") String imageUrl,
-            @Schema(description = "이메일 주소") String email) {
+            @Schema(description = "이메일 주소") String email,
+            @Schema(description = "사이트 회원가입 여부") boolean isActive) {
 
-        public static UserProfileDto convertEntityToDto(User user){
-            return new UserProfileDto(user.getId(), user.getNickname(), user.getImageUrl(), user.getEmail());
+        public static UserProfileDto from(User user) {
+            return new UserProfileDto(user.getId(), user.getNickname(), user.getImageUrl(), user.getEmail(),
+                    user.isActive());
         }
     }
 
