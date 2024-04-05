@@ -9,6 +9,7 @@ import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.exception.type.ForbiddenException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,11 @@ public class UserService {
 
     @Transactional
     public void deleteAccount(long userId, LoginUserDto loginUser) {
+        if (userId != loginUser.id()) {
+            throw new ForbiddenException(
+                    "현재 로그인한 유저와 탈퇴하려는 유저가 다릅니다.: 탈퇴하려는 유저 id:" + userId + " 로그인한 유저 id:" + loginUser.id());
+        }
+
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new EntityNotFoundException("올바른 ID가 존재하지 않습니다."));
 
