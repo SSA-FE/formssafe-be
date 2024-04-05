@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -86,8 +85,9 @@ public class UserController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PatchMapping("")
     @ResponseStatus(HttpStatus.OK)
-    public void updateNickname(HttpServletRequest request, @RequestBody NicknameUpdateDto nickname) {
-        userService.updateNickname(request, nickname);
+    public void updateNickname(@RequestBody NicknameUpdateDto nickname,
+                               @AuthenticationPrincipal LoginUserDto loginUser) {
+        userService.updateNickname(nickname, loginUser);
     }
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴")
@@ -106,7 +106,8 @@ public class UserController {
                     examples = @ExampleObject(value = "{\"error\": \"사용자가 올바르지 않습니다.\"}")))
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteAccount(HttpServletRequest request, @PathVariable long userId) {
-        userService.deleteAccount(request, userId);
+    public void deleteAccount(@PathVariable long userId,
+                              @AuthenticationPrincipal LoginUserDto loginUser) {
+        userService.deleteAccount(userId, loginUser);
     }
 }
