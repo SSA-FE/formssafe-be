@@ -38,6 +38,14 @@ public final class Fixture {
                 .build();
     }
 
+    /**
+     * 진행 중인 설문 엔티티를 생성한다.
+     *
+     * @param author
+     * @param title
+     * @param detail
+     * @return
+     */
     public static Form createForm(User author, String title, String detail) {
         return Form.builder()
                 .user(author)
@@ -49,7 +57,7 @@ public final class Fixture {
                 .expectTime(10)
                 .isEmailVisible(false)
                 .privacyDisposalDate(null)
-                .status(FormStatus.NOT_STARTED)
+                .status(FormStatus.PROGRESS)
                 .isTemp(false)
                 .isDeleted(false)
                 .build();
