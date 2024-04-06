@@ -46,7 +46,7 @@ public class Form extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "title", columnDefinition = "text", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "detail", columnDefinition = "text")
@@ -55,6 +55,9 @@ public class Form extends BaseTimeEntity {
     @Column(name = "image_url", columnDefinition = "json")
     @JdbcTypeCode(SqlTypes.JSON)
     private String imageUrl;
+
+    @Column(nullable = false)
+    private LocalDateTime startDate;
 
     private LocalDateTime endDate;
 
@@ -97,13 +100,15 @@ public class Form extends BaseTimeEntity {
 
     @Builder
     private Form(Long id, User user, String title, String detail, List<String> imageUrl,
-                 LocalDateTime endDate, int expectTime, boolean isEmailVisible, LocalDateTime privacyDisposalDate,
-                 FormStatus status, int questionCnt, int responseCnt, boolean isTemp, boolean isDeleted) {
+                 LocalDateTime startDate, LocalDateTime endDate, int expectTime, boolean isEmailVisible,
+                 LocalDateTime privacyDisposalDate, FormStatus status, int questionCnt, int responseCnt, boolean isTemp,
+                 boolean isDeleted) {
         this.id = id;
         this.user = user;
         this.title = title;
         this.detail = detail;
         this.imageUrl = JsonConverter.toJson(imageUrl);
+        this.startDate = startDate;
         this.endDate = endDate;
         this.expectTime = expectTime;
         this.isEmailVisible = isEmailVisible;
@@ -127,6 +132,7 @@ public class Form extends BaseTimeEntity {
                 ", title='" + title + '\'' +
                 ", detail='" + detail + '\'' +
                 ", imageUrl=" + imageUrl +
+                ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", expectTime=" + expectTime +
                 ", isVisibleEmail=" + isEmailVisible +

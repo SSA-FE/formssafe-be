@@ -46,7 +46,7 @@ public class FormCreateService {
         int questionCnt = getQuestionCnt(request.contents());
         validate(request, now, endDate, questionCnt);
 
-        Form form = createForm(request, user, questionCnt, endDate);
+        Form form = createForm(request, user, questionCnt, now, endDate);
         contentService.createContents(request.contents(), form);
         tagService.createOrUpdateTags(request.tags(), form);
         if (request.reward() != null) {
@@ -58,8 +58,9 @@ public class FormCreateService {
         }
     }
 
-    private Form createForm(FormCreateDto request, User user, int questionCnt, LocalDateTime endDate) {
-        Form form = request.toForm(user, questionCnt, endDate, FormStatus.PROGRESS);
+    private Form createForm(FormCreateDto request, User user, int questionCnt, LocalDateTime now,
+                            LocalDateTime endDate) {
+        Form form = request.toForm(user, questionCnt, now, endDate, FormStatus.PROGRESS);
         return formRepository.save(form);
     }
 
