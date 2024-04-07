@@ -39,6 +39,9 @@ public class ContentService {
             if (DecorationType.exists(q.type())) {
                 decorations.add(q.toDecoration(form, position));
             } else if (ObjectiveQuestionType.exists(q.type())) {
+                if (q.options() == null || q.options().isEmpty()) {
+                    throw new BadRequestException("객관식 질문에는 보기가 1개 이상 필요합니다.");
+                }
                 objectiveQuestions.add(q.toObjectiveQuestion(form, position));
             } else if (DescriptiveQuestionType.exists(q.type())) {
                 descriptiveQuestions.add(q.toDescriptiveQuestion(form, position));
