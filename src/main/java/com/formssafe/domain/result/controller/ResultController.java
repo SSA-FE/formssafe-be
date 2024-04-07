@@ -1,8 +1,6 @@
 package com.formssafe.domain.result.controller;
 
 import com.formssafe.domain.result.dto.ResultResponse;
-import com.formssafe.domain.result.dto.TotalResponse;
-import com.formssafe.domain.submission.dto.Submission;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,8 +35,9 @@ public class ResultController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/{formId}/result")
     public ResponseEntity<ResultResponse> getTotalResult(@RequestHeader("auth") String sessionId, @PathVariable int formId) {
-        ResultResponse resultResponse = new ResultResponse(1, 1,new ArrayList<TotalResponse>(){{add(new TotalResponse(1, new ArrayList<Submission>(){{add(new Submission(1, 1));}}, LocalDateTime.now()));}});
-        return ResponseEntity.ok(resultResponse);
+//        ResultResponse resultResponse = new ResultResponse(1, 1,new ArrayList<TotalResponse>(){{add(new TotalResponse(1, new ArrayList<Submission>(){{add(new Submission(1, 1));}}, LocalDateTime.now()));}});
+//        return ResponseEntity.ok(resultResponse);
+        return ResponseEntity.noContent().build();
     }
     @Operation(summary="설문 응답 결과 다운로드", description="엑셀 파일 제공 예정")
 

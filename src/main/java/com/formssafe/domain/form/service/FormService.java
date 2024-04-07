@@ -70,7 +70,7 @@ public class FormService {
         return UserAuthorDto.from(author);
     }
 
-    private Form getForm(Long id) {
+    public Form getForm(Long id) {
         Form form = formRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
 
@@ -95,17 +95,6 @@ public class FormService {
         }
 
         return RewardListDto.from(reward, reward.getRewardCategory());
-    }
-
-    private List<QuestionDetailDto> getQuestionList(Form form) {
-        List<Question> questions = new ArrayList<>();
-        questions.addAll(form.getDescriptiveQuestionList());
-        questions.addAll(form.getObjectiveQuestionList());
-        questions.sort(Comparator.comparingInt(Question::getPosition));
-
-        return questions.stream()
-                .map(QuestionDetailDto::from)
-                .toList();
     }
 
     private List<ContentResponseDto> getContentList(Form form){

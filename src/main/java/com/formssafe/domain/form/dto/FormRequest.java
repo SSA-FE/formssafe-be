@@ -22,7 +22,7 @@ public final class FormRequest {
                                 @Schema(description = "설문 설명")
                                 String description,
                                 @Schema(description = "설문 설명 이미지 목록")
-                                    List<String> image,
+                                List<String> image,
                                 @Schema(description = "설문 시작 시각")
                                 LocalDateTime startDate,
                                 @Schema(description = "설문 마감 시각")
@@ -34,9 +34,9 @@ public final class FormRequest {
                                 @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각")
                                 LocalDateTime privacyDisposalDate,
                                 @Schema(description = "설문 문항 목록")
-                                    List<ContentCreateDto> contents,
+                                List<ContentCreateDto> contents,
                                 @Schema(description = "설문 태그 목록")
-                                    List<String> tags,
+                                List<String> tags,
                                 @Schema(description = "설문 경품")
                                 RewardCreateDto reward,
                                 @Schema(description = "설문 임시 저장 여부")

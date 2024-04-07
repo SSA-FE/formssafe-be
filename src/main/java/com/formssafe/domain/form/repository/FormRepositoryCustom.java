@@ -5,6 +5,5 @@ import com.formssafe.domain.form.entity.Form;
 import java.util.List;
 
 public interface FormRepositoryCustom {
-
     List<Form> findFormWithFiltered(SearchDto searchDto);
 }

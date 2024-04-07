@@ -5,6 +5,7 @@ import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
+import com.formssafe.domain.submission.entity.Submission;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.constants.FormConstants;
@@ -82,6 +83,9 @@ public class Form extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "form")
     List<Decoration> decorationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "form")
+    List<Submission> submissionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "form")
     private List<RewardRecipient> rewardRecipientList = new ArrayList<>();
