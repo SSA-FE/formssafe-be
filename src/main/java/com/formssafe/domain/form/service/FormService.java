@@ -16,14 +16,18 @@ import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
 import com.formssafe.domain.tag.entity.FormTag;
+import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
+import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.exception.type.ForbiddenException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -70,7 +74,7 @@ public class FormService {
         return UserAuthorDto.from(author);
     }
 
-    public Form getForm(Long id) {
+    private Form getForm(Long id) {
         Form form = formRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
 
@@ -120,19 +124,41 @@ public class FormService {
                 .toList();
     }
 
-    public void create(FormCreateDto request) {
-        log.debug(request.toString());
-    }
-
     public void update(Long id, FormCreateDto request) {
         log.debug("id: {}\n payload: {}", id, request.toString());
     }
 
-    public void delete(Long id) {
-        log.debug("id: {}", id);
+    @Transactional
+    public void delete(Long id, LoginUserDto loginUser) {
+        log.debug("Form Delete: id: {}, loginUser: {}", id, loginUser.id());
+
+        Form form = formRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + id));
+
+        if (!Objects.equals(form.getUser().getId(), loginUser.id())) {
+            throw new ForbiddenException("userId-" + loginUser.id() + ": 설문 작성자가 아닙니다.: " + form.getUser().getId());
+        }
+
+        form.delete();
     }
 
-    public void close(Long id) {
-        log.debug("id: {}", id);
+    @Transactional
+    public void close(Long id, LoginUserDto loginUser) {
+        log.debug("Form Close: id: {}, loginUser: {}", id, loginUser.id());
+
+        Form form = formRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + id));
+
+        if (!Objects.equals(form.getUser().getId(), loginUser.id())) {
+            throw new ForbiddenException("userId-" + loginUser.id() + ": 설문 작성자가 아닙니다.: " + form.getUser().getId());
+        }
+
+        if (!form.getStatus().equals(FormStatus.PROGRESS)) {
+            throw new BadRequestException("현재 진행 중인 설문이 아닙니다.");
+        }
+
+        form.changeStatus(FormStatus.DONE);
+
+        // TODO: 4/6/24 경품 존재 시 당첨자 선정 로직 추가
     }
 }

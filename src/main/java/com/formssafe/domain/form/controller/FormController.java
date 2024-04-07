@@ -91,8 +91,9 @@ public class FormController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PatchMapping(path = "/{id}/close", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    void closeForm(@PathVariable Long id) {
-        formService.close(id);
+    void closeForm(@PathVariable Long id,
+                   @AuthenticationPrincipal LoginUserDto loginUser) {
+        formService.close(id, loginUser);
     }
 
     @Operation(summary = "설문 수정", description = "해당 id의, 임시 등록 상태인 설문을 수정한다.")
@@ -122,7 +123,8 @@ public class FormController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    void deleteForm(@PathVariable Long id) {
-        formService.delete(id);
+    void deleteForm(@PathVariable Long id,
+                    @AuthenticationPrincipal LoginUserDto loginUser) {
+        formService.delete(id, loginUser);
     }
 }
