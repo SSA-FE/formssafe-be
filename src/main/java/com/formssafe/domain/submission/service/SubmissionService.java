@@ -19,8 +19,10 @@ import com.formssafe.domain.submission.repository.SubmissionRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.global.exception.type.BadRequestException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,12 +46,25 @@ public class SubmissionService {
         User user = userRepository.getReferenceById(loginUser.id());
 
         Form form = formService.getForm(formId);
-        log.info(form.toString());
-        
-        Submission submission = createSubmission(request, user, form);
-        log.info(submission.toString());
 
-        createDetailSubmission(request.submissions(), submission);
+        if (isSubmissionExist(user, form)) {
+            throw new BadRequestException("한 사용자가 하나의 설문에 대하여 두개 이상의 응답을 작성할 수 없습니다.");
+        }
+
+        Submission submission = createSubmission(request, user, form);
+
+        createDetailSubmission(request.submissions(), submission, formId);
+
+        form.increaseResponseCount();
+    }
+
+    private boolean isSubmissionExist(User user, Form form) {
+        Optional<Submission> existingSubmission = submissionRepository.findSubmissionByFormIDAndUserId(
+                form.getId(), user.getId());
+        if (existingSubmission.isPresent()) {
+            return true;
+        }
+        return false;
     }
 
     private Submission createSubmission(SubmissionCreateDto request, User user, Form form) {
@@ -58,23 +73,29 @@ public class SubmissionService {
         return submission;
     }
 
-    private void createDetailSubmission(List<SubmissionDetailDto> submissionDetailDtos, Submission submission) {
+    private void createDetailSubmission(List<SubmissionDetailDto> submissionDetailDtos, Submission submission,
+                                        Long formId) {
         List<ObjectiveSubmission> objectiveSubmissions = new ArrayList<>();
         List<DescriptiveSubmission> descriptiveSubmissions = new ArrayList<>();
 
         for (SubmissionDetailDto dtos : submissionDetailDtos) {
             if (ObjectiveQuestionType.exists(dtos.type())) {
                 ObjectiveQuestion objectiveQuestion = objectiveQuestionService.getObjectiveQuestionByUuid(
-                        dtos.questionId());
+                        dtos.questionId(), formId);
+                if (!objectiveQuestion.getQuestionType().displayName().equals(dtos.type())) {
+                    throw new BadRequestException("연관된 질문 타입이 올바르지 않습니다.");
+                }
                 objectiveSubmissions.add(dtos.toObjectiveSubmission(submission, objectiveQuestion));
             } else if (DescriptiveQuestionType.exists(dtos.type())) {
                 DescriptiveQuestion descriptiveQuestion = descriptiveQuestionService.getDescriptiveQuestionByUuid(
-                        dtos.questionId());
+                        dtos.questionId(), formId);
+                if (!descriptiveQuestion.getQuestionType().displayName().equals(dtos.type())) {
+                    throw new BadRequestException("연관된 질문 타입이 올바르지 않습니다.");
+                }
                 descriptiveSubmissions.add(dtos.toDescriptiveSubmission(submission, descriptiveQuestion));
+            } else {
+                throw new BadRequestException("올바르지 않은 질문 type 입니다.");
             }
-//            else{
-//
-//            }
         }
         descriptiveSubmissionRepository.saveAll(descriptiveSubmissions);
         objectiveSubmissionRepository.saveAll(objectiveSubmissions);

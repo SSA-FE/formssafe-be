@@ -128,6 +128,10 @@ public class Form extends BaseTimeEntity {
         this.status = newStatus;
     }
 
+    public void increaseResponseCount() {
+        this.responseCnt++;
+    }
+
     @Override
     public String toString() {
         return "Form{" +

@@ -2,16 +2,11 @@ package com.formssafe.domain.content.question.service;
 
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.repository.DescriptiveQuestionRepository;
-import com.formssafe.domain.form.entity.Form;
-import com.formssafe.global.exception.type.DataNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
+import com.formssafe.global.exception.type.BadRequestException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,10 +16,10 @@ public class DescriptiveQuestionService {
     private final DescriptiveQuestionRepository descriptiveQuestionRepository;
 
     @Transactional
-    public DescriptiveQuestion getDescriptiveQuestionByUuid(String id){
-        //TODO : 오류처리 해야함
-        DescriptiveQuestion descriptiveQuestion = descriptiveQuestionRepository.findByUuid(id).orElseThrow(
-            ()->new EntityNotFoundException(id));
+    public DescriptiveQuestion getDescriptiveQuestionByUuid(String id, Long formId) {
+        DescriptiveQuestion descriptiveQuestion = descriptiveQuestionRepository.findByUuidAndFormId(id, formId)
+                .orElseThrow(() -> new BadRequestException("설문에 존재하지 않는 문항입니다.")
+                );
         return descriptiveQuestion;
     }
 }

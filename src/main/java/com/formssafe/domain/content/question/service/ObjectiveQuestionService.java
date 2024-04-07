@@ -1,10 +1,8 @@
 package com.formssafe.domain.content.question.service;
 
-import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
-import com.formssafe.domain.content.question.repository.DescriptiveQuestionRepository;
 import com.formssafe.domain.content.question.repository.ObjectiveQuestionRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.formssafe.global.exception.type.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,10 +16,9 @@ public class ObjectiveQuestionService {
     private final ObjectiveQuestionRepository objectiveQuestionRepository;
 
     @Transactional
-    public ObjectiveQuestion getObjectiveQuestionByUuid(String id){
-        //TODO : 오류처리 해야함
-        ObjectiveQuestion objectiveQuestion = objectiveQuestionRepository.findByUuid(id).orElseThrow(
-                () -> new EntityNotFoundException(id)
+    public ObjectiveQuestion getObjectiveQuestionByUuid(String id, Long formId) {
+        ObjectiveQuestion objectiveQuestion = objectiveQuestionRepository.findByUuidAndFormId(id, formId).orElseThrow(
+                () -> new BadRequestException("설문에 존재하지 않는 문항입니다.")
         );
         return objectiveQuestion;
     }
