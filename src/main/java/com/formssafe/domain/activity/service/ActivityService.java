@@ -3,11 +3,14 @@ package com.formssafe.domain.activity.service;
 import com.formssafe.domain.activity.dto.ActivityParam.SearchDto;
 import com.formssafe.domain.activity.dto.ActivityResponse.FormListDto;
 import com.formssafe.domain.form.entity.FormStatus;
+import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
+import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -15,7 +18,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ActivityService {
+    private final FormRepository formRepository;
 
     public Page<FormListDto> getCreatedFormList(SearchDto param) {
         log.debug(param.toString());
@@ -59,5 +64,9 @@ public class ActivityService {
                 FormStatus.DONE.displayName());
 
         return new PageImpl<>(List.of(formListResponse1, formListResponse2));
+    }
+
+    public List<FormListDto> getAllSubmission(SearchDto param, Long formId, LoginUserDto loginUser) {
+        return null;
     }
 }
