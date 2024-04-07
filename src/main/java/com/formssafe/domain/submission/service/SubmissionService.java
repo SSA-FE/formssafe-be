@@ -10,6 +10,7 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionCreateDto;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionDetailDto;
+import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
 import com.formssafe.domain.submission.entity.DescriptiveSubmission;
 import com.formssafe.domain.submission.entity.ObjectiveSubmission;
 import com.formssafe.domain.submission.entity.Submission;
@@ -83,6 +84,25 @@ public class SubmissionService {
         if (!request.isTemp()) {
             form.increaseResponseCount();
         }
+    }
+
+    public List<SubmissionDetailResponseDto> getSubmissionDetailDtoFromSubmission(Submission submission) {
+        List<Object> submissions = new ArrayList<>();
+        submissions.addAll(getDescriptiveSubmissionFromSubmission(submission));
+        submissions.addAll(getObjectiveSubmissionFromSubmission(submission));
+
+        return submissions.stream()
+                .map(SubmissionDetailResponseDto::from)
+                .toList();
+    }
+
+    private List<DescriptiveSubmission> getDescriptiveSubmissionFromSubmission(Submission submission) {
+        return descriptiveSubmissionRepository.findAllByResponseId(
+                submission.getId());
+    }
+
+    private List<ObjectiveSubmission> getObjectiveSubmissionFromSubmission(Submission submission) {
+        return objectiveSubmissionRepository.findAllByResponseId(submission.getId());
     }
 
     private Submission isSubmissionExist(User user, Form form) {
