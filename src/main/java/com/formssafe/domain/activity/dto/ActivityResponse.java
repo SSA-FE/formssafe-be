@@ -1,10 +1,13 @@
 package com.formssafe.domain.activity.dto;
 
+import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
+import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public final class ActivityResponse {
 
@@ -33,8 +36,41 @@ public final class ActivityResponse {
                               @Schema(description = "설문 참여 시 받을 수 있는 경품")
                               RewardListDto reward,
                               @Schema(description = "설문 태그 목록")
-                              TagCountDto[] tags,
+                                  List<TagCountDto> tags,
                               @Schema(description = "설문 상태")
-                              String status) {
+                                  String status,
+                              @Schema(description = "설문 임시 등록 여부")
+                                  boolean isTemp) {
+
+        public static FormListDto from(Form form) {
+            String imageUrl = null;
+            if (!form.getImageUrl().equals("null")) {
+                imageUrl = JsonConverter.toList(form.getImageUrl(), String.class).get(0);
+            }
+
+            RewardListDto rewardListDto = null;
+            if (form.getReward() != null) {
+                rewardListDto = RewardListDto.from(form.getReward(), form.getReward().getRewardCategory());
+            }
+
+            List<TagCountDto> tagCountDtos = null;
+            if (form.getFormTagList() != null) {
+                tagCountDtos = TagCountDto.from(form.getFormTagList());
+            }
+
+            return new FormListDto(form.getId(),
+                    form.getTitle(),
+                    imageUrl,
+                    UserAuthorDto.from(form.getUser()),
+                    form.getExpectTime(),
+                    form.getQuestionCnt(),
+                    form.getResponseCnt(),
+                    form.getStartDate(),
+                    form.getEndDate(),
+                    rewardListDto,
+                    tagCountDtos,
+                    form.getStatus().displayName(),
+                    form.isTemp());
+        }
     }
 }

@@ -6,10 +6,12 @@ import static com.formssafe.domain.tag.entity.QFormTag.formTag;
 import static com.formssafe.domain.tag.entity.QTag.tag;
 import static com.formssafe.domain.user.entity.QUser.user;
 
+import com.formssafe.domain.activity.dto.ActivityParam;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.service.SortType;
+import com.formssafe.domain.user.entity.User;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -21,11 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FormRepositoryCustomImpl implements FormRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
-
-    public static BooleanExpression isNotDeletedAndTemp() {
-        return form.isDeleted.eq(false)
-                .and(form.isTemp.eq(false));
-    }
 
     private OrderSpecifier<?> getOrderSpecifier(SortType sortType) {
         log.info(sortType.name());
@@ -48,7 +45,8 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .leftJoin(formTag.tag, tag)
                 .leftJoin(form.reward, reward)
                 .orderBy(orderSpecifier)
-                .where(isNotDeletedAndTemp(),
+                .where(isNotDeleted(),
+                        isNotTemp(),
                         userIdLast(searchDto.top()),
                         containsKeyword(searchDto.keyword()),
                         matchStatus(searchDto.status()),
@@ -58,6 +56,42 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .limit(10)
                 .distinct()
                 .fetch();
+    }
+
+    @Override
+    public List<Form> findFormByUserWithFiltered(ActivityParam.SearchDto searchDto, User author) {
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
+
+        return jpaQueryFactory.select(form)
+                .from(form)
+                .join(form.user, user).fetchJoin()
+                .leftJoin(form.formTagList, formTag)
+                .leftJoin(formTag.tag, tag)
+                .leftJoin(form.reward, reward)
+                .orderBy(orderSpecifier)
+                .where(matchUser(author),
+                        isNotDeleted(),
+                        userIdLast(searchDto.top()),
+                        containsKeyword(searchDto.keyword()),
+                        matchStatus(searchDto.status()),
+                        containsTag(searchDto.tag()),
+                        containsCategory(searchDto.category()))
+                .fetchJoin()
+                .limit(10)
+                .distinct()
+                .fetch();
+    }
+
+    public BooleanExpression isNotDeleted() {
+        return form.isDeleted.eq(false);
+    }
+
+    public BooleanExpression isNotTemp() {
+        return form.isTemp.eq(false);
+    }
+
+    private BooleanExpression matchUser(User user) {
+        return user != null ? form.user.eq(user) : null;
     }
 
     private BooleanExpression matchStatus(String status) {
