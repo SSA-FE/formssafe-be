@@ -126,8 +126,18 @@ public class FormService {
         log.debug("id: {}\n payload: {}", id, request.toString());
     }
 
-    public void delete(Long id) {
-        log.debug("id: {}", id);
+    @Transactional
+    public void delete(Long id, LoginUserDto loginUser) {
+        log.debug("Form Delete: id: {}, loginUser: {}", id, loginUser.id());
+
+        Form form = formRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + id));
+
+        if (!Objects.equals(form.getUser().getId(), loginUser.id())) {
+            throw new ForbiddenException("userId-" + loginUser.id() + ": 설문 작성자가 아닙니다.: " + form.getUser().getId());
+        }
+
+        form.delete();
     }
 
     @Transactional
@@ -144,6 +154,7 @@ public class FormService {
         if (!form.getStatus().equals(FormStatus.PROGRESS)) {
             throw new BadRequestException("현재 진행 중인 설문이 아닙니다.");
         }
+
         form.changeStatus(FormStatus.DONE);
 
         // TODO: 4/6/24 경품 존재 시 당첨자 선정 로직 추가 

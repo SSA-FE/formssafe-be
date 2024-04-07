@@ -63,6 +63,31 @@ public final class Fixture {
                 .build();
     }
 
+    /**
+     * 삭제된 설문 엔티티를 생성한다.
+     *
+     * @param author
+     * @param title
+     * @param detail
+     * @return
+     */
+    public static Form createDeletedForm(User author, String title, String detail) {
+        return Form.builder()
+                .user(author)
+                .title(title)
+                .imageUrl(new ArrayList<>())
+                .detail(detail)
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(2))
+                .expectTime(10)
+                .isEmailVisible(false)
+                .privacyDisposalDate(null)
+                .status(FormStatus.PROGRESS)
+                .isTemp(false)
+                .isDeleted(true)
+                .build();
+    }
+
     public static Form createFormWithEndDate(User author, String title, String detail, LocalDateTime endDate,
                                              FormStatus status) {
         return Form.builder()

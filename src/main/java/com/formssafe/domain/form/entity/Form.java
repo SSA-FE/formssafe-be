@@ -124,6 +124,10 @@ public class Form extends BaseTimeEntity {
         this.status = newStatus;
     }
 
+    public void delete() {
+        this.isDeleted = true;
+    }
+
     @Override
     public String toString() {
         return "Form{" +

@@ -123,7 +123,8 @@ public class FormController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    void deleteForm(@PathVariable Long id) {
-        formService.delete(id);
+    void deleteForm(@PathVariable Long id,
+                    @AuthenticationPrincipal LoginUserDto loginUser) {
+        formService.delete(id, loginUser);
     }
 }
