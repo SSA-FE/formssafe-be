@@ -52,4 +52,11 @@ public class ContentService {
         descriptiveQuestionRepository.saveAll(descriptiveQuestions);
         decorationRepository.saveAll(decorations);
     }
+
+    @Transactional
+    public void deleteContents(Form form) {
+        decorationRepository.deleteAllByForm(form);
+        objectiveQuestionRepository.deleteAllByForm(form);
+        descriptiveQuestionRepository.deleteAllByForm(form);
+    }
 }

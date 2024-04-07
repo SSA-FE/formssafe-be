@@ -35,4 +35,9 @@ public class RewardService {
 
         rewardRepository.save(reward);
     }
+
+    @Transactional
+    public void deleteReward(Form form) {
+        rewardRepository.deleteByForm(form);
+    }
 }

@@ -6,6 +6,7 @@ import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
 import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.service.FormCreateService;
 import com.formssafe.domain.form.service.FormService;
+import com.formssafe.domain.form.service.TempFormUpdateService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FormController {
     private final FormService formService;
     private final FormCreateService formCreateService;
+    private final TempFormUpdateService tempFormUpdateService;
 
     @Operation(summary = "설문 전체 조회", description = "모든 설문을 목록으로 조회한다.")
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
@@ -108,8 +110,9 @@ public class FormController {
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     void updateForm(@PathVariable Long id,
-                    @Valid @RequestBody FormRequest.FormCreateDto request) {
-        formService.update(id, request);
+                    @Valid @RequestBody FormRequest.FormCreateDto request,
+                    @AuthenticationPrincipal LoginUserDto loginUser) {
+        tempFormUpdateService.execute(id, request, loginUser);
     }
 
     @Operation(summary = "설문 삭제", description = "해당 id의 설문을 삭제한다.")
