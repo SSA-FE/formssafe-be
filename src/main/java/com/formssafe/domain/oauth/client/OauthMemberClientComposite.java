@@ -19,8 +19,8 @@ public class OauthMemberClientComposite {
                 .collect(Collectors.toMap(OauthMemberClient::supportServer, Function.identity()));
     }
 
-    public User fetch(OauthServerType oauthServerType, String authCode) {
-        return getClient(oauthServerType).fetch(authCode);
+    public User fetch(OauthServerType oauthServerType, String authCode, boolean isLocal) {
+        return getClient(oauthServerType).fetch(authCode, isLocal);
     }
 
     public void deleteAccount(OauthServerType oauthServerType, String refreshToken){

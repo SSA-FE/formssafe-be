@@ -23,20 +23,31 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            Object userIdValue = session.getAttribute("userId");
-            if (userIdValue != null) {
-                Long userId = Long.parseLong(String.valueOf(userIdValue));
-
-                UsernamePasswordAuthenticationToken authentication = createUserAuthenticationToken(userId);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                log.debug("[{}]: userId: {}", request.getRequestURI(), userId);
-            }
-        }
+        authenticate(request);
 
         filterChain.doFilter(request, response);
+    }
+
+    private void authenticate(HttpServletRequest request) {
+        log.info("URI: {}", request.getRequestURI());
+
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            log.info("No session found.");
+            return;
+        }
+
+        Object userIdValue = session.getAttribute("userId");
+        if (userIdValue == null) {
+            log.info("Session doesn't have userId.");
+            return;
+        }
+
+        Long userId = Long.parseLong(String.valueOf(userIdValue));
+        UsernamePasswordAuthenticationToken authentication = createUserAuthenticationToken(userId);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        log.info("userId {} logined", userId);
     }
 
     private UsernamePasswordAuthenticationToken createUserAuthenticationToken(Long userId) {

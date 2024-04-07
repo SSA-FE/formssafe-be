@@ -11,13 +11,26 @@ import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.constants.FormConstants;
 import com.formssafe.global.entity.BaseTimeEntity;
 import com.formssafe.global.util.JsonConverter;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -34,7 +47,7 @@ public class Form extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "title", columnDefinition = "text", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "detail", columnDefinition = "text")
@@ -47,7 +60,6 @@ public class Form extends BaseTimeEntity {
     @Column(nullable = false)
     private LocalDateTime startDate;
 
-    @Column(nullable = false)
     private LocalDateTime endDate;
 
     private int expectTime;
@@ -82,7 +94,7 @@ public class Form extends BaseTimeEntity {
     private List<ObjectiveQuestion> objectiveQuestionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "form")
-    List<Decoration> decorationList = new ArrayList<>();
+    private List<Decoration> decorationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "form")
     List<Submission> submissionList = new ArrayList<>();
@@ -91,9 +103,10 @@ public class Form extends BaseTimeEntity {
     private List<RewardRecipient> rewardRecipientList = new ArrayList<>();
 
     @Builder
-    private Form(Long id, User user, String title, String detail, List<String> imageUrl, LocalDateTime startDate,
-                 LocalDateTime endDate, int expectTime, boolean isEmailVisible, LocalDateTime privacyDisposalDate,
-                 FormStatus status, int questionCnt, int responseCnt, boolean isTemp, boolean isDeleted) {
+    private Form(Long id, User user, String title, String detail, List<String> imageUrl,
+                 LocalDateTime startDate, LocalDateTime endDate, int expectTime, boolean isEmailVisible,
+                 LocalDateTime privacyDisposalDate, FormStatus status, int questionCnt, int responseCnt, boolean isTemp,
+                 boolean isDeleted) {
         this.id = id;
         this.user = user;
         this.title = title;

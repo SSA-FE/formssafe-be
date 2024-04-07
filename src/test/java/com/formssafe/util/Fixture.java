@@ -33,8 +33,8 @@ public final class Fixture {
                 .imageUrl(
                         "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1")
                 .authority(Authority.ROLE_USER)
-                .createTime(LocalDateTime.now())
                 .refreshToken("refreshToken1")
+                .isActive(true)
                 .build();
     }
 
@@ -55,32 +55,15 @@ public final class Fixture {
                 .build();
     }
 
-    public static Form createForm(User author, String title, String detail, LocalDateTime startTime) {
+    public static Form createFormWithEndDate(User author, String title, String detail, LocalDateTime endDate,
+                                             FormStatus status) {
         return Form.builder()
                 .user(author)
                 .title(title)
                 .imageUrl(new ArrayList<>())
                 .detail(detail)
-                .startDate(startTime)
-                .endDate(startTime.plusDays(2))
-                .expectTime(10)
-                .isEmailVisible(false)
-                .privacyDisposalDate(null)
-                .status(FormStatus.NOT_STARTED)
-                .isTemp(false)
-                .isDeleted(false)
-                .build();
-    }
-
-    public static Form createForm(User author, String title, String detail, LocalDateTime startTime,
-                                  FormStatus status) {
-        return Form.builder()
-                .user(author)
-                .title(title)
-                .imageUrl(new ArrayList<>())
-                .detail(detail)
-                .startDate(startTime)
-                .endDate(startTime.plusDays(2))
+                .startDate(endDate.minusDays(1L))
+                .endDate(endDate)
                 .expectTime(10)
                 .isEmailVisible(false)
                 .privacyDisposalDate(null)

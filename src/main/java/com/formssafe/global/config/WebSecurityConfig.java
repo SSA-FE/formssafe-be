@@ -1,6 +1,8 @@
 package com.formssafe.global.config;
 
+import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.auth.SessionAuthenticationFilter;
+import com.formssafe.global.auth.UserActivationInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +17,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class WebSecurityConfig implements WebMvcConfigurer {
+    private final UserRepository userRepository;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -69,8 +74,19 @@ public class WebSecurityConfig {
         return source;
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new UserActivationInterceptor(userRepository))
+                .excludePathPatterns("/api/v1/auth/social/**", "/api/v1/users/join");
+    }
+
     @Bean
     public SessionAuthenticationFilter sessionAuthenticationFilter() {
         return new SessionAuthenticationFilter();
+    }
+
+    @Bean
+    public UserActivationInterceptor userActivationInterceptor() {
+        return new UserActivationInterceptor(userRepository);
     }
 }

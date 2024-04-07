@@ -3,6 +3,7 @@ package com.formssafe.global.exception.advice;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.exception.type.ForbiddenException;
 import com.formssafe.global.exception.type.SessionNotFoundException;
 import com.formssafe.global.exception.type.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,13 @@ public class ExceptionHandlerAdvice {
         log.error("Error: ", e);
         return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.UNAUTHORIZED.value(), e.getMessage()),
                 HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handleForbiddenException(ForbiddenException e) {
+        log.error("Error: ", e);
+        return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.FORBIDDEN.value(), e.getMessage()),
+                HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(DataNotFoundException.class)

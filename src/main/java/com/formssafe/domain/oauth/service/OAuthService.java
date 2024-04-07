@@ -28,12 +28,12 @@ public class OAuthService {
 
 
     @Transactional
-    public User loginOrSignup(OauthServerType oauthServerType, String authCode) {
-        User oauthUser = oauthMemberClientComposite.fetch(oauthServerType, authCode);
+    public User loginOrSignup(OauthServerType oauthServerType, String authCode, boolean isLocal) {
+        User oauthUser = oauthMemberClientComposite.fetch(oauthServerType, authCode, isLocal);
         String nickname;
-        do{
+        do {
             nickname = CommonUtil.generateRandomNickname();
-        }while(userRepository.existsByNickname(nickname));
+        } while (userRepository.existsByNickname(nickname));
 
         oauthUser.updateNickname(nickname);
 

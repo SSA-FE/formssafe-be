@@ -10,7 +10,7 @@ import static com.formssafe.util.Fixture.createTag;
 import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.formssafe.config.QueryDslConfig;
+import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestionType;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
@@ -35,14 +35,8 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(QueryDslConfig.class)
-class FormRepositoryTest {
+class FormRepositoryTest extends IntegrationTestConfig {
 
     @Autowired
     private FormRepository formRepository;

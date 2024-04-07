@@ -45,6 +45,7 @@ public class ContentService {
             } else {
                 throw new BadRequestException("유효하지 않은 옵션입니다.: " + q.type());
             }
+            ++position;
         }
 
         objectiveQuestionRepository.saveAll(objectiveQuestions);
