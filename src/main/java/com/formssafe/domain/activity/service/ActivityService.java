@@ -11,8 +11,6 @@ import com.formssafe.global.exception.type.DataNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +35,17 @@ public class ActivityService {
                 .toList();
     }
 
-    public Page<FormListDto> getParticipatedFormList(SearchDto param) {
+    public List<FormListDto> getParticipatedFormList(SearchDto param, LoginUserDto loginUser) {
         log.debug(param == null ? null : param.toString());
 
-        return new PageImpl<>(List.of());
+        User user = userRepository.findById(loginUser.id())
+                .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+
+        List<Form> formByParticipateUserWithFiltered = formRepository.findFormByParticipateUserWithFiltered(param,
+                user);
+
+        return formByParticipateUserWithFiltered.stream()
+                .map(FormListDto::from)
+                .toList();
     }
 }

@@ -9,8 +9,6 @@ import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
-import com.formssafe.domain.content.question.dto.QuestionResponse.QuestionDetailDto;
-import com.formssafe.domain.content.question.entity.Question;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
@@ -74,7 +72,7 @@ public class FormService {
         return UserAuthorDto.from(author);
     }
 
-    private Form getForm(Long id) {
+    public Form getForm(Long id) {
         Form form = formRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
 
@@ -101,7 +99,7 @@ public class FormService {
         return RewardListDto.from(reward, reward.getRewardCategory());
     }
 
-    private List<ContentResponseDto> getContentList(Form form){
+    private List<ContentResponseDto> getContentList(Form form) {
         List<Content> contents = new ArrayList<>();
         contents.addAll(form.getDescriptiveQuestionList());
         contents.addAll(form.getObjectiveQuestionList());

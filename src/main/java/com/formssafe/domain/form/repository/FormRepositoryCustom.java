@@ -10,4 +10,6 @@ public interface FormRepositoryCustom {
     List<Form> findFormWithFiltered(SearchDto searchDto);
 
     List<Form> findFormByUserWithFiltered(ActivityParam.SearchDto searchDto, User author);
+
+    List<Form> findFormByParticipateUserWithFiltered(ActivityParam.SearchDto searchDto, User user);
 }

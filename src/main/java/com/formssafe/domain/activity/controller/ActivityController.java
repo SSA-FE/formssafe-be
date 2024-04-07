@@ -4,7 +4,6 @@ import com.formssafe.domain.activity.dto.ActivityParam;
 import com.formssafe.domain.activity.dto.ActivityResponse.FormListDto;
 import com.formssafe.domain.activity.dto.SelfSubmissionResponse;
 import com.formssafe.domain.activity.service.ActivityService;
-import com.formssafe.domain.submission.dto.Submission;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,14 +48,7 @@ public class ActivityController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/forms/{formId}/responses")
     public ResponseEntity<SelfSubmissionResponse> getSelfResponse(@PathVariable int formId) {
-        SelfSubmissionResponse selfSubmissionResponse = new SelfSubmissionResponse(1,
-                List.of(new Submission(1, 1)), true);
-        //나중에 수정할 것임
-        if (true) {
-            return ResponseEntity.ok(selfSubmissionResponse);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
+        return null;
     }
 
     @Operation(summary = "내가 등록한 설문 전체 조회", description = "내가 등록한 설문을 목록으로 조회한다.")
@@ -79,7 +70,8 @@ public class ActivityController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/responses", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Page<FormListDto> getParticipatedFormList(@ModelAttribute ActivityParam.SearchDto param) {
-        return activityService.getParticipatedFormList(param);
+    public List<FormListDto> getParticipatedFormList(@ModelAttribute ActivityParam.SearchDto param,
+                                                     @AuthenticationPrincipal LoginUserDto loginUser) {
+        return activityService.getParticipatedFormList(param, loginUser);
     }
 }
