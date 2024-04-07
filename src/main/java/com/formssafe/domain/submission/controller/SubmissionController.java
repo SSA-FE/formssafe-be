@@ -60,8 +60,9 @@ public class SubmissionController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PutMapping("/{formId}/submission")
-    public void modifySubmission(@PathVariable String formId, @RequestBody SubmissionCreateDto submissionRequest,
+    @ResponseStatus(HttpStatus.OK)
+    public void modifySubmission(@PathVariable long formId, @RequestBody SubmissionCreateDto request,
                                  @AuthenticationPrincipal LoginUserDto loginUser) {
-        return;
+        submissionService.modify(formId, request, loginUser);
     }
 }

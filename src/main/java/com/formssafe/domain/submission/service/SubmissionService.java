@@ -47,24 +47,51 @@ public class SubmissionService {
 
         Form form = formService.getForm(formId);
 
-        if (isSubmissionExist(user, form)) {
-            throw new BadRequestException("한 사용자가 하나의 설문에 대하여 두개 이상의 응답을 작성할 수 없습니다.");
+        if (isSubmissionExist(user, form) != null) {
+            throw new BadRequestException("한 사용자가 하나의 설문에 대하여 두 개 이상의 응답을 작성할 수 없습니다.");
         }
 
         Submission submission = createSubmission(request, user, form);
 
         createDetailSubmission(request.submissions(), submission, formId);
 
-        form.increaseResponseCount();
+        if (!request.isTemp()) {
+            form.increaseResponseCount();
+        }
     }
 
-    private boolean isSubmissionExist(User user, Form form) {
+    @Transactional
+    public void modify(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
+        User user = userRepository.getReferenceById(loginUser.id());
+
+        Form form = formService.getForm(formId);
+
+        Submission preSubmission = isSubmissionExist(user, form);
+        if (preSubmission == null) {
+            throw new BadRequestException("등록되어 있는 응답이 존재하지 않습니다.");
+        }
+        if (!preSubmission.isTemp()) {
+            throw new BadRequestException("해당 응답은 완료된 응답입니다.");
+        }
+
+        submissionRepository.deleteById(preSubmission.getId());
+
+        Submission submission = createSubmission(request, user, form);
+
+        createDetailSubmission(request.submissions(), submission, formId);
+
+        if (!request.isTemp()) {
+            form.increaseResponseCount();
+        }
+    }
+
+    private Submission isSubmissionExist(User user, Form form) {
         Optional<Submission> existingSubmission = submissionRepository.findSubmissionByFormIDAndUserId(
                 form.getId(), user.getId());
         if (existingSubmission.isPresent()) {
-            return true;
+            return existingSubmission.get();
         }
-        return false;
+        return null;
     }
 
     private Submission createSubmission(SubmissionCreateDto request, User user, Form form) {
