@@ -54,7 +54,7 @@ public class SubmissionService {
 
         Submission submission = createSubmission(request, user, form);
 
-        createDetailSubmission(request.submissions(), submission, formId);
+        createDetailSubmission(request.submissions(), submission, form);
 
         if (!request.isTemp()) {
             form.increaseResponseCount();
@@ -65,7 +65,7 @@ public class SubmissionService {
     public void modify(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
-        
+
         Form form = formService.getForm(formId);
 
         Submission preSubmission = getSubmissionByUserAndForm(user, form);
@@ -80,7 +80,7 @@ public class SubmissionService {
 
         Submission submission = createSubmission(request, user, form);
 
-        createDetailSubmission(request.submissions(), submission, formId);
+        createDetailSubmission(request.submissions(), submission, form);
 
         if (!request.isTemp()) {
             form.increaseResponseCount();
@@ -98,28 +98,44 @@ public class SubmissionService {
     }
 
     private void createDetailSubmission(List<SubmissionDetailDto> submissionDetailDtos, Submission submission,
-                                        Long formId) {
+                                        Form form) {
         List<ObjectiveSubmission> objectiveSubmissions = new ArrayList<>();
         List<DescriptiveSubmission> descriptiveSubmissions = new ArrayList<>();
+        int requiredCnt = 0;
 
         for (SubmissionDetailDto dtos : submissionDetailDtos) {
             if (ObjectiveQuestionType.exists(dtos.type())) {
                 ObjectiveQuestion objectiveQuestion = objectiveQuestionService.getObjectiveQuestionByUuid(
-                        dtos.questionId(), formId);
+                        dtos.questionId(), form.getId());
                 if (!objectiveQuestion.getQuestionType().displayName().equals(dtos.type())) {
                     throw new BadRequestException("연관된 질문 타입이 올바르지 않습니다.");
                 }
                 objectiveSubmissions.add(dtos.toObjectiveSubmission(submission, objectiveQuestion));
+                if (objectiveQuestion.isRequired()) {
+                    requiredCnt++;
+                }
+
             } else if (DescriptiveQuestionType.exists(dtos.type())) {
                 DescriptiveQuestion descriptiveQuestion = descriptiveQuestionService.getDescriptiveQuestionByUuid(
-                        dtos.questionId(), formId);
+                        dtos.questionId(), form.getId());
                 if (!descriptiveQuestion.getQuestionType().displayName().equals(dtos.type())) {
                     throw new BadRequestException("연관된 질문 타입이 올바르지 않습니다.");
                 }
                 descriptiveSubmissions.add(dtos.toDescriptiveSubmission(submission, descriptiveQuestion));
+                if (descriptiveQuestion.isRequired()) {
+                    requiredCnt++;
+                }
             } else {
                 throw new BadRequestException("올바르지 않은 질문 type 입니다.");
             }
+        }
+
+        if (form.getQuestionCnt() < objectiveSubmissions.size() + descriptiveSubmissions.size()) {
+            throw new BadRequestException("입력된 제출의 개수가 질문 문항보다 많습니다.");
+        }
+
+        if (requiredCnt != formService.getRequiredQuestionCnt(form)) {
+            throw new BadRequestException("답변되지 않은 필수 문항이 존재합니다.");
         }
         descriptiveSubmissionRepository.saveAll(descriptiveSubmissions);
         objectiveSubmissionRepository.saveAll(objectiveSubmissions);

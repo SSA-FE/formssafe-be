@@ -2,6 +2,8 @@ package com.formssafe.domain.form.service;
 
 import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.content.entity.Content;
+import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
+import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
@@ -9,8 +11,6 @@ import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
-import com.formssafe.domain.content.question.dto.QuestionResponse.QuestionDetailDto;
-import com.formssafe.domain.content.question.entity.Question;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
@@ -69,11 +69,6 @@ public class FormService {
                 rewardRecipientsDtos);
     }
 
-    private UserAuthorDto getAuthor(Form form) {
-        User author = form.getUser();
-        return UserAuthorDto.from(author);
-    }
-
     public Form getForm(Long id) {
         Form form = formRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
@@ -83,6 +78,26 @@ public class FormService {
         }
 
         return form;
+    }
+
+    public int getRequiredQuestionCnt(Form form) {
+        int requiredQuestionCnt = 0;
+        for (DescriptiveQuestion question : form.getDescriptiveQuestionList()) {
+            if (question.isRequired()) {
+                requiredQuestionCnt++;
+            }
+        }
+        for (ObjectiveQuestion question : form.getObjectiveQuestionList()) {
+            if (question.isRequired()) {
+                requiredQuestionCnt++;
+            }
+        }
+        return requiredQuestionCnt;
+    }
+
+    private UserAuthorDto getAuthor(Form form) {
+        User author = form.getUser();
+        return UserAuthorDto.from(author);
     }
 
     private List<TagListDto> getTagList(Form form) {
@@ -101,7 +116,7 @@ public class FormService {
         return RewardListDto.from(reward, reward.getRewardCategory());
     }
 
-    private List<ContentResponseDto> getContentList(Form form){
+    private List<ContentResponseDto> getContentList(Form form) {
         List<Content> contents = new ArrayList<>();
         contents.addAll(form.getDescriptiveQuestionList());
         contents.addAll(form.getObjectiveQuestionList());
