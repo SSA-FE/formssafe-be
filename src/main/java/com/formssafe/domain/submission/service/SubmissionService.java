@@ -87,6 +87,9 @@ public class SubmissionService {
         }
     }
 
+    public void getSubmission(long formId, LoginUserDto loginUser) {
+    }
+
     private Submission getSubmissionByUserAndForm(User user, Form form) {
         return submissionRepository.findSubmissionByFormIDAndUserId(form.getId(), user.getId()).orElse(null);
     }
