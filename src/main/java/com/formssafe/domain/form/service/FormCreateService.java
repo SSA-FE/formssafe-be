@@ -79,8 +79,8 @@ public class FormCreateService {
             throw new BadRequestException("자동 마감 시각은 현재 시각 5분 후부터 설정할 수 있습니다.: " + endDate);
         }
 
-        if (endDate != null && request.privacyDisposalDate() != null && endDate.isBefore(
-                request.privacyDisposalDate())) {
+        if (endDate != null && request.privacyDisposalDate() != null &&
+                request.privacyDisposalDate().isBefore(endDate)) {
             throw new BadRequestException("개인 정보 폐기 시각은 마감 시각 후여야 합니다.");
         }
 
