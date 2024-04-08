@@ -1,7 +1,6 @@
 package com.formssafe.global.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,5 +31,14 @@ public final class JsonConverter {
         }
 
         return new ArrayList<>();
+    }
+
+    public static <T> T toObject(String json, Class<T> type) {
+        try {
+            return mapper.readValue(json, type);
+        } catch (JsonProcessingException e) {
+            log.error("JSON reading error", e);
+        }
+        return null;
     }
 }

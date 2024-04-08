@@ -2,6 +2,7 @@ package com.formssafe.domain.submission.controller;
 
 import com.formssafe.domain.auth.service.SessionService;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionCreateDto;
+import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionResponseDto;
 import com.formssafe.domain.submission.service.SubmissionService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.global.exception.response.ExceptionResponse;
@@ -79,8 +80,8 @@ public class SubmissionController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/{formId}/submission")
     @ResponseStatus(HttpStatus.OK)
-    public void modifySubmission(@PathVariable long formId,
-                                 @AuthenticationPrincipal LoginUserDto loginUser) {
-        submissionService.getSubmission(formId, loginUser);
+    public SubmissionResponseDto getSumbission(@PathVariable long formId,
+                                               @AuthenticationPrincipal LoginUserDto loginUser) {
+        return submissionService.getSubmission(formId, loginUser);
     }
 }

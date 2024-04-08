@@ -3,10 +3,25 @@ package com.formssafe.domain.submission.dto;
 import com.formssafe.domain.submission.entity.DescriptiveSubmission;
 import com.formssafe.domain.submission.entity.ObjectiveSubmission;
 import com.formssafe.global.exception.type.DtoConvertException;
+import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 
 public final class SubmissionResponse {
     private SubmissionResponse() {
+    }
+
+    @Schema(description = "참여한 설문 응답 조회")
+    public record SubmissionResponseDto(
+            Long formId,
+            List<SubmissionDetailResponseDto> responses,
+            boolean isTemp
+    ) {
+        public static SubmissionResponseDto from(Long formId,
+                                                 List<SubmissionDetailResponseDto> submissionDetailDtos,
+                                                 boolean isTemp) {
+            return new SubmissionResponseDto(formId, submissionDetailDtos, isTemp);
+        }
     }
 
     public record SubmissionDetailResponseDto(
@@ -25,7 +40,7 @@ public final class SubmissionResponse {
         private static SubmissionDetailResponseDto fromObjectSubmission(ObjectiveSubmission submission) {
             return new SubmissionDetailResponseDto(
                     submission.getObjectiveQuestion().getUuid(),
-                    submission.getContent()
+                    JsonConverter.toObject(submission.getContent(), Object.class)
             );
         }
 

@@ -11,6 +11,7 @@ import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionCreateDto;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionDetailDto;
 import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
+import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionResponseDto;
 import com.formssafe.domain.submission.entity.DescriptiveSubmission;
 import com.formssafe.domain.submission.entity.ObjectiveSubmission;
 import com.formssafe.domain.submission.entity.Submission;
@@ -24,7 +25,6 @@ import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -89,13 +89,19 @@ public class SubmissionService {
         }
     }
 
-    public void getSubmission(long formId, LoginUserDto loginUser) {
+    public SubmissionResponseDto getSubmission(long formId, LoginUserDto loginUser) {
+        User user = userRepository.findById(loginUser.id())
+                .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+
+        Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
+                .orElse(new Submission());
+
+        List<SubmissionDetailResponseDto> submissionDetailResponseDtos = getSubmissionDetailDto(submission);
+
+        return SubmissionResponseDto.from(formId, submissionDetailResponseDtos, submission.isTemp());
     }
 
-    private Submission getSubmissionByUserAndForm(User user, Form form) {
-        return submissionRepository.findSubmissionByFormIDAndUserId(form.getId(), user.getId()).orElse(null);
-    }
-    public List<SubmissionDetailResponseDto> getSubmissionDetailDtoFromSubmission(Submission submission) {
+    public List<SubmissionDetailResponseDto> getSubmissionDetailDto(Submission submission) {
         List<Object> submissions = new ArrayList<>();
         submissions.addAll(getDescriptiveSubmissionFromSubmission(submission));
         submissions.addAll(getObjectiveSubmissionFromSubmission(submission));
@@ -105,6 +111,10 @@ public class SubmissionService {
                 .toList();
     }
 
+    private Submission getSubmissionByUserAndForm(User user, Form form) {
+        return submissionRepository.findSubmissionByFormIDAndUserId(form.getId(), user.getId()).orElse(null);
+    }
+
     private List<DescriptiveSubmission> getDescriptiveSubmissionFromSubmission(Submission submission) {
         return descriptiveSubmissionRepository.findAllByResponseId(
                 submission.getId());
@@ -112,15 +122,6 @@ public class SubmissionService {
 
     private List<ObjectiveSubmission> getObjectiveSubmissionFromSubmission(Submission submission) {
         return objectiveSubmissionRepository.findAllByResponseId(submission.getId());
-    }
-
-    private Submission isSubmissionExist(User user, Form form) {
-        Optional<Submission> existingSubmission = submissionRepository.findSubmissionByFormIDAndUserId(
-                form.getId(), user.getId());
-        if (existingSubmission.isPresent()) {
-            return existingSubmission.get();
-        }
-        return null;
     }
 
     private Submission createSubmission(SubmissionCreateDto request, User user, Form form) {

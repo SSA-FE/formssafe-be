@@ -68,7 +68,6 @@ public class ActivityService {
     }
 
     private List<SubmissionDetailResponseDto> getSubmissionDetail(Submission submission) {
-        //1. submission id를 가져와서 해당 id로 부터 객관식 답변, 주관식 답변을 가져옴
-        return submissionService.getSubmissionDetailDtoFromSubmission(submission);
+        return submissionService.getSubmissionDetailDto(submission);
     }
 }
