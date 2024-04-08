@@ -77,7 +77,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new UserActivationInterceptor(userRepository))
-                .excludePathPatterns("/api/v1/auth/social/**", "/api/v1/users/join");
+                .excludePathPatterns("/api/v1/auth/social/**", "/api/v1/users/join", "/swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/v3/api-docs/**",
+                        "/api-docs/**",
+                        "/api-docs");
     }
 
     @Bean

@@ -19,6 +19,9 @@ public class UserActivationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            return false;
+        }
         LoginUserDto loginUser = (LoginUserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = loginUser.id();
         User user = userRepository.findById(userId)
