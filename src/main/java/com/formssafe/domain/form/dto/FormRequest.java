@@ -74,4 +74,50 @@ public final class FormRequest {
                     '}';
         }
     }
+
+    @Schema(description = "설문 등록 요청 DTO",
+            requiredProperties = {"id", "title"})
+    public record FormUpdateDto(@Schema(description = "설문 아이디")
+                                Long id,
+                                @Schema(description = "설문 제목")
+                                String title,
+                                @Schema(description = "설문 설명")
+                                String description,
+                                @Schema(description = "설문 설명 이미지 목록")
+                                List<String> image,
+                                @Schema(description = "설문 마감 시각")
+                                LocalDateTime endDate,
+                                @Schema(description = "설문 참여 예상 시간")
+                                int expectTime,
+                                @Schema(description = "작성자 이메일 공개 동의 여부")
+                                boolean emailVisibility,
+                                @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각")
+                                LocalDateTime privacyDisposalDate,
+                                @Schema(description = "설문 문항 목록")
+                                List<ContentCreateDto> contents,
+                                @Schema(description = "설문 태그 목록")
+                                List<String> tags,
+                                @Schema(description = "설문 경품")
+                                RewardCreateDto reward,
+                                @Schema(description = "설문 임시 저장 여부")
+                                boolean isTemp) {
+
+        @Override
+        public String toString() {
+            return "FormUpdateDto{" +
+                    "id='" + id + '\'' +
+                    ", title='" + title + '\'' +
+                    ", description='" + description + '\'' +
+                    ", image=" + image +
+                    ", endDate=" + endDate +
+                    ", expectTime=" + expectTime +
+                    ", emailVisibility=" + emailVisibility +
+                    ", privacyDisposalDate=" + privacyDisposalDate +
+                    ", contents=" + contents +
+                    ", tags=" + tags +
+                    ", reward=" + reward +
+                    ", isTemp=" + isTemp +
+                    '}';
+        }
+    }
 }

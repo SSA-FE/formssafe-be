@@ -3,6 +3,7 @@ package com.formssafe.domain.form.entity;
 import com.formssafe.domain.content.decoration.entity.Decoration;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
+import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.tag.entity.FormTag;
@@ -122,6 +123,24 @@ public class Form extends BaseTimeEntity {
 
     public void changeStatus(@NonNull FormStatus newStatus) {
         this.status = newStatus;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    public void updateTempForm(FormCreateDto request, LocalDateTime startDate, FormStatus status, int questionCnt) {
+        this.title = request.title();
+        this.detail = request.description();
+        this.imageUrl = JsonConverter.toJson(request.image());
+        this.startDate = startDate;
+        this.endDate = request.endDate();
+        this.expectTime = request.expectTime();
+        this.isEmailVisible = request.emailVisibility();
+        this.privacyDisposalDate = request.privacyDisposalDate();
+        this.status = status;
+        this.questionCnt = questionCnt;
+        this.isTemp = request.isTemp();
     }
 
     @Override

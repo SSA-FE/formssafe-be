@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface FormTagRepository extends JpaRepository<FormTag, Long> {
 
     List<FormTag> findAllByForm(Form form);
+
+    void deleteAllByForm(Form form);
 }
