@@ -22,7 +22,6 @@ import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,7 +46,7 @@ public class SubmissionService {
 
         Form form = formService.getForm(formId);
 
-        if (isSubmissionExist(user, form) != null) {
+        if (getSubmissionByUserAndForm(user, form) != null) {
             throw new BadRequestException("한 사용자가 하나의 설문에 대하여 두 개 이상의 응답을 작성할 수 없습니다.");
         }
 
@@ -66,7 +65,7 @@ public class SubmissionService {
 
         Form form = formService.getForm(formId);
 
-        Submission preSubmission = isSubmissionExist(user, form);
+        Submission preSubmission = getSubmissionByUserAndForm(user, form);
         if (preSubmission == null) {
             throw new BadRequestException("등록되어 있는 응답이 존재하지 않습니다.");
         }
@@ -85,13 +84,8 @@ public class SubmissionService {
         }
     }
 
-    private Submission isSubmissionExist(User user, Form form) {
-        Optional<Submission> existingSubmission = submissionRepository.findSubmissionByFormIDAndUserId(
-                form.getId(), user.getId());
-        if (existingSubmission.isPresent()) {
-            return existingSubmission.get();
-        }
-        return null;
+    private Submission getSubmissionByUserAndForm(User user, Form form) {
+        return submissionRepository.findSubmissionByFormIDAndUserId(form.getId(), user.getId()).orElse(null);
     }
 
     private Submission createSubmission(SubmissionCreateDto request, User user, Form form) {

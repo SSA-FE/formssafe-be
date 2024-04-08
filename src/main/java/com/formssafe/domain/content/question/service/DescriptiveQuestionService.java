@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DescriptiveQuestionService {
     private final DescriptiveQuestionRepository descriptiveQuestionRepository;
 
-    @Transactional
     public DescriptiveQuestion getDescriptiveQuestionByUuid(String id, Long formId) {
         DescriptiveQuestion descriptiveQuestion = descriptiveQuestionRepository.findByUuidAndFormId(id, formId)
                 .orElseThrow(() -> new BadRequestException("설문에 존재하지 않는 문항입니다.")

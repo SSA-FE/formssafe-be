@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ObjectiveQuestionService {
     private final ObjectiveQuestionRepository objectiveQuestionRepository;
 
-    @Transactional
     public ObjectiveQuestion getObjectiveQuestionByUuid(String id, Long formId) {
         ObjectiveQuestion objectiveQuestion = objectiveQuestionRepository.findByUuidAndFormId(id, formId).orElseThrow(
                 () -> new BadRequestException("설문에 존재하지 않는 문항입니다.")
