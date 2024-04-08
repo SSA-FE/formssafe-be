@@ -10,6 +10,7 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionCreateDto;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionDetailDto;
+import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
 import com.formssafe.domain.submission.entity.DescriptiveSubmission;
 import com.formssafe.domain.submission.entity.ObjectiveSubmission;
 import com.formssafe.domain.submission.entity.Submission;
@@ -23,6 +24,7 @@ import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -92,6 +94,33 @@ public class SubmissionService {
 
     private Submission getSubmissionByUserAndForm(User user, Form form) {
         return submissionRepository.findSubmissionByFormIDAndUserId(form.getId(), user.getId()).orElse(null);
+    }
+    public List<SubmissionDetailResponseDto> getSubmissionDetailDtoFromSubmission(Submission submission) {
+        List<Object> submissions = new ArrayList<>();
+        submissions.addAll(getDescriptiveSubmissionFromSubmission(submission));
+        submissions.addAll(getObjectiveSubmissionFromSubmission(submission));
+
+        return submissions.stream()
+                .map(SubmissionDetailResponseDto::from)
+                .toList();
+    }
+
+    private List<DescriptiveSubmission> getDescriptiveSubmissionFromSubmission(Submission submission) {
+        return descriptiveSubmissionRepository.findAllByResponseId(
+                submission.getId());
+    }
+
+    private List<ObjectiveSubmission> getObjectiveSubmissionFromSubmission(Submission submission) {
+        return objectiveSubmissionRepository.findAllByResponseId(submission.getId());
+    }
+
+    private Submission isSubmissionExist(User user, Form form) {
+        Optional<Submission> existingSubmission = submissionRepository.findSubmissionByFormIDAndUserId(
+                form.getId(), user.getId());
+        if (existingSubmission.isPresent()) {
+            return existingSubmission.get();
+        }
+        return null;
     }
 
     private Submission createSubmission(SubmissionCreateDto request, User user, Form form) {

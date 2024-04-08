@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DescriptiveQuestionRepository extends JpaRepository<DescriptiveQuestion, Long> {
-    @Query("SELECT dq FROM DescriptiveQuestion dq WHERE dq.uuid=:uuid AND dq.form.id = :formId")
+    @Query(value = "SELECT dq FROM DescriptiveQuestion dq WHERE dq.uuid=:uuid AND dq.form.id = :formId")
     Optional<DescriptiveQuestion> findByUuidAndFormId(@Param("uuid") String uuid, @Param("formId") Long formId);
 
     @Modifying

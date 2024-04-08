@@ -2,6 +2,7 @@ package com.formssafe.domain.form.repository;
 
 import static com.formssafe.domain.form.entity.QForm.form;
 import static com.formssafe.domain.reward.entity.QReward.reward;
+import static com.formssafe.domain.submission.entity.QSubmission.submission;
 import static com.formssafe.domain.tag.entity.QFormTag.formTag;
 import static com.formssafe.domain.tag.entity.QTag.tag;
 import static com.formssafe.domain.user.entity.QUser.user;
@@ -82,12 +83,41 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<Form> findFormByParticipateUserWithFiltered(ActivityParam.SearchDto searchDto, User participant) {
+        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
+
+        return jpaQueryFactory.select(form)
+                .from(form)
+                .join(form.user, user).fetchJoin()
+                .leftJoin(form.formTagList, formTag)
+                .leftJoin(formTag.tag, tag)
+                .leftJoin(form.reward, reward)
+                .leftJoin(form.submissionList, submission)
+                .orderBy(orderSpecifier)
+                .where(matchParticipant(participant),
+                        isNotDeleted(),
+                        userIdLast(searchDto.top()),
+                        containsKeyword(searchDto.keyword()),
+                        matchStatus(searchDto.status()),
+                        containsTag(searchDto.tag()),
+                        containsCategory(searchDto.category()))
+                .fetchJoin()
+                .limit(10)
+                .distinct()
+                .fetch();
+    }
+
     public BooleanExpression isNotDeleted() {
         return form.isDeleted.eq(false);
     }
 
     public BooleanExpression isNotTemp() {
         return form.isTemp.eq(false);
+    }
+
+    private BooleanExpression matchParticipant(User user) {
+        return user != null ? submission.user.eq(user) : null;
     }
 
     private BooleanExpression matchUser(User user) {

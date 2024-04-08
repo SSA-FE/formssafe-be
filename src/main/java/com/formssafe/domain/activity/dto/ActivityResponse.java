@@ -2,6 +2,7 @@ package com.formssafe.domain.activity.dto;
 
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
+import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.global.util.JsonConverter;
@@ -16,7 +17,7 @@ public final class ActivityResponse {
 
     @Schema(description = "설문 목록 조회 응답")
     public record FormListDto(@Schema(description = "설문 id")
-                                  Long id,
+                              Long id,
                               @Schema(description = "설문 제목")
                               String title,
                               @Schema(description = "설문 썸네일")
@@ -36,11 +37,11 @@ public final class ActivityResponse {
                               @Schema(description = "설문 참여 시 받을 수 있는 경품")
                               RewardListDto reward,
                               @Schema(description = "설문 태그 목록")
-                                  List<TagCountDto> tags,
+                              List<TagCountDto> tags,
                               @Schema(description = "설문 상태")
-                                  String status,
+                              String status,
                               @Schema(description = "설문 임시 등록 여부")
-                                  boolean isTemp) {
+                              boolean isTemp) {
 
         public static FormListDto from(Form form) {
             String imageUrl = null;
@@ -71,6 +72,17 @@ public final class ActivityResponse {
                     tagCountDtos,
                     form.getStatus().displayName(),
                     form.isTemp());
+        }
+    }
+
+    @Schema(description = "참여한 설문 응답 조회")
+    public record ParticipateSubmissionDto(
+            Long formId,
+            List<SubmissionDetailResponseDto> responses
+    ) {
+        public static ParticipateSubmissionDto from(Long formId,
+                                                    List<SubmissionDetailResponseDto> submissionDetailDtos) {
+            return new ParticipateSubmissionDto(formId, submissionDetailDtos);
         }
     }
 }
