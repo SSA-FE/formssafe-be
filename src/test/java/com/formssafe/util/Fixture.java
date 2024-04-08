@@ -17,7 +17,6 @@ import com.formssafe.domain.user.entity.Authority;
 import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class Fixture {
@@ -38,18 +37,89 @@ public final class Fixture {
                 .build();
     }
 
+    public static User createUser(String nickname, String oauthId, String email) {
+        return User.builder()
+                .oauthId(new OauthId(oauthId, OauthServerType.GOOGLE))
+                .nickname(nickname)
+                .email(email)
+                .imageUrl(
+                        "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1")
+                .authority(Authority.ROLE_USER)
+                .refreshToken("refreshToken1")
+                .isActive(true)
+                .build();
+    }
+
+    /**
+     * 진행 중인 설문 엔티티를 생성한다.
+     *
+     * @param author
+     * @param title
+     * @param detail
+     * @return
+     */
     public static Form createForm(User author, String title, String detail) {
         return Form.builder()
                 .user(author)
                 .title(title)
-                .imageUrl(new ArrayList<>())
+                .imageUrl(null)
                 .detail(detail)
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(2))
                 .expectTime(10)
                 .isEmailVisible(false)
                 .privacyDisposalDate(null)
-                .status(FormStatus.NOT_STARTED)
+                .status(FormStatus.PROGRESS)
+                .isTemp(false)
+                .isDeleted(false)
+                .build();
+    }
+
+    /**
+     * 삭제된 설문 엔티티를 생성한다.
+     *
+     * @param author
+     * @param title
+     * @param detail
+     * @return
+     */
+    public static Form createDeletedForm(User author, String title, String detail) {
+        return Form.builder()
+                .user(author)
+                .title(title)
+                .imageUrl(null)
+                .detail(detail)
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(2))
+                .expectTime(10)
+                .isEmailVisible(false)
+                .privacyDisposalDate(null)
+                .status(FormStatus.PROGRESS)
+                .isTemp(false)
+                .isDeleted(true)
+                .build();
+    }
+
+    /**
+     * 임시 설문 엔티티를 생성한다.
+     *
+     * @param author
+     * @param title
+     * @param detail
+     * @return
+     */
+    public static Form createTemporaryForm(User author, String title, String detail) {
+        return Form.builder()
+                .user(author)
+                .title(title)
+                .imageUrl(null)
+                .detail(detail)
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(2))
+                .expectTime(10)
+                .isEmailVisible(false)
+                .privacyDisposalDate(null)
+                .status(FormStatus.PROGRESS)
                 .isTemp(false)
                 .isDeleted(false)
                 .build();
@@ -60,7 +130,7 @@ public final class Fixture {
         return Form.builder()
                 .user(author)
                 .title(title)
-                .imageUrl(new ArrayList<>())
+                .imageUrl(null)
                 .detail(detail)
                 .startDate(endDate.minusDays(1L))
                 .endDate(endDate)

@@ -1,6 +1,7 @@
 package com.formssafe.domain.activity.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 
 public final class ActivityParam {
 
@@ -8,17 +9,21 @@ public final class ActivityParam {
     public record SearchDto(@Schema(description = "검색어")
                             String keyword,
                             @Schema(description = "정렬 기준", defaultValue = "create date", allowableValues = {
-                                    "create date",
-                                    "end date", "submissions"})
+                                    "createDate",
+                                    "endDate", "responseCnt"})
                             String sort,
                             @Schema(description = "카테고리")
-                            String[] category,
-                            @Schema(description = "설문 상태", allowableValues = {"not started", "progress", "done",
+                                List<String> category,
+                            @Schema(description = "설문 상태", allowableValues = {"not_started", "progress", "done",
                                     "rewarded"})
                             String status,
                             @Schema(description = "태그")
-                            String[] tag,
-                            @Schema(description = "페이지 번호")
-                            Long pageNum) {
+                                List<String> tag,
+                            @Schema(description = "마지막 formId")
+                                Long top) {
+
+        public SearchDto() {
+            this(null, null, null, null, null, null);
+        }
     }
 }

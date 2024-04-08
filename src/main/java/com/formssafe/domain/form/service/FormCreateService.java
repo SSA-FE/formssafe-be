@@ -60,7 +60,11 @@ public class FormCreateService {
 
     private Form createForm(FormCreateDto request, User user, int questionCnt, LocalDateTime now,
                             LocalDateTime endDate) {
-        Form form = request.toForm(user, questionCnt, now, endDate, FormStatus.PROGRESS);
+        FormStatus status = FormStatus.PROGRESS;
+        if (request.isTemp()) {
+            status = FormStatus.NOT_STARTED;
+        }
+        Form form = request.toForm(user, questionCnt, now, endDate, status);
         return formRepository.save(form);
     }
 

@@ -38,4 +38,10 @@ public class TagService {
         }
         formTagRepository.saveAll(formTagList);
     }
+
+    @Transactional
+    public void decreaseCount(Form form) {
+        tagRepository.decreaseCountByForm(form);
+        formTagRepository.deleteAllByForm(form);
+    }
 }
