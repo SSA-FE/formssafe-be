@@ -4,7 +4,6 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.entity.BaseTimeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -38,10 +37,10 @@ public class Submission extends BaseTimeEntity {
     @Schema(description = "설문 임시 저장 여부")
     boolean isTemp;
 
-    @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "submission")
     List<DescriptiveSubmission> descriptiveSubmissionList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "submission")
     List<ObjectiveSubmission> objectiveSubmissionList = new ArrayList<>();
 
     @Builder
@@ -49,6 +48,10 @@ public class Submission extends BaseTimeEntity {
         this.id = id;
         this.user = user;
         this.form = form;
+        this.isTemp = isTemp;
+    }
+
+    public void update(boolean isTemp) {
         this.isTemp = isTemp;
     }
 }

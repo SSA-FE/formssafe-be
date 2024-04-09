@@ -70,17 +70,17 @@ public class SubmissionService {
 
         Form form = formService.getForm(formId);
 
-        Submission preSubmission = getSubmissionByUserAndForm(user, form);
-        if (preSubmission == null) {
+        Submission submission = getSubmissionByUserAndForm(user, form);
+        if (submission == null) {
             throw new BadRequestException("등록되어 있는 응답이 존재하지 않습니다.");
         }
-        if (!preSubmission.isTemp()) {
+        if (!submission.isTemp()) {
             throw new BadRequestException("해당 응답은 완료된 응답입니다.");
         }
 
-        submissionRepository.deleteById(preSubmission.getId());
+        deleteDetailSubmission(submission);
 
-        Submission submission = createSubmission(request, user, form);
+        submission.update(request.isTemp());
 
         createDetailSubmission(request.submissions(), submission, form);
 
@@ -109,6 +109,11 @@ public class SubmissionService {
         return submissions.stream()
                 .map(SubmissionDetailResponseDto::from)
                 .toList();
+    }
+
+    private void deleteDetailSubmission(Submission submission) {
+        descriptiveSubmissionRepository.deleteAllBySubmissionId(submission.getId());
+        objectiveSubmissionRepository.deleteAllBySubmissionId(submission.getId());
     }
 
     private Submission getSubmissionByUserAndForm(User user, Form form) {
