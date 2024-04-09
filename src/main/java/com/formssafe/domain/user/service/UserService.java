@@ -69,7 +69,7 @@ public class UserService {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new EntityNotFoundException("올바른 ID가 존재하지 않습니다."));
 
-        oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
+//        oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
 
         user.deleteUser(CommonUtil.generateRandomDeleteNickname(), CommonUtil.generateRandomDeleteEmail());
         userRepository.save(user);

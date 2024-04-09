@@ -34,6 +34,7 @@ public final class Fixture {
                 .authority(Authority.ROLE_USER)
                 .refreshToken("refreshToken1")
                 .isActive(true)
+                .isDeleted(false)
                 .build();
     }
 
@@ -47,6 +48,7 @@ public final class Fixture {
                 .authority(Authority.ROLE_USER)
                 .refreshToken("refreshToken1")
                 .isActive(true)
+                .isDeleted(false)
                 .build();
     }
 
