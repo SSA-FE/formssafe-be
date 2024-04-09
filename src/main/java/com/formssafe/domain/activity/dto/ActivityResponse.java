@@ -78,11 +78,13 @@ public final class ActivityResponse {
     @Schema(description = "참여한 설문 응답 조회")
     public record ParticipateSubmissionDto(
             Long formId,
-            List<SubmissionDetailResponseDto> responses
+            List<SubmissionDetailResponseDto> responses,
+            boolean isTemp
     ) {
         public static ParticipateSubmissionDto from(Long formId,
-                                                    List<SubmissionDetailResponseDto> submissionDetailDtos) {
-            return new ParticipateSubmissionDto(formId, submissionDetailDtos);
+                                                    List<SubmissionDetailResponseDto> submissionDetailDtos,
+                                                    boolean isTemp) {
+            return new ParticipateSubmissionDto(formId, submissionDetailDtos, isTemp);
         }
     }
 }

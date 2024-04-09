@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,9 +80,12 @@ public class SubmissionController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/{formId}/submission")
-    @ResponseStatus(HttpStatus.OK)
-    public SubmissionResponseDto getSumbission(@PathVariable long formId,
-                                               @AuthenticationPrincipal LoginUserDto loginUser) {
-        return submissionService.getSubmission(formId, loginUser);
+    public ResponseEntity<SubmissionResponseDto> getSumbission(@PathVariable long formId,
+                                                               @AuthenticationPrincipal LoginUserDto loginUser) {
+        SubmissionResponseDto submissionResponseDto = submissionService.getSubmission(formId, loginUser);
+        if (submissionResponseDto == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(submissionResponseDto);
     }
 }

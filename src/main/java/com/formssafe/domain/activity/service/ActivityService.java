@@ -61,10 +61,14 @@ public class ActivityService {
                 .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
-                .orElse(new Submission());
+                .orElse(null);
+
+        if (submission == null) {
+            return null;
+        }
 
         List<SubmissionDetailResponseDto> submissionDetailDtos = getSubmissionDetail(submission);
-        return ParticipateSubmissionDto.from(formId, submissionDetailDtos);
+        return ParticipateSubmissionDto.from(formId, submissionDetailDtos, submission.isTemp());
     }
 
     private List<SubmissionDetailResponseDto> getSubmissionDetail(Submission submission) {
