@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -37,6 +38,9 @@ public class Submission extends BaseTimeEntity {
     @Schema(description = "설문 임시 저장 여부")
     boolean isTemp;
 
+    @Schema(description = "최종 제출 시간")
+    LocalDateTime submitTime;
+
     @OneToMany(mappedBy = "submission")
     List<DescriptiveSubmission> descriptiveSubmissionList = new ArrayList<>();
 
@@ -44,14 +48,16 @@ public class Submission extends BaseTimeEntity {
     List<ObjectiveSubmission> objectiveSubmissionList = new ArrayList<>();
 
     @Builder
-    private Submission(Long id, User user, Form form, boolean isTemp) {
+    private Submission(Long id, User user, Form form, boolean isTemp, LocalDateTime submitTime) {
         this.id = id;
         this.user = user;
         this.form = form;
         this.isTemp = isTemp;
+        this.submitTime = submitTime;
     }
 
-    public void update(boolean isTemp) {
+    public void update(boolean isTemp, LocalDateTime submitTime) {
         this.isTemp = isTemp;
+        this.submitTime = submitTime;
     }
 }

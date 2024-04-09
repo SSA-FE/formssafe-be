@@ -23,6 +23,7 @@ import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +81,7 @@ public class SubmissionService {
 
         deleteDetailSubmission(submission);
 
-        submission.update(request.isTemp());
+        submission.update(request.isTemp(), LocalDateTime.now());
 
         createDetailSubmission(request.submissions(), submission, form);
 
