@@ -11,6 +11,8 @@ import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.service.RewardService;
 import com.formssafe.domain.tag.service.TagService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
+import com.formssafe.domain.user.entity.User;
+import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
 import com.formssafe.global.exception.type.ForbiddenException;
@@ -32,6 +34,7 @@ public class TempFormUpdateService {
     private final ContentService contentService;
     private final RewardService rewardService;
     private final FormBatchService formBatchService;
+    private final UserRepository userRepository;
 
     @Transactional
     public void execute(Long formId, FormCreateDto request, LoginUserDto loginUser) {
@@ -39,6 +42,13 @@ public class TempFormUpdateService {
 
         Form form = formRepository.findById(formId)
                 .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + formId));
+
+        User user = userRepository.findById(loginUser.id())
+                .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+        
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
 
         if (!Objects.equals(form.getUser().getId(), loginUser.id())) {
             throw new ForbiddenException("userId-" + loginUser.id() + ": 설문 작성자가 아닙니다.: " + form.getUser().getId());

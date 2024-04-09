@@ -14,6 +14,7 @@ import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
+import com.formssafe.global.exception.type.DataNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,10 @@ public class FormCreateService {
         log.debug("FormCreateService.execute: \nrequest {}\n loginUser {}", request, loginUser);
 
         User user = userRepository.getReferenceById(loginUser.id());
+
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
 
         LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
         LocalDateTime endDate = request.endDate() == null ? null : request.endDate().withSecond(0).withNano(0);

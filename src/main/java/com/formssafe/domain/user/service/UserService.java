@@ -44,6 +44,10 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new DataNotFoundException("존재하지 않는 userId입니다.: " + userId));
 
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
+
         return UserProfileDto.from(user);
     }
 
@@ -52,6 +56,11 @@ public class UserService {
         String nickname = request.nickname();
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new BadRequestException("존재하지 않는 userId입니다."));
+
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
+
         if (user.getNickname().equals(nickname) || userRepository.existsByNickname(nickname)) {
             throw new BadRequestException("중복된 닉네임이 존재합니다.");
         }
@@ -69,7 +78,11 @@ public class UserService {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new EntityNotFoundException("올바른 ID가 존재하지 않습니다."));
 
-//        oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
+
+        oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
 
         user.deleteUser(CommonUtil.generateRandomDeleteNickname(), CommonUtil.generateRandomDeleteEmail());
         userRepository.save(user);

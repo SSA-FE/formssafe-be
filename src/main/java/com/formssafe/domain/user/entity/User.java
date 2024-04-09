@@ -74,7 +74,6 @@ public class User extends BaseTimeEntity implements Serializable {
         this.authority = Authority.DELETED;
         this.imageUrl = "DELETED";
         this.refreshToken = "DELETED";
-        this.isActive = false;
         this.isDeleted = true;
     }
 

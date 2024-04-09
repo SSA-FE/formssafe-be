@@ -35,6 +35,10 @@ public class ActivityService {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
+
         List<Form> formByUserWithFiltered = formRepository.findFormByUserWithFiltered(param, user);
 
         return formByUserWithFiltered.stream()
@@ -48,6 +52,10 @@ public class ActivityService {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
+
         List<Form> formByParticipateUserWithFiltered = formRepository.findFormByParticipateUserWithFiltered(param,
                 user);
 
@@ -59,6 +67,10 @@ public class ActivityService {
     public ParticipateSubmissionDto getSelfResponse(Long formId, LoginUserDto loginUser) {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
 
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElse(null);

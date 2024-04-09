@@ -49,6 +49,10 @@ public class SubmissionService {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
+
         Form form = formService.getForm(formId);
 
         if (getSubmissionByUserAndForm(user, form) != null) {
@@ -68,6 +72,10 @@ public class SubmissionService {
     public void modify(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
 
         Form form = formService.getForm(formId);
 
@@ -94,6 +102,10 @@ public class SubmissionService {
         User user = userRepository.findById(loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
+        
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElse(null);
 

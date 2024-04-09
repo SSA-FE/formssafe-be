@@ -47,6 +47,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .leftJoin(form.reward, reward)
                 .orderBy(orderSpecifier)
                 .where(isNotDeleted(),
+                        isUserNotDeleted(),
                         isNotTemp(),
                         userIdLast(searchDto.top()),
                         containsKeyword(searchDto.keyword()),
@@ -71,6 +72,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .leftJoin(form.reward, reward)
                 .orderBy(orderSpecifier)
                 .where(matchUser(author),
+                        isUserNotDeleted(),
                         isNotDeleted(),
                         userIdLast(searchDto.top()),
                         containsKeyword(searchDto.keyword()),
@@ -96,6 +98,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .leftJoin(form.submissionList, submission)
                 .orderBy(orderSpecifier)
                 .where(matchParticipant(participant),
+                        isUserNotDeleted(),
                         isNotDeleted(),
                         userIdLast(searchDto.top()),
                         containsKeyword(searchDto.keyword()),
@@ -106,6 +109,10 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .limit(10)
                 .distinct()
                 .fetch();
+    }
+
+    private BooleanExpression isUserNotDeleted() {
+        return user.isDeleted.eq(false);
     }
 
     public BooleanExpression isNotDeleted() {
