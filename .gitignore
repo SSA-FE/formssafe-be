@@ -14,7 +14,7 @@ log/**
 src/main/java/com/formssafe/domain/test
 src/http
 .gradle/**
-.idea/**
+.idea
 build/**
 
 # User-specific stuff
