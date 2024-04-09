@@ -10,6 +10,7 @@ import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
 import com.formssafe.global.exception.type.ForbiddenException;
+import com.formssafe.global.util.CommonUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +71,7 @@ public class UserService {
 
         oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
 
-        userRepository.delete(user);
+        user.deleteUser(CommonUtil.generateRandomDeleteNickname(), CommonUtil.generateRandomDeleteEmail());
+        userRepository.save(user);
     }
 }
