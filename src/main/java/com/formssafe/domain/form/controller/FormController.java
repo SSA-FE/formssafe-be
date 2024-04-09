@@ -110,7 +110,7 @@ public class FormController {
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     void updateForm(@PathVariable Long id,
-                    @Valid @RequestBody FormRequest.FormCreateDto request,
+                    @Valid @RequestBody FormRequest.FormUpdateDto request,
                     @AuthenticationPrincipal LoginUserDto loginUser) {
         tempFormUpdateService.execute(id, request, loginUser);
     }

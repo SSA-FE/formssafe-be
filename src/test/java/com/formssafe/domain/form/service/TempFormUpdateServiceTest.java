@@ -6,11 +6,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
+import com.formssafe.domain.form.dto.FormRequest.FormUpdateDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.dto.RewardRequest.RewardCreateDto;
-import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.tag.entity.FormTag;
@@ -55,7 +55,7 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
     }
 
     @Test
-    void 설문을_등록한다() {
+    void 임시가아닌_설문을_등록한다() {
         //given
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
                 null, 10, false, null,
@@ -72,7 +72,7 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
         em.flush();
         em.clear();
 
-        FormCreateDto formUpdate = new FormCreateDto("업데이트1", "업데이트1", null,
+        FormUpdateDto formUpdate = new FormUpdateDto("업데이트1", "업데이트1", null,
                 null, 5, true, null,
                 List.of(createContentCreate("text", null, "텍스트 블록-업데이트", null, false),
                         createContentCreate("short", "주관식 질문-업데이트", null, null, false),
@@ -94,6 +94,7 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
         Form resultForm = formRepository.findById(result.get(0).getId()).orElseThrow(IllegalStateException::new);
 
         assertThat(resultForm.getUser().getId()).isEqualTo(testUser.getId());
+        assertThat(resultForm.getStartDate()).isNotNull();
         assertThat(resultForm.getStatus()).isEqualTo(FormStatus.PROGRESS);
         assertThat(resultForm.getDecorationList()).hasSize(2)
                 .extracting("detail", "position")
@@ -117,7 +118,6 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
                         Tuple.tuple("tag1", 1),
                         Tuple.tuple("tagNew", 1));
 
-        Reward reward = resultForm.getReward();
-        assertThat(reward.getRewardName()).isEqualTo("경품1-업데이트");
+        assertThat(resultForm.getReward().getRewardName()).isEqualTo("경품1-업데이트");
     }
 }

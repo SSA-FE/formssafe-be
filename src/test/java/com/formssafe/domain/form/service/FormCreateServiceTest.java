@@ -13,10 +13,10 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.dto.RewardRequest.RewardCreateDto;
-import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.reward.repository.RewardRepository;
+import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.tag.repository.TagRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
@@ -48,16 +48,17 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     @Autowired
     private EntityManager em;
 
+    private User testUser;
+
     @BeforeEach
     void setUp() {
         rewardCategoryRepository.save(RewardCategory.builder().rewardCategoryName("커피").build());
+        testUser = userRepository.save(createUser("testUser"));
     }
 
     @Test
     void 설문을_등록한다() {
         //given
-        User user = userRepository.save(createUser("testUser"));
-
         LocalDateTime startDate = LocalDateTime.now().withSecond(0).withNano(0);
         LocalDateTime endDate = startDate.plusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
@@ -68,7 +69,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
-        LoginUserDto loginUserDto = new LoginUserDto(user.getId());
+        LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
         em.flush();
         em.clear();
         //when
@@ -81,7 +82,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         assertThat(result).hasSize(1);
 
         Form resultForm = result.get(0);
-        assertThat(resultForm.getUser().getId()).isEqualTo(user.getId());
+        assertThat(resultForm.getUser().getId()).isEqualTo(testUser.getId());
         assertThat(resultForm.getStatus()).isEqualTo(FormStatus.PROGRESS);
         assertThat(resultForm.getDecorationList().get(0).getPosition()).isEqualTo(1);
         assertThat(resultForm.getDescriptiveQuestionList().get(0).getPosition()).isEqualTo(2);
@@ -90,11 +91,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         Tag tag13 = tagRepository.findByTagName("tag13").orElseThrow(IllegalStateException::new);
         assertThat(tag13.getCount()).isEqualTo(1);
 
-        List<Reward> rewardResult = rewardRepository.findAll();
-        assertThat(rewardResult).hasSize(1);
-
-        Reward reward = rewardResult.get(0);
-        assertThat(reward.getRewardName()).isEqualTo("경품1");
+        assertThat(resultForm.getReward().getRewardName()).isEqualTo("경품1");
 
         List<FormBatchEnd> formBatchEndResult = formBatchEndRepository.findAll();
         assertThat(formBatchEndResult).hasSize(1);
@@ -104,10 +101,51 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     }
 
     @Test
+    void 임시설문을_등록한다() {
+        //given
+        LocalDateTime startDate = LocalDateTime.now().withSecond(0).withNano(0);
+        LocalDateTime endDate = startDate.plusDays(1L);
+        FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
+                endDate, 10, false, null,
+                List.of(createContentCreate("text", null, "텍스트 블록", null, false),
+                        createContentCreate("short", "주관식 질문", null, null, false),
+                        createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
+                List.of("tag1", "tag13"),
+                new RewardCreateDto("경품1", "커피", 4),
+                true);
+        LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
+        em.flush();
+        em.clear();
+        //when
+        formCreateService.execute(formCreateDto, loginUserDto);
+        //then
+        em.flush();
+        em.clear();
+
+        List<Form> result = formRepository.findAll();
+        assertThat(result).hasSize(1);
+
+        Form resultForm = result.get(0);
+        assertThat(resultForm.getUser().getId()).isEqualTo(testUser.getId());
+        assertThat(resultForm.getStatus()).isEqualTo(FormStatus.NOT_STARTED);
+        assertThat(resultForm.getStartDate()).isNull();
+        assertThat(resultForm.getDecorationList().get(0).getPosition()).isEqualTo(1);
+        assertThat(resultForm.getDescriptiveQuestionList().get(0).getPosition()).isEqualTo(2);
+        assertThat(resultForm.getObjectiveQuestionList().get(0).getPosition()).isEqualTo(3);
+
+        List<Tag> tagList = resultForm.getFormTagList().stream()
+                .map(FormTag::getTag)
+                .toList();
+        for (Tag tag : tagList) {
+            assertThat(tag.getCount()).isEqualTo(1);
+        }
+
+        assertThat(resultForm.getReward().getRewardName()).isEqualTo("경품1");
+    }
+
+    @Test
     void 경품카테고리가_유효하지않은_설문등록시_예외가_발생한다() {
         //given
-        User user = userRepository.save(createUser("testUser"));
-
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
@@ -118,7 +156,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "invalid", 4),
                 false);
-        LoginUserDto loginUserDto = new LoginUserDto(user.getId());
+        LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
         //when
         assertThatThrownBy(() -> formCreateService.execute(formCreateDto, loginUserDto))
                 .isInstanceOf(BadRequestException.class);
@@ -127,8 +165,6 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     @Test
     void 설문시각이_유효하지않은_설문등록시_예외가_발생한다() {
         //given
-        User user = userRepository.save(createUser("testUser"));
-
         LocalDateTime endDate = LocalDateTime.now();
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
                 endDate, 10, false, null,
@@ -137,7 +173,26 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
                 List.of("tag1", "tag13"), null,
                 false);
-        LoginUserDto loginUserDto = new LoginUserDto(user.getId());
+        LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
+        //when
+        assertThatThrownBy(() -> formCreateService.execute(formCreateDto, loginUserDto))
+                .isInstanceOf(BadRequestException.class);
+    }
+
+    @Test
+    void 개인정보폐기시각이_유효하지않은_설문등록시_예외가_발생한다() {
+        //given
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime privacyDisposalDate = LocalDateTime.now().minusMinutes(1L);
+
+        FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
+                endDate, 10, false, privacyDisposalDate,
+                List.of(createContentCreate("text", null, "텍스트 블록", null, false),
+                        createContentCreate("short", "주관식 질문", null, null, false),
+                        createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
+                List.of("tag1", "tag13"), null,
+                false);
+        LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
         //when
         assertThatThrownBy(() -> formCreateService.execute(formCreateDto, loginUserDto))
                 .isInstanceOf(BadRequestException.class);
@@ -146,8 +201,6 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     @Test
     void 설문문항타입이_유효하지않은_설문등록시_예외가_발생한다() {
         //given
-        User user = userRepository.save(createUser("testUser"));
-
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.minusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
@@ -156,7 +209,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
                 List.of("tag1", "tag13"), null, false);
-        LoginUserDto loginUserDto = new LoginUserDto(user.getId());
+        LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
         //when
         assertThatThrownBy(() -> formCreateService.execute(formCreateDto, loginUserDto))
                 .isInstanceOf(BadRequestException.class);
@@ -165,8 +218,6 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     @Test
     void 설문문항이없고_임시가아닌_설문등록시_예외가_발생한다() {
         //given
-        User user = userRepository.save(createUser("testUser"));
-
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.minusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
@@ -175,7 +226,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                 List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "커피", 4),
                 false);
-        LoginUserDto loginUserDto = new LoginUserDto(user.getId());
+        LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
         //when
         assertThatThrownBy(() -> formCreateService.execute(formCreateDto, loginUserDto))
                 .isInstanceOf(BadRequestException.class);

@@ -3,7 +3,6 @@ package com.formssafe.domain.form.service;
 import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
-import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
 import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.entity.Form;
@@ -46,18 +45,15 @@ public class FormService {
                 .toList();
     }
 
-    public FormDetailDto getFormDetail(Long id) {
-        Form form = getForm(id);
-        UserAuthorDto userAuthorDto = getAuthor(form);
+    public FormDetailDto getFormDetail(Long formId) {
+        Form form = findForm(formId);
+        validNotTemp(form);
 
+        UserAuthorDto userAuthorDto = getAuthor(form);
         List<TagListDto> tagListDtos = getTagList(form);
         List<ContentResponseDto> contentDetailDtos = getContentList(form);
-        List<UserListDto> rewardRecipientsDtos = Collections.emptyList();
-
         RewardListDto rewardDto = getReward(form);
-        if (rewardDto != null) {
-            rewardRecipientsDtos = getRewardRecipientList(form);
-        }
+        List<UserListDto> rewardRecipientsDtos = getRewardRecipients(rewardDto, form);
 
         return FormDetailDto.from(form,
                 userAuthorDto,
@@ -70,17 +66,6 @@ public class FormService {
     private UserAuthorDto getAuthor(Form form) {
         User author = form.getUser();
         return UserAuthorDto.from(author);
-    }
-
-    private Form getForm(Long id) {
-        Form form = formRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
-
-        if (form.isDeleted()) {
-            throw new DataNotFoundException(id + "번 설문이 존재하지 않습니다.");
-        }
-
-        return form;
     }
 
     private List<TagListDto> getTagList(Form form) {
@@ -97,6 +82,14 @@ public class FormService {
         }
 
         return RewardListDto.from(reward, reward.getRewardCategory());
+    }
+
+    private List<UserListDto> getRewardRecipients(RewardListDto rewardDto, Form form) {
+        List<UserListDto> rewardRecipientsDtos = Collections.emptyList();
+        if (rewardDto != null) {
+            rewardRecipientsDtos = getRewardRecipientList(form);
+        }
+        return rewardRecipientsDtos;
     }
 
     private List<ContentResponseDto> getContentList(Form form) {
@@ -122,20 +115,12 @@ public class FormService {
                 .toList();
     }
 
-    public void update(Long id, FormCreateDto request) {
-        log.debug("id: {}\n payload: {}", id, request.toString());
-    }
-
     @Transactional
     public void delete(Long id, LoginUserDto loginUser) {
         log.debug("Form Delete: id: {}, loginUser: {}", id, loginUser.id());
 
-        Form form = formRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + id));
-
-        if (!Objects.equals(form.getUser().getId(), loginUser.id())) {
-            throw new ForbiddenException("userId-" + loginUser.id() + ": 설문 작성자가 아닙니다.: " + form.getUser().getId());
-        }
+        Form form = findForm(id);
+        validAuthor(form, loginUser.id());
 
         form.delete();
     }
@@ -144,19 +129,35 @@ public class FormService {
     public void close(Long id, LoginUserDto loginUser) {
         log.debug("Form Close: id: {}, loginUser: {}", id, loginUser.id());
 
-        Form form = formRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + id));
-
-        if (!Objects.equals(form.getUser().getId(), loginUser.id())) {
-            throw new ForbiddenException("userId-" + loginUser.id() + ": 설문 작성자가 아닙니다.: " + form.getUser().getId());
-        }
-
-        if (!form.getStatus().equals(FormStatus.PROGRESS)) {
-            throw new BadRequestException("현재 진행 중인 설문이 아닙니다.");
-        }
+        Form form = findForm(id);
+        validAuthor(form, loginUser.id());
+        validFormProgress(form);
 
         form.changeStatus(FormStatus.DONE);
 
         // TODO: 4/6/24 경품 존재 시 당첨자 선정 로직 추가 
+    }
+
+    public Form findForm(Long formId) {
+        return formRepository.findById(formId)
+                .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + formId));
+    }
+
+    public void validAuthor(Form form, Long loginUserId) {
+        if (!Objects.equals(form.getUser().getId(), loginUserId)) {
+            throw new ForbiddenException("login user - " + loginUserId + ": 설문 작성자가 아닙니다.: " + form.getUser().getId());
+        }
+    }
+
+    public void validNotTemp(Form form) {
+        if (!form.isTemp()) {
+            throw new BadRequestException("임시 설문만 수정할 수 있습니다.:" + form.getId());
+        }
+    }
+
+    public void validFormProgress(Form form) {
+        if (!FormStatus.PROGRESS.equals(form.getStatus())) {
+            throw new BadRequestException("현재 진행 중인 설문이 아닙니다.");
+        }
     }
 }

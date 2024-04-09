@@ -4,6 +4,7 @@ import com.formssafe.domain.content.decoration.entity.Decoration;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
+import com.formssafe.domain.form.dto.FormRequest.FormUpdateDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.tag.entity.FormTag;
@@ -57,7 +58,6 @@ public class Form extends BaseTimeEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     private String imageUrl;
 
-    @Column(nullable = false)
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
@@ -129,16 +129,65 @@ public class Form extends BaseTimeEntity {
         this.isDeleted = true;
     }
 
-    public void updateTempForm(FormCreateDto request, LocalDateTime startDate, FormStatus status, int questionCnt) {
+    public static Form createTempForm(FormCreateDto formCreateDto, User user, LocalDateTime endDate, int questionCnt) {
+        return Form.builder()
+                .title(formCreateDto.title())
+                .detail(formCreateDto.description())
+                .imageUrl(formCreateDto.image())
+                .user(user)
+                .startDate(null)
+                .endDate(endDate)
+                .expectTime(formCreateDto.expectTime())
+                .isEmailVisible(formCreateDto.emailVisibility())
+                .privacyDisposalDate(formCreateDto.privacyDisposalDate())
+                .questionCnt(questionCnt)
+                .isTemp(true)
+                .status(FormStatus.NOT_STARTED)
+                .build();
+    }
+
+    public static Form createForm(FormCreateDto formCreateDto, User user, LocalDateTime startDate,
+                                  LocalDateTime endDate, int questionCnt) {
+        return Form.builder()
+                .title(formCreateDto.title())
+                .detail(formCreateDto.description())
+                .imageUrl(formCreateDto.image())
+                .user(user)
+                .startDate(startDate)
+                .endDate(endDate)
+                .expectTime(formCreateDto.expectTime())
+                .isEmailVisible(formCreateDto.emailVisibility())
+                .privacyDisposalDate(formCreateDto.privacyDisposalDate())
+                .questionCnt(questionCnt)
+                .isTemp(false)
+                .status(FormStatus.PROGRESS)
+                .build();
+    }
+
+    public void updateToForm(FormUpdateDto request, LocalDateTime startDate, LocalDateTime endDate, int questionCnt) {
         this.title = request.title();
         this.detail = request.description();
         this.imageUrl = JsonConverter.toJson(request.image());
         this.startDate = startDate;
-        this.endDate = request.endDate();
+        this.endDate = endDate;
         this.expectTime = request.expectTime();
         this.isEmailVisible = request.emailVisibility();
         this.privacyDisposalDate = request.privacyDisposalDate();
-        this.status = status;
+        this.status = FormStatus.PROGRESS;
+        this.questionCnt = questionCnt;
+        this.isTemp = request.isTemp();
+    }
+
+    public void updateToTempForm(FormUpdateDto request, LocalDateTime endDate, int questionCnt) {
+        this.title = request.title();
+        this.detail = request.description();
+        this.imageUrl = JsonConverter.toJson(request.image());
+        this.startDate = null;
+        this.endDate = endDate;
+        this.expectTime = request.expectTime();
+        this.isEmailVisible = request.emailVisibility();
+        this.privacyDisposalDate = request.privacyDisposalDate();
+        this.status = FormStatus.NOT_STARTED;
         this.questionCnt = questionCnt;
         this.isTemp = request.isTemp();
     }
