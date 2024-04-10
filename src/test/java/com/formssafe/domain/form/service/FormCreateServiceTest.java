@@ -15,7 +15,6 @@ import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.dto.RewardRequest.RewardCreateDto;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
-import com.formssafe.domain.reward.repository.RewardRepository;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.tag.repository.TagRepository;
@@ -31,24 +30,29 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class FormCreateServiceTest extends IntegrationTestConfig {
-    @Autowired
-    private FormCreateService formCreateService;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private FormRepository formRepository;
-    @Autowired
-    private RewardRepository rewardRepository;
-    @Autowired
-    private TagRepository tagRepository;
-    @Autowired
-    private FormBatchEndRepository formBatchEndRepository;
-    @Autowired
-    private RewardCategoryRepository rewardCategoryRepository;
-    @Autowired
-    private EntityManager em;
+    private final FormCreateService formCreateService;
+    private final UserRepository userRepository;
+    private final FormRepository formRepository;
+    private final RewardCategoryRepository rewardCategoryRepository;
+    private final TagRepository tagRepository;
+    private final FormBatchEndRepository formBatchEndRepository;
+    private final EntityManager em;
 
     private User testUser;
+
+    @Autowired
+    public FormCreateServiceTest(FormCreateService formCreateService, UserRepository userRepository,
+                                 FormRepository formRepository, RewardCategoryRepository rewardCategoryRepository,
+                                 TagRepository tagRepository, FormBatchEndRepository formBatchEndRepository,
+                                 EntityManager em) {
+        this.formCreateService = formCreateService;
+        this.userRepository = userRepository;
+        this.formRepository = formRepository;
+        this.rewardCategoryRepository = rewardCategoryRepository;
+        this.tagRepository = tagRepository;
+        this.formBatchEndRepository = formBatchEndRepository;
+        this.em = em;
+    }
 
     @BeforeEach
     void setUp() {
@@ -95,9 +99,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
 
         List<FormBatchEnd> formBatchEndResult = formBatchEndRepository.findAll();
         assertThat(formBatchEndResult).hasSize(1);
-
-        FormBatchEnd formBatchEnd = formBatchEndResult.get(0);
-        assertThat(formBatchEnd.getServiceTime()).isEqualTo(endDate);
+        assertThat(formBatchEndResult.get(0).getServiceTime()).isEqualTo(endDate);
     }
 
     @Test
