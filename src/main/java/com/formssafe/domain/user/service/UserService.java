@@ -84,7 +84,7 @@ public class UserService {
             throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
-//        oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
+        oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
 
         user.deleteUser(CommonUtil.generateRandomDeleteNickname(), CommonUtil.generateRandomDeleteEmail());
 
