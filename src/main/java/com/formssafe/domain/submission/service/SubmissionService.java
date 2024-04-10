@@ -7,6 +7,7 @@ import com.formssafe.domain.content.question.entity.ObjectiveQuestionType;
 import com.formssafe.domain.content.question.service.DescriptiveQuestionService;
 import com.formssafe.domain.content.question.service.ObjectiveQuestionService;
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionCreateDto;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionDetailDto;
@@ -59,6 +60,8 @@ public class SubmissionService {
             throw new BadRequestException("한 사용자가 하나의 설문에 대하여 두 개 이상의 응답을 작성할 수 없습니다.");
         }
 
+        validate(user, form);
+
         Submission submission = createSubmission(request, user, form);
 
         createDetailSubmission(request.submissions(), submission, form);
@@ -86,6 +89,8 @@ public class SubmissionService {
         if (!submission.isTemp()) {
             throw new BadRequestException("해당 응답은 완료된 응답입니다.");
         }
+
+        validate(user, form);
 
         deleteDetailSubmission(submission);
 
@@ -193,5 +198,15 @@ public class SubmissionService {
         }
         descriptiveSubmissionRepository.saveAll(descriptiveSubmissions);
         objectiveSubmissionRepository.saveAll(objectiveSubmissions);
+    }
+
+    private void validate(User user, Form form) {
+        if (form.getStatus() != FormStatus.PROGRESS) {
+            throw new BadRequestException("참여하고자 하는 설문의 상태가 올바르지 않습니다.");
+        }
+
+        if (user.getId() == form.getUser().getId()) {
+            throw new BadRequestException("자신이 작성한 설문에는 참여할 수 없습니다.");
+        }
     }
 }
