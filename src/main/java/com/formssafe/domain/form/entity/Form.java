@@ -7,6 +7,7 @@ import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.dto.FormRequest.FormUpdateDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
+import com.formssafe.domain.submission.entity.Submission;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.constants.FormConstants;
@@ -95,6 +96,9 @@ public class Form extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "form")
     private List<Decoration> decorationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "form")
+    List<Submission> submissionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "form")
     private List<RewardRecipient> rewardRecipientList = new ArrayList<>();
@@ -190,6 +194,10 @@ public class Form extends BaseTimeEntity {
         this.status = FormStatus.NOT_STARTED;
         this.questionCnt = questionCnt;
         this.isTemp = request.isTemp();
+    }
+
+    public void increaseResponseCount() {
+        this.responseCnt++;
     }
 
     @Override

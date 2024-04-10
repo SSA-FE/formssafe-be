@@ -2,6 +2,8 @@ package com.formssafe.domain.form.service;
 
 import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.content.entity.Content;
+import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
+import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
 import com.formssafe.domain.form.dto.FormResponse.FormListDto;
@@ -61,6 +63,32 @@ public class FormService {
                 rewardDto,
                 tagListDtos,
                 rewardRecipientsDtos);
+    }
+
+    public Form getForm(Long id) {
+        Form form = formRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
+
+        if (form.isDeleted()) {
+            throw new DataNotFoundException(id + "번 설문이 존재하지 않습니다.");
+        }
+
+        return form;
+    }
+
+    public int getRequiredQuestionCnt(Form form) {
+        int requiredQuestionCnt = 0;
+        for (DescriptiveQuestion question : form.getDescriptiveQuestionList()) {
+            if (question.isRequired()) {
+                requiredQuestionCnt++;
+            }
+        }
+        for (ObjectiveQuestion question : form.getObjectiveQuestionList()) {
+            if (question.isRequired()) {
+                requiredQuestionCnt++;
+            }
+        }
+        return requiredQuestionCnt;
     }
 
     private UserAuthorDto getAuthor(Form form) {

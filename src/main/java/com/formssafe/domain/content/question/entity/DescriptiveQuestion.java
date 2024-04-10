@@ -35,4 +35,19 @@ public class DescriptiveQuestion extends Question {
         super(id, form, title, detail, position, isRequired, isPrivacy);
         this.questionType = questionType;
     }
+
+    @Override
+    public String toString() {
+        return "DescriptiveQuestion{" +
+                "questionType=" + questionType +
+                ", title='" + title + '\'' +
+                ", isRequired=" + isRequired +
+                ", isPrivacy=" + isPrivacy +
+                ", id=" + id +
+                ", uuid='" + uuid + '\'' +
+                ", form=" + form +
+                ", detail='" + detail + '\'' +
+                ", position=" + position +
+                '}';
+    }
 }
