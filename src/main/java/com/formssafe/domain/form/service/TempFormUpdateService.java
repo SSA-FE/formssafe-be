@@ -4,22 +4,18 @@ import com.formssafe.domain.batch.form.service.FormBatchService;
 import com.formssafe.domain.content.decoration.entity.DecorationType;
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.content.service.ContentService;
-import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.dto.FormRequest.FormUpdateDto;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.form.entity.FormStatus;
-import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.service.RewardService;
 import com.formssafe.domain.tag.service.TagService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
+import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
-import com.formssafe.global.exception.type.ForbiddenException;
 import com.formssafe.global.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,6 +38,12 @@ public class TempFormUpdateService {
         log.debug("TempFormUpdateService.execute: \nrequest {}\n loginUser {}");
 
         Form form = formService.findForm(formId);
+
+        User user = userRepository.getReferenceById(loginUser.id());
+
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
 
         formService.validAuthor(form, loginUser.id());
         formService.validTempForm(form);
