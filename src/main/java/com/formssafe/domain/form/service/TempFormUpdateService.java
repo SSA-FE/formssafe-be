@@ -36,7 +36,7 @@ public class TempFormUpdateService {
         Form form = formService.findForm(formId);
 
         formService.validAuthor(form, loginUser.id());
-        formService.validNotTemp(form);
+        formService.validTempForm(form);
 
         LocalDateTime now = DateTimeUtil.getCurrentDateTime();
         LocalDateTime endDate =

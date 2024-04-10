@@ -66,8 +66,9 @@ public class FormController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    FormDetailDto getForm(@PathVariable Long id) {
-        return formService.getFormDetail(id);
+    FormDetailDto getForm(@PathVariable Long id,
+                          @AuthenticationPrincipal LoginUserDto loginUser) {
+        return formService.getFormDetail(id, loginUser);
     }
 
     @Operation(summary = "설문 등록", description = "새로운 설문을 등록한다.")

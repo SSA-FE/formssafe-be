@@ -45,9 +45,9 @@ public class FormService {
                 .toList();
     }
 
-    public FormDetailDto getFormDetail(Long formId) {
+    public FormDetailDto getFormDetail(Long formId, LoginUserDto loginUser) {
         Form form = findForm(formId);
-        validNotTemp(form);
+        validAuthorAndTemp(form, loginUser.id());
 
         UserAuthorDto userAuthorDto = getAuthor(form);
         List<TagListDto> tagListDtos = getTagList(form);
@@ -135,7 +135,7 @@ public class FormService {
 
         form.changeStatus(FormStatus.DONE);
 
-        // TODO: 4/6/24 경품 존재 시 당첨자 선정 로직 추가 
+        // TODO: 4/6/24 경품 존재 시 당첨자 선정 로직 추가
     }
 
     public Form findForm(Long formId) {
@@ -149,9 +149,15 @@ public class FormService {
         }
     }
 
-    public void validNotTemp(Form form) {
+    public void validTempForm(Form form) {
         if (!form.isTemp()) {
-            throw new BadRequestException("임시 설문만 수정할 수 있습니다.:" + form.getId());
+            throw new BadRequestException("임시 설문이 아닙니다: " + form.getId());
+        }
+    }
+
+    public void validAuthorAndTemp(Form form, Long loginUser) {
+        if (!Objects.equals(form.getUser().getId(), loginUser) && form.isTemp()) {
+            throw new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + form.getId());
         }
     }
 

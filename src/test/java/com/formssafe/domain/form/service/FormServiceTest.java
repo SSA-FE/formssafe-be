@@ -3,6 +3,7 @@ package com.formssafe.domain.form.service;
 import static com.formssafe.util.Fixture.createDeletedForm;
 import static com.formssafe.util.Fixture.createForm;
 import static com.formssafe.util.Fixture.createFormWithEndDate;
+import static com.formssafe.util.Fixture.createTemporaryForm;
 import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -54,8 +55,9 @@ class FormServiceTest extends IntegrationTestConfig {
         void 설문을_상세_조회한다() {
             //given
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
+            LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when
-            FormDetailDto formDetail = formService.getFormDetail(form.getId());
+            FormDetailDto formDetail = formService.getFormDetail(form.getId(), loginUserDto);
             //then
             assertThat(formDetail).isNotNull()
                     .extracting("title", "description", "status", "questionCnt")
@@ -66,8 +68,19 @@ class FormServiceTest extends IntegrationTestConfig {
         void 삭제된_설문_상세_조회시_예외가_발생한다() {
             //given
             Form form = formRepository.save(createDeletedForm(testUser, "설문1", "설문설명1"));
+            LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when then
-            assertThatThrownBy(() -> formService.getFormDetail(form.getId()))
+            assertThatThrownBy(() -> formService.getFormDetail(form.getId(), loginUserDto))
+                    .isInstanceOf(DataNotFoundException.class);
+        }
+
+        @Test
+        void 작성자가아니고_임시등록된_설문_상세_조회시_예외가_발생한다() {
+            //given
+            Form form = formRepository.save(createTemporaryForm(testUser, "설문1", "설문설명1"));
+            LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
+            //when then
+            assertThatThrownBy(() -> formService.getFormDetail(form.getId(), loginUserDto))
                     .isInstanceOf(DataNotFoundException.class);
         }
     }
