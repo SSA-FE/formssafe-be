@@ -121,8 +121,8 @@ public final class Fixture {
                 .expectTime(10)
                 .isEmailVisible(false)
                 .privacyDisposalDate(null)
-                .status(FormStatus.PROGRESS)
-                .isTemp(false)
+                .status(FormStatus.NOT_STARTED)
+                .isTemp(true)
                 .isDeleted(false)
                 .build();
     }

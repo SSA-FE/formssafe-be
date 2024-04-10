@@ -57,7 +57,7 @@ public class SubmissionService {
         Form form = formService.getForm(formId);
 
         if (getSubmissionByUserAndForm(user, form) != null) {
-            throw new BadRequestException("한 사용자가 하나의 설문에 대하여 두 개 이상의 응답을 작성할 수 없습니다.");
+            throw new BadRequestException(" 한 사용자가 하나의 설문에 대하여 두 개 이상의 응답을 작성할 수 없습니다.");
         }
 
         validate(user, form);

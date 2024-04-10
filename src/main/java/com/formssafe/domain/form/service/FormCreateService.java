@@ -15,6 +15,7 @@ import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -44,33 +45,18 @@ public class FormCreateService {
             throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
-        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
-        LocalDateTime endDate = request.endDate() == null ? null : request.endDate().withSecond(0).withNano(0);
-        log.info("now: {}, endDate: {}", now, endDate);
+        LocalDateTime now = DateTimeUtil.getCurrentDateTime();
+        LocalDateTime endDate =
+                request.endDate() == null ? null : DateTimeUtil.truncateSecondsAndNanos(request.endDate());
+        log.debug("now: {}, endDate: {}", now, endDate);
 
         int questionCnt = getQuestionCnt(request.contents());
-        validate(request, now, endDate, questionCnt);
 
-        Form form = createForm(request, user, questionCnt, now, endDate);
-        contentService.createContents(request.contents(), form);
-        tagService.createOrUpdateTags(request.tags(), form);
-        if (request.reward() != null) {
-            rewardService.createReward(request.reward(), form);
-        }
-
-        if (!request.isTemp() && endDate != null) {
-            formBatchService.registerEndForm(endDate, form);
-        }
-    }
-
-    private Form createForm(FormCreateDto request, User user, int questionCnt, LocalDateTime now,
-                            LocalDateTime endDate) {
-        FormStatus status = FormStatus.PROGRESS;
         if (request.isTemp()) {
-            status = FormStatus.NOT_STARTED;
+            createTempForm(request, user, now, endDate, questionCnt);
+        } else {
+            createForm(request, user, now, endDate, questionCnt);
         }
-        Form form = request.toForm(user, questionCnt, now, endDate, status);
-        return formRepository.save(form);
     }
 
     private int getQuestionCnt(List<ContentCreateDto> questions) {
@@ -79,17 +65,62 @@ public class FormCreateService {
                 .count();
     }
 
-    private void validate(FormCreateDto request, LocalDateTime now, LocalDateTime endDate, int questionCnt) {
-        if (endDate != null && !now.plusMinutes(5L).isBefore(endDate)) {
+    private void createTempForm(FormCreateDto request, User user, LocalDateTime now, LocalDateTime endDate,
+                                int questionCnt) {
+        validateTempForm(now, endDate, request.privacyDisposalDate());
+
+        Form form = Form.createTempForm(request, user, endDate, questionCnt);
+        formRepository.save(form);
+
+        createFormRelatedData(request, form);
+    }
+
+    private void validateTempForm(LocalDateTime now, LocalDateTime endDate, LocalDateTime privacyDisposalDate) {
+        if (endDate != null) {
+            if (!now.plusMinutes(5L).isBefore(endDate)) {
+                throw new BadRequestException("자동 마감 시각은 현재 시각 5분 후부터 설정할 수 있습니다.: " + endDate);
+            }
+
+            if (privacyDisposalDate != null && privacyDisposalDate.isBefore(endDate)) {
+                throw new BadRequestException("개인 정보 폐기 시각은 마감 시각 후여야 합니다.");
+            }
+        }
+    }
+
+    private void createFormRelatedData(FormCreateDto request, Form form) {
+        contentService.createContents(request.contents(), form);
+        tagService.createOrUpdateTags(request.tags(), form);
+        if (request.reward() != null) {
+            rewardService.createReward(request.reward(), form);
+        }
+    }
+
+    private void createForm(FormCreateDto request, User user, LocalDateTime startDate, LocalDateTime endDate,
+                            int questionCnt) {
+        validateForm(startDate, endDate, request.privacyDisposalDate(), questionCnt);
+
+        Form form = Form.createForm(request, user, startDate, endDate, questionCnt);
+        formRepository.save(form);
+
+        createFormRelatedData(request, form);
+
+        if (endDate != null) {
+            formBatchService.registerEndForm(endDate, form);
+        }
+    }
+
+    private void validateForm(LocalDateTime startDate, LocalDateTime endDate, LocalDateTime privacyDisposalDate,
+                              int questionCnt) {
+        if (endDate != null && !startDate.plusMinutes(5L).isBefore(endDate)) {
             throw new BadRequestException("자동 마감 시각은 현재 시각 5분 후부터 설정할 수 있습니다.: " + endDate);
         }
 
-        if (endDate != null && request.privacyDisposalDate() != null &&
-                request.privacyDisposalDate().isBefore(endDate)) {
+        if (endDate != null && privacyDisposalDate != null &&
+                privacyDisposalDate.isBefore(endDate)) {
             throw new BadRequestException("개인 정보 폐기 시각은 마감 시각 후여야 합니다.");
         }
 
-        if (!request.isTemp() && questionCnt == 0) {
+        if (questionCnt == 0) {
             throw new BadRequestException("설문에는 하나 이상의 설문 문항이 포함되어야 합니다.");
         }
     }
