@@ -155,8 +155,8 @@ public class FormService {
         }
     }
 
-    public void validAuthorAndTemp(Form form, Long loginUser) {
-        if (!Objects.equals(form.getUser().getId(), loginUser) && form.isTemp()) {
+    public void validAuthorAndTemp(Form form, Long loginUserId) {
+        if (!Objects.equals(form.getUser().getId(), loginUserId) && form.isTemp()) {
             throw new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + form.getId());
         }
     }
