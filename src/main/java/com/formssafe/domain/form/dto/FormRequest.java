@@ -1,10 +1,7 @@
 package com.formssafe.domain.form.dto;
 
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
-import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.reward.dto.RewardRequest.RewardCreateDto;
-import com.formssafe.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,24 +36,6 @@ public final class FormRequest {
                                 @Schema(description = "설문 임시 저장 여부")
                                 boolean isTemp) {
 
-        public Form toForm(User user, int questionCnt, LocalDateTime startDate, LocalDateTime endDate,
-                           FormStatus status) {
-            return Form.builder()
-                    .title(title())
-                    .detail(description())
-                    .imageUrl(image())
-                    .user(user)
-                    .startDate(startDate)
-                    .endDate(endDate)
-                    .expectTime(expectTime())
-                    .isEmailVisible(emailVisibility())
-                    .privacyDisposalDate(privacyDisposalDate())
-                    .questionCnt(questionCnt)
-                    .isTemp(isTemp())
-                    .status(status)
-                    .build();
-        }
-
         @Override
         public String toString() {
             return "FormCreateDto{" +
@@ -75,11 +54,9 @@ public final class FormRequest {
         }
     }
 
-    @Schema(description = "설문 등록 요청 DTO",
+    @Schema(description = "설문 수정 요청 DTO",
             requiredProperties = {"id", "title"})
-    public record FormUpdateDto(@Schema(description = "설문 아이디")
-                                Long id,
-                                @Schema(description = "설문 제목")
+    public record FormUpdateDto(@Schema(description = "설문 제목")
                                 String title,
                                 @Schema(description = "설문 설명")
                                 String description,
@@ -105,8 +82,7 @@ public final class FormRequest {
         @Override
         public String toString() {
             return "FormUpdateDto{" +
-                    "id='" + id + '\'' +
-                    ", title='" + title + '\'' +
+                    "title='" + title + '\'' +
                     ", description='" + description + '\'' +
                     ", image=" + image +
                     ", endDate=" + endDate +
