@@ -1,5 +1,6 @@
 package com.formssafe.domain.user.service;
 
+import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.oauth.client.OauthMemberClientComposite;
 import com.formssafe.domain.user.dto.UserRequest.JoinDto;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final OauthMemberClientComposite oauthMemberClientComposite;
+    private final FormService formService;
 
     @Transactional
     public void join(JoinDto request, LoginUserDto loginUser) {
@@ -82,9 +84,11 @@ public class UserService {
             throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
-        oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
+//        oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
 
         user.deleteUser(CommonUtil.generateRandomDeleteNickname(), CommonUtil.generateRandomDeleteEmail());
+
+        formService.deleteFormByUser(user);
         userRepository.save(user);
     }
 }
