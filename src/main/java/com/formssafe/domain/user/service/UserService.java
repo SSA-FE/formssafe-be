@@ -6,6 +6,7 @@ import com.formssafe.domain.user.dto.UserRequest.JoinDto;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.dto.UserRequest.NicknameUpdateDto;
 import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
+import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
@@ -86,9 +87,9 @@ public class UserService {
 
         oauthMemberClientComposite.deleteAccount(user.getOauthId().oauthServer(), user.getRefreshToken());
 
-        user.deleteUser(CommonUtil.generateRandomDeleteNickname(), CommonUtil.generateRandomDeleteEmail());
+        user.deleteUser(CommonUtil.generateRandomDeleteNickname(), CommonUtil.generateRandomDeleteEmail(),
+                new OauthId(CommonUtil.generateRandomDeleteOauthId(), user.getOauthId().oauthServer()));
 
         formService.deleteFormByUser(user);
-        userRepository.save(user);
     }
 }

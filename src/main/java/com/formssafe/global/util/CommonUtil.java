@@ -5,7 +5,7 @@ import java.util.Random;
 public class CommonUtil {
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789";
     private static final int NICKNAME_LENGTH = 12;
-    
+
     public static String generateRandomNickname() {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
@@ -21,7 +21,7 @@ public class CommonUtil {
         //TODO : nickname길이가 한정되어지면 바꿔줘야함.
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
-        sb.append("delete-");
+        sb.append("delete_user-");
 
         for (int i = 0; i < NICKNAME_LENGTH; i++) {
             sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
@@ -32,7 +32,18 @@ public class CommonUtil {
     public static String generateRandomDeleteEmail() {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
-        sb.append("delete_url-");
+        sb.append("delete_email-");
+
+        for (int i = 0; i < NICKNAME_LENGTH; i++) {
+            sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+        }
+        return sb.toString();
+    }
+
+    public static String generateRandomDeleteOauthId() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        sb.append("delete_oauth_id-");
 
         for (int i = 0; i < NICKNAME_LENGTH; i++) {
             sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));

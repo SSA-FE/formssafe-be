@@ -98,7 +98,6 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .leftJoin(form.submissionList, submission)
                 .orderBy(orderSpecifier)
                 .where(matchParticipant(participant),
-                        isUserNotDeleted(),
                         isNotDeleted(),
                         userIdLast(searchDto.top()),
                         containsKeyword(searchDto.keyword()),

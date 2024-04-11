@@ -1,6 +1,5 @@
 package com.formssafe.domain.user.entity;
 
-import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.global.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -67,11 +66,10 @@ public class User extends BaseTimeEntity implements Serializable {
         this.nickname = nickname;
     }
 
-    public void deleteUser(String nickname, String email) {
-        this.oauthId = new OauthId("DELETED", OauthServerType.DELETED);
+    public void deleteUser(String nickname, String email, OauthId oauthId) {
+        this.oauthId = oauthId;
         this.nickname = nickname;
         this.email = email;
-        this.authority = Authority.DELETED;
         this.imageUrl = "DELETED";
         this.refreshToken = "DELETED";
         this.isDeleted = true;
