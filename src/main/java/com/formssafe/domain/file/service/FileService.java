@@ -6,6 +6,10 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.formssafe.domain.file.dto.FileResponseDto;
+import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
+import com.formssafe.domain.user.entity.User;
+import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.global.exception.type.DataNotFoundException;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
@@ -21,8 +25,16 @@ public class FileService {
     private String bucket;
 
     private final AmazonS3 amazonS3;
+    private final UserRepository userRepository;
 
-    public FileResponseDto createPresignedUrl(String prefix, String fileName) {
+    public FileResponseDto createPresignedUrl(String prefix, String fileName, LoginUserDto loginUser) {
+        User user = userRepository.findById(loginUser.id())
+                .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
+
         if (!prefix.isEmpty()) {
             fileName = createPath(prefix, fileName);
         }

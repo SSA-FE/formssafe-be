@@ -91,6 +91,10 @@ public class FormService {
         return requiredQuestionCnt;
     }
 
+    public void deleteFormByUser(User user) {
+        formRepository.deleteFormByUserId(user.getId());
+    }
+
     private UserAuthorDto getAuthor(Form form) {
         User author = form.getUser();
         return UserAuthorDto.from(author);

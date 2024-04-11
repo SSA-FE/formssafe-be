@@ -8,16 +8,16 @@ import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
 
 @JsonNaming(SnakeCaseStrategy.class)
-public record GoogleMemberResponse (
+public record GoogleMemberResponse(
         String sub,
-         String name,
+        String name,
         String givenName,
         String familyName,
         String picture,
         String email,
         Boolean emailVerified,
         String locale
-){
+) {
 
     public User toEntity(String refreshToken) {
         return User.builder()
@@ -27,6 +27,7 @@ public record GoogleMemberResponse (
                 .imageUrl(picture)
                 .authority(Authority.ROLE_USER)
                 .refreshToken(refreshToken)
+                .isDeleted(false)
                 .build();
     }
 }

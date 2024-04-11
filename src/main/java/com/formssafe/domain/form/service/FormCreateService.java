@@ -6,6 +6,7 @@ import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.content.service.ContentService;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.service.RewardService;
 import com.formssafe.domain.tag.service.TagService;
@@ -13,6 +14,7 @@ import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
+import com.formssafe.global.exception.type.DataNotFoundException;
 import com.formssafe.global.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,8 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class FormCreateService {
-    private final UserRepository userRepository;
     private final FormRepository formRepository;
+    private final UserRepository userRepository;
     private final TagService tagService;
     private final ContentService contentService;
     private final RewardService rewardService;
@@ -38,6 +40,10 @@ public class FormCreateService {
         log.debug("FormCreateService.execute: \nrequest {}\n loginUser {}", request, loginUser);
 
         User user = userRepository.getReferenceById(loginUser.id());
+
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
 
         LocalDateTime now = DateTimeUtil.getCurrentDateTime();
         LocalDateTime endDate =

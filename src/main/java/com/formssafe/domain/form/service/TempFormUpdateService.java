@@ -9,7 +9,10 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.reward.service.RewardService;
 import com.formssafe.domain.tag.service.TagService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
+import com.formssafe.domain.user.entity.User;
+import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
+import com.formssafe.global.exception.type.DataNotFoundException;
 import com.formssafe.global.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,12 +31,20 @@ public class TempFormUpdateService {
     private final ContentService contentService;
     private final RewardService rewardService;
     private final FormBatchService formBatchService;
+    private final UserRepository userRepository;
 
     @Transactional
     public void execute(Long formId, FormUpdateDto request, LoginUserDto loginUser) {
-        log.debug("TempFormUpdateService.execute: \nrequest {}\n loginUser {}", request, loginUser);
+        log.debug("TempFormUpdateService.execute: \nrequest {}\n loginUser {}");
 
         Form form = formService.findForm(formId);
+
+        User user = userRepository.getReferenceById(loginUser.id());
+
+        //TODO : 로그인한 유저 관련 에러 처리 리팩토링 필요
+        if (user.isDeleted()) {
+            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+        }
 
         formService.validAuthor(form, loginUser.id());
         formService.validTempForm(form);

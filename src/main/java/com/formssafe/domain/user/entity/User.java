@@ -46,9 +46,11 @@ public class User extends BaseTimeEntity implements Serializable {
 
     private boolean isActive;
 
+    private boolean isDeleted;
+
     @Builder
     private User(Long id, OauthId oauthId, String nickname, String email, Authority authority, String imageUrl,
-                 String refreshToken, boolean isActive) {
+                 String refreshToken, boolean isActive, boolean isDeleted) {
         this.id = id;
         this.oauthId = oauthId;
         this.nickname = nickname;
@@ -57,10 +59,20 @@ public class User extends BaseTimeEntity implements Serializable {
         this.imageUrl = imageUrl;
         this.refreshToken = refreshToken;
         this.isActive = isActive;
+        this.isDeleted = isDeleted;
     }
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void deleteUser(String nickname, String email, OauthId oauthId) {
+        this.oauthId = oauthId;
+        this.nickname = nickname;
+        this.email = email;
+        this.imageUrl = "DELETED";
+        this.refreshToken = "DELETED";
+        this.isDeleted = true;
     }
 
     public void activate() {
