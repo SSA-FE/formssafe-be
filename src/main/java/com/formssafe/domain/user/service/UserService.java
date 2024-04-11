@@ -43,9 +43,8 @@ public class UserService {
     }
 
     public UserProfileDto getProfile(LoginUserDto loginUser) {
-        Long userId = loginUser.id();
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new DataNotFoundException("존재하지 않는 userId입니다.: " + userId));
+        User user = userRepository.findById(loginUser.id()).orElseThrow(() ->
+                new DataNotFoundException("존재하지 않는 userId입니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
             throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
