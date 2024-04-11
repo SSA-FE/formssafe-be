@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class TempFormUpdateService {
+    private final FormCommonService formCommonService;
+    private final FormValidateService formValidateService;
     private final FormService formService;
     private final TagService tagService;
     private final ContentService contentService;
@@ -37,7 +39,7 @@ public class TempFormUpdateService {
     public void execute(Long formId, FormUpdateDto request, LoginUserDto loginUser) {
         log.debug("TempFormUpdateService.execute: \nrequest {}\n loginUser {}");
 
-        Form form = formService.findForm(formId);
+        Form form = formCommonService.findForm(formId);
 
         User user = userRepository.getReferenceById(loginUser.id());
 
@@ -46,8 +48,8 @@ public class TempFormUpdateService {
             throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
-        formService.validAuthor(form, loginUser.id());
-        formService.validTempForm(form);
+        formValidateService.validAuthor(form, loginUser.id());
+        formValidateService.validTempForm(form);
 
         LocalDateTime now = DateTimeUtil.getCurrentDateTime();
         LocalDateTime endDate =

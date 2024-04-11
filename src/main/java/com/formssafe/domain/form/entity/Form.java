@@ -133,6 +133,11 @@ public class Form extends BaseTimeEntity {
         this.isDeleted = true;
     }
 
+    public void finish(LocalDateTime endDate) {
+        this.status = FormStatus.DONE;
+        this.endDate = endDate;
+    }
+
     public static Form createTempForm(FormCreateDto formCreateDto, User user, LocalDateTime endDate, int questionCnt) {
         return Form.builder()
                 .title(formCreateDto.title())

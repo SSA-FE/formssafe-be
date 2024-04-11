@@ -96,7 +96,7 @@ public class FormController {
     @ResponseStatus(HttpStatus.OK)
     void closeForm(@PathVariable Long id,
                    @AuthenticationPrincipal LoginUserDto loginUser) {
-        formService.close(id, loginUser);
+        formService.closeForm(id, loginUser);
     }
 
     @Operation(summary = "설문 수정", description = "해당 id의, 임시 등록 상태인 설문을 수정한다.")
@@ -129,6 +129,6 @@ public class FormController {
     @ResponseStatus(HttpStatus.OK)
     void deleteForm(@PathVariable Long id,
                     @AuthenticationPrincipal LoginUserDto loginUser) {
-        formService.delete(id, loginUser);
+        formService.deleteForm(id, loginUser);
     }
 }

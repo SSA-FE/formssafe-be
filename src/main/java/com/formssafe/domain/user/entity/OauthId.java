@@ -10,6 +10,8 @@ import jakarta.persistence.UniqueConstraint;
 import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
@@ -26,6 +28,8 @@ import lombok.NoArgsConstructor;
                 ),
         }
 )
+@Getter
+@EqualsAndHashCode
 public class OauthId implements Serializable {
 
     @Column(nullable = false, name = "oauth_server_id")
@@ -34,12 +38,4 @@ public class OauthId implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "oauth_server")
     private OauthServerType oauthServerType;
-
-    public String oauthServerId() {
-        return oauthServerId;
-    }
-
-    public OauthServerType oauthServer() {
-        return oauthServerType;
-    }
 }
