@@ -2,6 +2,8 @@ package com.formssafe.domain.content.question.repository;
 
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.form.entity.Form;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,4 +19,12 @@ public interface ObjectiveQuestionRepository extends JpaRepository<ObjectiveQues
     @Modifying
     @Query("delete from ObjectiveQuestion oq where oq.form = :form")
     void deleteAllByForm(@Param("form") Form form);
+
+    @Query("""
+            SELECT oq.id FROM ObjectiveQuestion oq 
+            JOIN oq.form f
+            where f.privacyDisposalDate = :now
+            AND oq.isPrivacy = true
+            """)
+    List<Long> findIdByDisposalTime(@Param("now") LocalDateTime now);
 }

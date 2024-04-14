@@ -24,6 +24,7 @@ import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.exception.type.BadRequestException;
 import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +111,7 @@ public class SubmissionService {
         if (user.isDeleted()) {
             throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
-        
+
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElse(null);
 
@@ -208,5 +209,26 @@ public class SubmissionService {
         if (user.getId() == form.getUser().getId()) {
             throw new BadRequestException("자신이 작성한 설문에는 참여할 수 없습니다.");
         }
+    }
+
+    @Transactional
+    public void disposalPrivacy(LocalDateTime now) {
+        log.info("disposal privacy start");
+        now = DateTimeUtil.truncateSecondsAndNanos(now);
+
+        List<Long> objectiveQuestions = objectiveQuestionService.getObjectiveQuestionByDisposalTime(now);
+        List<Long> descriptiveQuestions = descriptiveQuestionService.getDescriptiveQuestionIdByDisposalTime(now);
+
+        log.info("dispose objective submission : {}", objectiveQuestions);
+        log.info("dispose descriptive submission : {}", descriptiveQuestions);
+
+        for (Long objectiveQuestionId : objectiveQuestions) {
+            objectiveSubmissionRepository.deleteAllPrivacyByQuestionId(objectiveQuestionId);
+        }
+        for (Long descriptiveQuestionId : descriptiveQuestions) {
+            descriptiveSubmissionRepository.deleteAllPrivacyByQuestionId(descriptiveQuestionId);
+        }
+
+        log.info("disposal privacy end");
     }
 }

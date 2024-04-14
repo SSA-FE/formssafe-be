@@ -18,4 +18,12 @@ public interface ObjectiveSubmissionRepository extends JpaRepository<ObjectiveSu
     @Modifying
     @Query(value = "DELETE FROM ObjectiveSubmission os WHERE os.submission.id=:submissionId")
     void deleteAllBySubmissionId(@Param("submissionId") Long submissionId);
+
+    @Transactional
+    @Modifying
+    @Query("""
+            DELETE FROM ObjectiveSubmission os
+            WHERE os.objectiveQuestion.id = :objectiveQuestionId 
+            """)
+    void deleteAllPrivacyByQuestionId(@Param("objectiveQuestionId") Long objectiveQuestionId);
 }
