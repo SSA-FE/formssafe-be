@@ -19,4 +19,12 @@ public interface DescriptiveSubmissionRepository extends JpaRepository<Descripti
     @Modifying
     @Query(value = "DELETE FROM DescriptiveSubmission ds WHERE ds.submission.id=:submissionId")
     void deleteAllBySubmissionId(@Param("submissionId") Long submissionId);
+
+    @Transactional
+    @Modifying
+    @Query("""
+            DELETE FROM DescriptiveSubmission ds
+            WHERE ds.descriptiveQuestion.id = :descriptiveQuestionId
+            """)
+    void deleteAllPrivacyByQuestionId(@Param("descriptiveQuestionId") Long descriptiveQuestionId);
 }

@@ -3,6 +3,8 @@ package com.formssafe.domain.content.question.service;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.content.question.repository.ObjectiveQuestionRepository;
 import com.formssafe.global.exception.type.BadRequestException;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,5 +22,9 @@ public class ObjectiveQuestionService {
                 () -> new BadRequestException("설문에 존재하지 않는 문항입니다.")
         );
         return objectiveQuestion;
+    }
+
+    public List<Long> getObjectiveQuestionByDisposalTime(LocalDateTime now) {
+        return objectiveQuestionRepository.findIdByDisposalTime(now);
     }
 }
