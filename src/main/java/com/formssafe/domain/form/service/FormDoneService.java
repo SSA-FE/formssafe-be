@@ -23,7 +23,7 @@ public class FormDoneService {
         formValidateService.validAuthor(form, loginUserId);
         formValidateService.validFormProgress(form);
 
-        form.finish(LocalDateTime.now());
+        form.finishManually(LocalDateTime.now());
 
         return form;
     }

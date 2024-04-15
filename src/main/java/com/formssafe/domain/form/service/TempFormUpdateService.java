@@ -1,6 +1,5 @@
 package com.formssafe.domain.form.service;
 
-import com.formssafe.domain.batch.form.service.FormBatchService;
 import com.formssafe.domain.content.decoration.entity.DecorationType;
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.content.service.ContentService;
@@ -9,10 +8,6 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.reward.service.RewardService;
 import com.formssafe.domain.tag.service.TagService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.global.exception.type.BadRequestException;
-import com.formssafe.global.exception.type.DataNotFoundException;
 import com.formssafe.global.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,62 +23,37 @@ import org.springframework.transaction.annotation.Transactional;
 public class TempFormUpdateService {
     private final FormCommonService formCommonService;
     private final FormValidateService formValidateService;
-    private final FormService formService;
     private final TagService tagService;
     private final ContentService contentService;
     private final RewardService rewardService;
-    private final FormBatchService formBatchService;
-    private final UserRepository userRepository;
 
     @Transactional
     public void execute(Long formId, FormUpdateDto request, LoginUserDto loginUser) {
         log.debug("TempFormUpdateService.execute: \nrequest {}\n loginUser {}");
 
         Form form = formCommonService.findForm(formId);
-
-        User user = userRepository.getReferenceById(loginUser.id());
-
-        //TODO : 로그인한 유저 관련 에러 처리 리팩토링 필요
-        if (user.isDeleted()) {
-            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
-        }
-
         formValidateService.validAuthor(form, loginUser.id());
         formValidateService.validTempForm(form);
 
         LocalDateTime now = DateTimeUtil.getCurrentDateTime();
-        LocalDateTime endDate =
-                request.endDate() == null ? null : DateTimeUtil.truncateSecondsAndNanos(request.endDate());
-        log.debug("now: {}, endDate: {}", now, endDate);
+        log.debug("now: {}, endDate: {}", now, request.endDate());
 
         int questionCnt = getQuestionCnt(request.contents());
 
         if (request.isTemp()) {
-            updateToTempForm(request, form, now, endDate, questionCnt);
+            updateToTempForm(request, form, now, questionCnt);
         } else {
-            updateToForm(request, form, now, endDate, questionCnt);
+            updateToForm(request, form, now, questionCnt);
         }
     }
 
-    private void updateToTempForm(FormUpdateDto request, Form form, LocalDateTime now, LocalDateTime endDate,
-                                  int questionCnt) {
-        validateTempForm(now, endDate, request.privacyDisposalDate());
+    private void updateToTempForm(FormUpdateDto request, Form form, LocalDateTime now, int questionCnt) {
+        formValidateService.validAutoEndDate(now, request.endDate());
+        formValidateService.validPrivacyDisposalDate(request.privacyDisposalDate(), request.endDate());
 
         clearFormRelatedData(form);
-        form.updateToTempForm(request, endDate, questionCnt);
+        form.updateToTempForm(request, request.endDate(), questionCnt);
         createFormRelatedData(request, form);
-    }
-
-    private void validateTempForm(LocalDateTime now, LocalDateTime endDate, LocalDateTime privacyDisposalDate) {
-        if (endDate != null) {
-            if (!now.plusMinutes(5L).isBefore(endDate)) {
-                throw new BadRequestException("자동 마감 시각은 현재 시각 5분 후부터 설정할 수 있습니다.: " + endDate);
-            }
-
-            if (privacyDisposalDate != null && privacyDisposalDate.isBefore(endDate)) {
-                throw new BadRequestException("개인 정보 폐기 시각은 마감 시각 후여야 합니다.");
-            }
-        }
     }
 
     private void clearFormRelatedData(Form form) {
@@ -102,41 +72,19 @@ public class TempFormUpdateService {
         }
     }
 
-    private void updateToForm(FormUpdateDto request, Form form, LocalDateTime startDate, LocalDateTime endDate,
-                              int questionCnt) {
-        validateForm(startDate, endDate, request.privacyDisposalDate(), questionCnt);
+    private void updateToForm(FormUpdateDto request, Form form, LocalDateTime startDate, int questionCnt) {
+        formValidateService.validAutoEndDate(startDate, request.endDate());
+        formValidateService.validPrivacyDisposalDate(request.privacyDisposalDate(), request.endDate());
+        formValidateService.validQuestionCnt(questionCnt);
 
         clearFormRelatedData(form);
-        form.updateToForm(request, startDate, endDate, questionCnt);
+        form.updateToForm(request, startDate, request.endDate(), questionCnt);
         createFormRelatedData(request, form);
-        registerFormEndBatch(endDate, form);
     }
 
     private int getQuestionCnt(List<ContentCreateDto> questions) {
         return (int) questions.stream()
                 .filter(q -> !DecorationType.exists(q.type()))
                 .count();
-    }
-
-    private void validateForm(LocalDateTime startDate, LocalDateTime endDate, LocalDateTime privacyDisposalDate,
-                              int questionCnt) {
-        if (endDate != null && !startDate.plusMinutes(5L).isBefore(endDate)) {
-            throw new BadRequestException("자동 마감 시각은 현재 시각 5분 후부터 설정할 수 있습니다.: " + endDate);
-        }
-
-        if (endDate != null && privacyDisposalDate != null &&
-                privacyDisposalDate.isBefore(endDate)) {
-            throw new BadRequestException("개인 정보 폐기 시각은 마감 시각 후여야 합니다.");
-        }
-
-        if (questionCnt == 0) {
-            throw new BadRequestException("설문에는 하나 이상의 설문 문항이 포함되어야 합니다.");
-        }
-    }
-
-    private void registerFormEndBatch(LocalDateTime endDate, Form form) {
-        if (endDate != null) {
-            formBatchService.registerEndForm(endDate, form);
-        }
     }
 }

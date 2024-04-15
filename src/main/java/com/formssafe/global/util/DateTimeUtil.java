@@ -17,6 +17,10 @@ public final class DateTimeUtil {
     }
 
     public static LocalDateTime truncateSecondsAndNanos(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+
         return dateTime.withSecond(0).withNano(0);
     }
 }

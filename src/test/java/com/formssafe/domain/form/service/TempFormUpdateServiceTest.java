@@ -5,8 +5,6 @@ import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.IntegrationTestConfig;
-import com.formssafe.domain.batch.form.entity.FormBatchEnd;
-import com.formssafe.domain.batch.form.repository.FormBatchEndRepository;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.dto.FormRequest.FormUpdateDto;
 import com.formssafe.domain.form.entity.Form;
@@ -35,7 +33,6 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
     private final UserRepository userRepository;
     private final FormRepository formRepository;
     private final RewardCategoryRepository rewardCategoryRepository;
-    private final FormBatchEndRepository formBatchEndRepository;
     private final EntityManager em;
 
     private User testUser;
@@ -45,13 +42,12 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
                                      UserRepository userRepository,
                                      FormRepository formRepository,
                                      RewardCategoryRepository rewardCategoryRepository,
-                                     FormBatchEndRepository formBatchEndRepository, EntityManager em) {
+                                     EntityManager em) {
         this.tempFormUpdateService = tempFormUpdateService;
         this.formCreateService = formCreateService;
         this.userRepository = userRepository;
         this.formRepository = formRepository;
         this.rewardCategoryRepository = rewardCategoryRepository;
-        this.formBatchEndRepository = formBatchEndRepository;
         this.em = em;
     }
 
@@ -127,10 +123,6 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
                         Tuple.tuple("tagNew", 1));
 
         assertThat(resultForm.getReward().getRewardName()).isEqualTo("경품1-업데이트");
-
-        List<FormBatchEnd> formBatchEndResult = formBatchEndRepository.findAll();
-        assertThat(formBatchEndResult).hasSize(1);
-        assertThat(formBatchEndResult.get(0).getServiceTime()).isEqualTo(endDate);
     }
 
     @Test
