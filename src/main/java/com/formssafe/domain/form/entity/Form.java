@@ -12,6 +12,7 @@ import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.constants.FormConstants;
 import com.formssafe.global.entity.BaseTimeEntity;
+import com.formssafe.global.util.DateTimeUtil;
 import com.formssafe.global.util.JsonConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -185,7 +186,8 @@ public class Form extends BaseTimeEntity {
         this.endDate = endDate;
         this.expectTime = request.expectTime();
         this.isEmailVisible = request.emailVisibility();
-        this.privacyDisposalDate = request.privacyDisposalDate();
+        this.privacyDisposalDate = request.privacyDisposalDate() == null ? null
+                : DateTimeUtil.truncateSecondsAndNanos(request.privacyDisposalDate());
         this.status = FormStatus.PROGRESS;
         this.questionCnt = questionCnt;
         this.isTemp = request.isTemp();
