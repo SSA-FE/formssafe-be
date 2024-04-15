@@ -18,6 +18,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
             SELECT s FROM Submission s
             join fetch s.user
             WHERE s.form.id = :formId
+            AND s.isTemp = false
             """)
     List<Submission> findAllByFormIdWithUser(@Param("formId") Long formId);
 }
