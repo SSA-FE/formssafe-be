@@ -25,6 +25,7 @@ public interface ObjectiveQuestionRepository extends JpaRepository<ObjectiveQues
             JOIN oq.form f
             where f.privacyDisposalDate = :now
             AND oq.isPrivacy = true
+            AND f.isDeleted = false
             """)
     List<Long> findIdByDisposalTime(@Param("now") LocalDateTime now);
 }
