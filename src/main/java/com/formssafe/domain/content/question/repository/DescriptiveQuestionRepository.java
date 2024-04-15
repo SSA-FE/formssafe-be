@@ -25,6 +25,7 @@ public interface DescriptiveQuestionRepository extends JpaRepository<Descriptive
             JOIN dq.form f
             where f.privacyDisposalDate = :now
             AND dq.isPrivacy = true
+            AND f.isDeleted = false
             """)
     List<Long> findIdByDisposalTime(@Param("now") LocalDateTime now);
 }
