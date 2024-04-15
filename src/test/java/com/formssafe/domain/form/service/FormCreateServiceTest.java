@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.formssafe.config.IntegrationTestConfig;
-import com.formssafe.domain.batch.form.entity.FormBatchEnd;
-import com.formssafe.domain.batch.form.repository.FormBatchEndRepository;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
@@ -35,7 +33,6 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     private final FormRepository formRepository;
     private final RewardCategoryRepository rewardCategoryRepository;
     private final TagRepository tagRepository;
-    private final FormBatchEndRepository formBatchEndRepository;
     private final EntityManager em;
 
     private User testUser;
@@ -43,14 +40,12 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     @Autowired
     public FormCreateServiceTest(FormCreateService formCreateService, UserRepository userRepository,
                                  FormRepository formRepository, RewardCategoryRepository rewardCategoryRepository,
-                                 TagRepository tagRepository, FormBatchEndRepository formBatchEndRepository,
-                                 EntityManager em) {
+                                 TagRepository tagRepository, EntityManager em) {
         this.formCreateService = formCreateService;
         this.userRepository = userRepository;
         this.formRepository = formRepository;
         this.rewardCategoryRepository = rewardCategoryRepository;
         this.tagRepository = tagRepository;
-        this.formBatchEndRepository = formBatchEndRepository;
         this.em = em;
     }
 
@@ -96,10 +91,6 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         assertThat(tag13.getCount()).isEqualTo(1);
 
         assertThat(resultForm.getReward().getRewardName()).isEqualTo("경품1");
-
-        List<FormBatchEnd> formBatchEndResult = formBatchEndRepository.findAll();
-        assertThat(formBatchEndResult).hasSize(1);
-        assertThat(formBatchEndResult.get(0).getServiceTime()).isEqualTo(endDate);
     }
 
     @Test

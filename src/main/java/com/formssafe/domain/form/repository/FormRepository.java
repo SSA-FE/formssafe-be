@@ -1,6 +1,8 @@
 package com.formssafe.domain.form.repository;
 
 import com.formssafe.domain.form.entity.Form;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -19,4 +21,9 @@ public interface FormRepository extends JpaRepository<Form, Long>, FormRepositor
             UPDATE Form f SET f.isDeleted = true where f.user.id = :userId
             """)
     void deleteFormByUserId(@Param("userId") Long userId);
+
+    @Query("""
+            SELECT f FROM Form f where f.isDeleted = false and f.endDate = :endDate
+            """)
+    List<Form> findAllByEndDate(@Param("endDate") LocalDateTime endDate);
 }

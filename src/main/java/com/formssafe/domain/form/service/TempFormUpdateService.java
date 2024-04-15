@@ -1,6 +1,5 @@
 package com.formssafe.domain.form.service;
 
-import com.formssafe.domain.batch.form.service.FormBatchService;
 import com.formssafe.domain.content.decoration.entity.DecorationType;
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.content.service.ContentService;
@@ -28,11 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class TempFormUpdateService {
     private final FormCommonService formCommonService;
     private final FormValidateService formValidateService;
-    private final FormService formService;
     private final TagService tagService;
     private final ContentService contentService;
     private final RewardService rewardService;
-    private final FormBatchService formBatchService;
     private final UserRepository userRepository;
 
     @Transactional
@@ -109,7 +106,6 @@ public class TempFormUpdateService {
         clearFormRelatedData(form);
         form.updateToForm(request, startDate, endDate, questionCnt);
         createFormRelatedData(request, form);
-        registerFormEndBatch(endDate, form);
     }
 
     private int getQuestionCnt(List<ContentCreateDto> questions) {
@@ -131,12 +127,6 @@ public class TempFormUpdateService {
 
         if (questionCnt == 0) {
             throw new BadRequestException("설문에는 하나 이상의 설문 문항이 포함되어야 합니다.");
-        }
-    }
-
-    private void registerFormEndBatch(LocalDateTime endDate, Form form) {
-        if (endDate != null) {
-            formBatchService.registerEndForm(endDate, form);
         }
     }
 }

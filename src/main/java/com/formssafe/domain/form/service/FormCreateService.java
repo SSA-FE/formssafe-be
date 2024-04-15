@@ -1,12 +1,10 @@
 package com.formssafe.domain.form.service;
 
-import com.formssafe.domain.batch.form.service.FormBatchService;
 import com.formssafe.domain.content.decoration.entity.DecorationType;
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.content.service.ContentService;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.service.RewardService;
 import com.formssafe.domain.tag.service.TagService;
@@ -33,7 +31,6 @@ public class FormCreateService {
     private final TagService tagService;
     private final ContentService contentService;
     private final RewardService rewardService;
-    private final FormBatchService formBatchService;
 
     @Transactional
     public void execute(FormCreateDto request, LoginUserDto loginUser) {
@@ -103,10 +100,6 @@ public class FormCreateService {
         formRepository.save(form);
 
         createFormRelatedData(request, form);
-
-        if (endDate != null) {
-            formBatchService.registerEndForm(endDate, form);
-        }
     }
 
     private void validateForm(LocalDateTime startDate, LocalDateTime endDate, LocalDateTime privacyDisposalDate,
