@@ -26,6 +26,7 @@ public final class SubmissionRequest {
                     .submission(submission)
                     .content(content)
                     .objectiveQuestion(objectiveQuestion)
+                    .position(objectiveQuestion.getPosition())
                     .build();
         }
 
@@ -35,6 +36,7 @@ public final class SubmissionRequest {
                     .submission(submission)
                     .content(content.toString())
                     .descriptiveQuestion(descriptiveQuestion)
+                    .position(descriptiveQuestion.getPosition())
                     .build();
         }
     }
