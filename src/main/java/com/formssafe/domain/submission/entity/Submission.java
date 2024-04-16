@@ -18,6 +18,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @NoArgsConstructor
@@ -42,9 +43,11 @@ public class Submission extends BaseTimeEntity {
     LocalDateTime submitTime;
 
     @OneToMany(mappedBy = "submission")
+    @BatchSize(size = 100)
     List<DescriptiveSubmission> descriptiveSubmissionList = new ArrayList<>();
 
     @OneToMany(mappedBy = "submission")
+    @BatchSize(size = 100)
     List<ObjectiveSubmission> objectiveSubmissionList = new ArrayList<>();
 
     @Builder

@@ -1,12 +1,8 @@
 package com.formssafe.domain.submission.entity;
 
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
@@ -17,20 +13,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class DescriptiveSubmission {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class DescriptiveSubmission extends SubmissionResponse {
     @Column(nullable = false)
     private String content;
-
-    @Schema(description = "제출한 설문의 position")
-    private int position;
-
-    @ManyToOne
-    @JoinColumn(name = "response_id", nullable = false)
-    private Submission submission;
 
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
