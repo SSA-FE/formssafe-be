@@ -35,7 +35,7 @@ public class Submission extends BaseTimeEntity {
     @JoinColumn(name = "form_id", nullable = false)
     private Form form;
 
-    @Schema(description = "설문 임시 저장 여부")
+    @Schema(description = "제출 임시 저장 여부")
     boolean isTemp;
 
     @Schema(description = "최종 제출 시간")
