@@ -20,6 +20,8 @@ public final class ActivityResponse {
                               Long id,
                               @Schema(description = "설문 제목")
                               String title,
+                              @Schema(description = "설문 설명")
+                              String detail,
                               @Schema(description = "설문 썸네일")
                               String thumbnail,
                               @Schema(description = "설문 등록자")
@@ -61,6 +63,7 @@ public final class ActivityResponse {
 
             return new FormListDto(form.getId(),
                     form.getTitle(),
+                    form.getDetail(),
                     imageUrl,
                     UserAuthorDto.from(form.getUser()),
                     form.getExpectTime(),

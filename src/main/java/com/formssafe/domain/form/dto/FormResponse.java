@@ -31,7 +31,7 @@ public final class FormResponse {
                                 @Schema(description = "설문 등록자")
                                 UserAuthorDto author,
                                 @Schema(description = "설문 시작 시각")
-                                    LocalDateTime startDate,
+                                LocalDateTime startDate,
                                 @Schema(description = "설문 마감 시각")
                                 LocalDateTime endDate,
                                 @Schema(description = "설문 참여 예상 시간")
@@ -86,6 +86,8 @@ public final class FormResponse {
     public record FormListDto(@Schema(description = "설문 id") Long id,
                               @Schema(description = "설문 제목")
                               String title,
+                              @Schema(description = "설문 설명")
+                              String detail,
                               @Schema(description = "설문 썸네일")
                               String thumbnail,
                               @Schema(description = "설문 등록자")
@@ -97,7 +99,7 @@ public final class FormResponse {
                               @Schema(description = "설문 응답 개수")
                               int responseCnt,
                               @Schema(description = "설문 시작 시각")
-                                  LocalDateTime startDate,
+                              LocalDateTime startDate,
                               @Schema(description = "설문 마감 시각")
                               LocalDateTime endDate,
                               @Schema(description = "설문 참여 시 받을 수 있는 경품")
@@ -121,7 +123,7 @@ public final class FormResponse {
             if (form.getFormTagList() != null) {
                 tagCountDtos = TagCountDto.from(form.getFormTagList());
             }
-            return new FormListDto(form.getId(), form.getTitle(), imageUrl,
+            return new FormListDto(form.getId(), form.getTitle(), form.getDetail(), imageUrl,
                     UserAuthorDto.from(form.getUser()), form.getExpectTime(), form.getQuestionCnt(),
                     form.getResponseCnt(),
                     form.getStartDate(), form.getEndDate(), rewardListDto, tagCountDtos,
