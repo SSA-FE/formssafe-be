@@ -87,7 +87,7 @@ public final class FormResponse {
                               @Schema(description = "설문 제목")
                               String title,
                               @Schema(description = "설문 설명")
-                              String detail,
+                              String description,
                               @Schema(description = "설문 썸네일")
                               String thumbnail,
                               @Schema(description = "설문 등록자")
