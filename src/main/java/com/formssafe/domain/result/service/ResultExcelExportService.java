@@ -1,6 +1,6 @@
 package com.formssafe.domain.result.service;
 
-import com.formssafe.domain.result.dto.ResultExportResponse;
+import com.formssafe.domain.result.dto.ResultExportResponse.ResultExportRow;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -16,12 +16,12 @@ public class ResultExcelExportService extends ExcelExportService {
 
     @Override
     public void writeBody(XSSFWorkbook sheets, XSSFSheet sheet, Object body) {
-        List<ResultExportResponse> bodyValue = (List<ResultExportResponse>) body;
+        List<ResultExportRow> bodyValue = (List<ResultExportRow>) body;
 
         CellStyle style = getFontContentExcel(sheets);
 
         int startRow = 2;
-        for (ResultExportResponse resp : bodyValue) {
+        for (ResultExportRow resp : bodyValue) {
             Row row = sheet.createRow(startRow++);
             int columnCount = 0;
 

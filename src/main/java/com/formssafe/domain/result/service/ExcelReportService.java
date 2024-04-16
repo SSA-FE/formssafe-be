@@ -5,7 +5,7 @@ import com.formssafe.domain.content.question.entity.Question;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.service.FormCommonService;
 import com.formssafe.domain.form.service.FormValidateService;
-import com.formssafe.domain.result.dto.ResultExportResponse;
+import com.formssafe.domain.result.dto.ResultExportResponse.ResultExportRow;
 import com.formssafe.domain.submission.entity.DescriptiveSubmission;
 import com.formssafe.domain.submission.entity.ObjectiveSubmission;
 import com.formssafe.domain.submission.entity.Submission;
@@ -45,7 +45,7 @@ public class ExcelReportService {
         formValidateService.validNotTempForm(form);
 
         List<String> headers = getHeaders(form);
-        List<ResultExportResponse> body = getBody(form);
+        List<ResultExportRow> body = getBody(form);
         export(response, form.getTitle(), headers, body);
     }
 
@@ -65,22 +65,22 @@ public class ExcelReportService {
         return headers;
     }
 
-    private List<ResultExportResponse> getBody(Form form) {
+    private List<ResultExportRow> getBody(Form form) {
         List<Submission> submissionList = submissionRepository.findAllByFormIdWithAll(form.getId());
         return submissionList.stream().map(this::createResultExportResponse).toList();
     }
 
-    private ResultExportResponse createResultExportResponse(Submission s) {
+    private ResultExportRow createResultExportResponse(Submission s) {
         List<SubmissionResponse> list = new ArrayList<>(s.getObjectiveSubmissionList());
         list.addAll(s.getDescriptiveSubmissionList());
         list.sort(Comparator.comparingInt(SubmissionResponse::getPosition));
         return convertResponse(s, list);
     }
 
-    private ResultExportResponse convertResponse(Submission submission, List<SubmissionResponse> submissionResponses) {
+    private ResultExportRow convertResponse(Submission submission, List<SubmissionResponse> submissionResponses) {
         List<String> responses = submissionResponses.stream().map(this::getResponseString).toList();
 
-        return new ResultExportResponse(submission.getSubmitTime(), submission.getUser().getNickname(), responses);
+        return new ResultExportRow(submission.getSubmitTime(), submission.getUser().getNickname(), responses);
     }
 
     private String getResponseString(SubmissionResponse submissionResponse) {
@@ -94,7 +94,7 @@ public class ExcelReportService {
     }
 
     private void export(HttpServletResponse response, String fileName, List<String> headers,
-                        List<ResultExportResponse> body) {
+                        List<ResultExportRow> body) {
         initResponse(response, fileName);
 
         try (XSSFWorkbook sheets = resultExcelExportService.createSheets(); OutputStream outputStream = response.getOutputStream();) {
