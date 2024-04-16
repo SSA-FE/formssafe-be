@@ -20,7 +20,7 @@ public class ResultExcelExportService extends ExcelExportService {
 
         CellStyle style = getFontContentExcel(sheets);
 
-        int startRow = 2;
+        int startRow = 1;
         for (ResultExportRow resp : bodyValue) {
             Row row = sheet.createRow(startRow++);
             int columnCount = 0;
