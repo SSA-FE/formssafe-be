@@ -42,7 +42,7 @@ public final class SubmissionResponse {
             return new SubmissionDetailResponseDto(
                     submission.getObjectiveQuestion().getUuid(),
                     JsonConverter.toObject(submission.getContent(), Object.class),
-                    submission.getObjectiveQuestion().getPosition()
+                    submission.getPosition()
             );
         }
 
@@ -50,7 +50,7 @@ public final class SubmissionResponse {
             return new SubmissionDetailResponseDto(
                     submission.getDescriptiveQuestion().getUuid(),
                     submission.getContent(),
-                    submission.getDescriptiveQuestion().getPosition()
+                    submission.getPosition()
             );
         }
     }
