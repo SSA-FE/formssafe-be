@@ -14,7 +14,7 @@ VALUES (1, '설문 조사 제목1', '설문 설명 2', '[
   "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1",
   "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1"
 ]', 1, '2024-02-03T13:00:00', '2024-02-04T13:00:00', 10, null, false,
-        5, 0, 'REWARDED', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00'),
+        5, 0, 'PROGRESS', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00'),
        (2, '설문 조사 제목2', '설문 설명 2', 'null', 1, '2024-03-30T20:49:00', '2024-03-31T20:49:00', 10, null, false,
         0, 0, 'DONE', false, false, '2024-02-02T13:00:00', '2024-02-02T13:00:00'),
        (3, '설문 조사 제목3', '설문 설명 3', 'null', 1, '2024-03-30T20:49:00', '2024-03-31T20:50:00', 10, null, false,
