@@ -46,7 +46,8 @@ public class ExcelReportService {
 
         List<String> headers = getHeaders(form);
         List<ResultExportRow> body = getBody(form);
-        export(response, form.getTitle(), headers, body);
+        String fileName = "form_result";
+        export(response, fileName, headers, body);
     }
 
     private List<String> getHeaders(Form form) {
@@ -107,7 +108,7 @@ public class ExcelReportService {
 
     private void initResponse(HttpServletResponse response, String fileName) {
         response.setContentType("application/octet-stream");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd_hhmmss");
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
