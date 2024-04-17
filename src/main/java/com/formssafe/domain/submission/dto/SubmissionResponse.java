@@ -26,8 +26,7 @@ public final class SubmissionResponse {
 
     public record SubmissionDetailResponseDto(
             @Schema(description = "질문 ID") String questionId,
-            @Schema(description = "응답 내용") Object content,
-            @Schema(description = "질문 순서(position) 정보") int position
+            @Schema(description = "응답 내용") Object content
     ) {
         public static SubmissionDetailResponseDto from(Object object) {
             if (object instanceof DescriptiveSubmission ds) {
@@ -41,16 +40,14 @@ public final class SubmissionResponse {
         private static SubmissionDetailResponseDto fromObjectSubmission(ObjectiveSubmission submission) {
             return new SubmissionDetailResponseDto(
                     submission.getObjectiveQuestion().getUuid(),
-                    JsonConverter.toObject(submission.getContent(), Object.class),
-                    submission.getPosition()
+                    JsonConverter.toObject(submission.getContent(), Object.class)
             );
         }
 
         private static SubmissionDetailResponseDto fromDescriptiveSubmission(DescriptiveSubmission submission) {
             return new SubmissionDetailResponseDto(
                     submission.getDescriptiveQuestion().getUuid(),
-                    submission.getContent(),
-                    submission.getPosition()
+                    submission.getContent()
             );
         }
     }
