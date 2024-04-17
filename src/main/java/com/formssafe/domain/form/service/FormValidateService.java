@@ -30,6 +30,12 @@ public class FormValidateService {
         }
     }
 
+    public void validNotTempForm(Form form) {
+        if (form.isTemp()) {
+            throw new BadRequestException("임시 설문입니다: " + form.getId());
+        }
+    }
+
     public void validAuthorAndTemp(Form form, Long loginUserId) {
         if (!Objects.equals(form.getUser().getId(), loginUserId) && form.isTemp()) {
             throw new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + form.getId());

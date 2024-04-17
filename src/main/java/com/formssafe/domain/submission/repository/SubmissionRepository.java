@@ -21,4 +21,13 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
             AND s.isTemp = false
             """)
     List<Submission> findAllByFormIdWithUser(@Param("formId") Long formId);
+
+    @Query("""
+            SELECT s FROM Submission s
+            join fetch s.user
+            join s.objectiveSubmissionList
+            join s.descriptiveSubmissionList
+            WHERE s.form.id = :formId and s.isTemp = false
+            """)
+    List<Submission> findAllByFormIdWithAll(@Param("formId") Long formId);
 }
