@@ -108,7 +108,11 @@ public class ExcelReportService {
 
     private void initResponse(HttpServletResponse response, String fileName) {
         response.setContentType("application/octet-stream");
+<<<<<<< HEAD
         DateFormat dateFormatter = new SimpleDateFormat("yyyyMMdd_hhmmss");
+=======
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+>>>>>>> main
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
