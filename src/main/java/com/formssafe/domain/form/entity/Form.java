@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -41,6 +42,7 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@EqualsAndHashCode(callSuper = false)
 public class Form extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -143,35 +145,35 @@ public class Form extends BaseTimeEntity {
         this.status = FormStatus.DONE;
     }
 
-    public static Form createTempForm(FormCreateDto formCreateDto, User user, LocalDateTime endDate, int questionCnt) {
+    public static Form createTempForm(FormCreateDto request, User user, LocalDateTime endDate, int questionCnt) {
         return Form.builder()
-                .title(formCreateDto.title())
-                .detail(formCreateDto.description())
-                .imageUrl(formCreateDto.image())
+                .title(request.title())
+                .detail(request.description())
+                .imageUrl(request.image())
                 .user(user)
                 .startDate(null)
                 .endDate(endDate)
-                .expectTime(formCreateDto.expectTime())
-                .isEmailVisible(formCreateDto.emailVisibility())
-                .privacyDisposalDate(formCreateDto.privacyDisposalDate())
+                .expectTime(request.expectTime())
+                .isEmailVisible(false)
+                .privacyDisposalDate(request.privacyDisposalDate())
                 .questionCnt(questionCnt)
                 .isTemp(true)
                 .status(FormStatus.NOT_STARTED)
                 .build();
     }
 
-    public static Form createForm(FormCreateDto formCreateDto, User user, LocalDateTime startDate,
+    public static Form createForm(FormCreateDto request, User user, LocalDateTime startDate,
                                   LocalDateTime endDate, int questionCnt) {
         return Form.builder()
-                .title(formCreateDto.title())
-                .detail(formCreateDto.description())
-                .imageUrl(formCreateDto.image())
+                .title(request.title())
+                .detail(request.description())
+                .imageUrl(request.image())
                 .user(user)
                 .startDate(startDate)
                 .endDate(endDate)
-                .expectTime(formCreateDto.expectTime())
-                .isEmailVisible(formCreateDto.emailVisibility())
-                .privacyDisposalDate(formCreateDto.privacyDisposalDate())
+                .expectTime(request.expectTime())
+                .isEmailVisible(request.reward() != null)
+                .privacyDisposalDate(request.privacyDisposalDate())
                 .questionCnt(questionCnt)
                 .isTemp(false)
                 .status(FormStatus.PROGRESS)
@@ -185,7 +187,7 @@ public class Form extends BaseTimeEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.expectTime = request.expectTime();
-        this.isEmailVisible = request.emailVisibility();
+        this.isEmailVisible = request.reward() != null;
         this.privacyDisposalDate = request.privacyDisposalDate() == null ? null
                 : DateTimeUtil.truncateSecondsAndNanos(request.privacyDisposalDate());
         this.status = FormStatus.PROGRESS;
@@ -200,7 +202,7 @@ public class Form extends BaseTimeEntity {
         this.startDate = null;
         this.endDate = endDate;
         this.expectTime = request.expectTime();
-        this.isEmailVisible = request.emailVisibility();
+        this.isEmailVisible = false;
         this.privacyDisposalDate = request.privacyDisposalDate();
         this.status = FormStatus.NOT_STARTED;
         this.questionCnt = questionCnt;

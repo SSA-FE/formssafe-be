@@ -61,7 +61,7 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
     void 임시설문을_설문으로_수정한다() {
         //given
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                null, 10, false, null,
+                null, 10, null,
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
@@ -129,7 +129,7 @@ class TempFormUpdateServiceTest extends IntegrationTestConfig {
     void 임시설문을_새로운임시설문으로_수정한다() {
         //given
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                null, 10, false, null,
+                null, 10, null,
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
