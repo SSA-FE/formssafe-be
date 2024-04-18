@@ -61,7 +61,7 @@ class ActivityServiceTest extends IntegrationTestConfig {
 
             LoginUserDto loginUser = new LoginUserDto(testUser.getId());
             //when
-            List<FormListDto> createdFormList = activityService.getCreatedFormList(new SearchDto(), loginUser);
+            List<FormListDto> createdFormList = activityService.getCreatedFormList(SearchDto.createNull(), loginUser);
             //then
             assertThat(createdFormList).hasSize(3)
                     .extracting("title")
