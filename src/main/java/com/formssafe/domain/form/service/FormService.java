@@ -100,7 +100,7 @@ public class FormService {
 
     private UserAuthorDto getAuthor(Form form) {
         User author = form.getUser();
-        return UserAuthorDto.from(author);
+        return UserAuthorDto.from(author, form.isEmailVisible());
     }
 
     private List<TagListDto> getTagList(Form form) {

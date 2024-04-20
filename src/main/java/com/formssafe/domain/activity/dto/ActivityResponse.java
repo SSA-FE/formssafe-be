@@ -65,7 +65,7 @@ public final class ActivityResponse {
                     form.getTitle(),
                     form.getDetail(),
                     imageUrl,
-                    UserAuthorDto.from(form.getUser()),
+                    UserAuthorDto.from(form.getUser(), form.isEmailVisible()),
                     form.getExpectTime(),
                     form.getQuestionCnt(),
                     form.getResponseCnt(),

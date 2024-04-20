@@ -154,7 +154,7 @@ public class Form extends BaseTimeEntity {
                 .startDate(null)
                 .endDate(endDate)
                 .expectTime(request.expectTime())
-                .isEmailVisible(false)
+                .isEmailVisible(request.reward() != null)
                 .privacyDisposalDate(request.privacyDisposalDate())
                 .questionCnt(questionCnt)
                 .isTemp(true)
@@ -202,7 +202,7 @@ public class Form extends BaseTimeEntity {
         this.startDate = null;
         this.endDate = endDate;
         this.expectTime = request.expectTime();
-        this.isEmailVisible = false;
+        this.isEmailVisible = request.reward() != null;
         this.privacyDisposalDate = request.privacyDisposalDate();
         this.status = FormStatus.NOT_STARTED;
         this.questionCnt = questionCnt;

@@ -124,7 +124,8 @@ public final class FormResponse {
                 tagCountDtos = TagCountDto.from(form.getFormTagList());
             }
             return new FormListDto(form.getId(), form.getTitle(), form.getDetail(), imageUrl,
-                    UserAuthorDto.from(form.getUser()), form.getExpectTime(), form.getQuestionCnt(),
+                    UserAuthorDto.from(form.getUser(), form.isEmailVisible()),
+                    form.getExpectTime(), form.getQuestionCnt(),
                     form.getResponseCnt(),
                     form.getStartDate(), form.getEndDate(), rewardListDto, tagCountDtos,
                     form.getStatus().displayName());
