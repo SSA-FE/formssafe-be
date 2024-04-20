@@ -1,6 +1,6 @@
 package com.formssafe.domain.activity.controller;
 
-import com.formssafe.domain.activity.dto.ActivityParam;
+import com.formssafe.domain.activity.dto.ActivityParam.SearchDto;
 import com.formssafe.domain.activity.dto.ActivityResponse.FormListDto;
 import com.formssafe.domain.activity.dto.ActivityResponse.ParticipateSubmissionDto;
 import com.formssafe.domain.activity.dto.SelfSubmissionResponse;
@@ -64,7 +64,7 @@ public class ActivityController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/forms", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<FormListDto> getCreatedFormList(@ModelAttribute ActivityParam.SearchDto param,
+    public List<FormListDto> getCreatedFormList(@ModelAttribute SearchDto param,
                                                 @AuthenticationPrincipal LoginUserDto loginUser) {
         return activityService.getCreatedFormList(param, loginUser);
     }
@@ -76,7 +76,7 @@ public class ActivityController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/responses", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<FormListDto> getParticipatedFormList(@ModelAttribute ActivityParam.SearchDto param,
+    public List<FormListDto> getParticipatedFormList(@ModelAttribute SearchDto param,
                                                      @AuthenticationPrincipal LoginUserDto loginUser) {
         return activityService.getParticipatedFormList(param, loginUser);
     }
