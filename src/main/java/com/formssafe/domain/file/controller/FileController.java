@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "files", description = "s3 presigned-url 받아오기")
 @RestController
-@RequestMapping("/api/v1/files")
+@RequestMapping("/v1/files")
 @Slf4j
 @RequiredArgsConstructor
 public class FileController {

@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/forms")
+@RequestMapping("/v1/forms")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "submission", description = "설문 참여 및 수정")

@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "form", description = "설문 CRUD API")
 @RestController
-@RequestMapping("/api/v1/forms")
+@RequestMapping("/v1/forms")
 @Slf4j
 @RequiredArgsConstructor
 public class FormController {

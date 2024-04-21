@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "view", description = "설문 참여 조회 관련 API")
 @RestController
-@RequestMapping("/api/v1/view")
+@RequestMapping("/v1/view")
 @Slf4j
 @RequiredArgsConstructor
 public class ViewController {

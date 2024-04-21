@@ -27,11 +27,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/activity")
+@RequestMapping("/v1/activity")
 @RequiredArgsConstructor
 @Tag(name = "activity", description = "내 활동 조회 API")
 public class ActivityController {
-
     private final ActivityService activityService;
 
     @Operation(summary = "참여한 설문 조회", description = "내가 참여한 설문 응답 조회")
