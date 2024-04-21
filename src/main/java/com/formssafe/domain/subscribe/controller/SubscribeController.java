@@ -40,11 +40,15 @@ public class SubscribeController {
         return subscribeService.getRewardCategoryWithSubscribe(loginUser);
     }
 
-    @Operation(summary = "경품 카테고리 목록 조회", description = "구독 상태 포함")
-    @ApiResponse(responseCode = "200", description = "경품 카테고리 조회 성공(카테고리 없을 시 빈 배열)",
+    @Operation(summary = "경품 카테고리 구독 설정", description = "카테고리 ID 기반으로 설정, 요청 시 기존에 있던 데이터 삭제")
+    @ApiResponse(responseCode = "200", description = "카테고리 구독 완료",
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = SelfSubmissionResponse.class)))
+    @ApiResponse(responseCode = "400", description = "경품 카테고리가 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"입력한 경품 카테고리가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),

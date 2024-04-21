@@ -46,7 +46,7 @@ public class SubscribeService {
         if (user.isDeleted()) {
             throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
-
+        deleteSubscribe(user);
         createSubscribe(rewardListDto.reward(), user);
     }
 
@@ -61,5 +61,9 @@ public class SubscribeService {
                     .build();
             subscribeRepository.save(subscribe);
         }
+    }
+
+    private void deleteSubscribe(User user) {
+        subscribeRepository.deleteByUserId(user.getId());
     }
 }
