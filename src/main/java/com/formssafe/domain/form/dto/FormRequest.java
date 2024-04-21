@@ -18,7 +18,6 @@ public final class FormRequest {
                                 @Schema(description = "설문 설명 이미지 목록") List<String> image,
                                 @Schema(description = "설문 마감 시각") LocalDateTime endDate,
                                 @Schema(description = "설문 참여 예상 시간") int expectTime,
-                                @Schema(description = "작성자 이메일 공개 동의 여부") boolean emailVisibility,
                                 @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각") LocalDateTime privacyDisposalDate,
                                 @Schema(description = "설문 문항 목록") List<ContentCreateDto> contents,
                                 @Schema(description = "설문 태그 목록") List<String> tags,
@@ -30,7 +29,6 @@ public final class FormRequest {
                              @Schema(description = "설문 설명 이미지 목록") List<String> image,
                              @Schema(description = "설문 마감 시각") LocalDateTime endDate,
                              @Schema(description = "설문 참여 예상 시간") int expectTime,
-                             @Schema(description = "작성자 이메일 공개 동의 여부") boolean emailVisibility,
                              @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각") LocalDateTime privacyDisposalDate,
                              @Schema(description = "설문 문항 목록") List<ContentCreateDto> contents,
                              @Schema(description = "설문 태그 목록") List<String> tags,
@@ -41,7 +39,6 @@ public final class FormRequest {
             this.image = image;
             this.endDate = DateTimeUtil.truncateSecondsAndNanos(endDate);
             this.expectTime = expectTime;
-            this.emailVisibility = emailVisibility;
             this.privacyDisposalDate = DateTimeUtil.truncateSecondsAndNanos(privacyDisposalDate);
             this.contents = contents;
             this.tags = tags;
@@ -52,8 +49,8 @@ public final class FormRequest {
         @Override
         public String toString() {
             return "FormCreateDto{" + "title='" + title + '\'' + ", description='" + description + '\'' + ", image="
-                    + image + ", endDate=" + endDate + ", expectTime=" + expectTime + ", emailVisibility="
-                    + emailVisibility + ", privacyDisposalDate=" + privacyDisposalDate + ", contents=" + contents
+                    + image + ", endDate=" + endDate + ", expectTime=" + expectTime + ", privacyDisposalDate="
+                    + privacyDisposalDate + ", contents=" + contents
                     + ", tags=" + tags + ", reward=" + reward + ", isTemp=" + isTemp + '}';
         }
     }

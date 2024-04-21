@@ -60,11 +60,12 @@ INSERT INTO decoration(id, type, uuid, form_id, detail, position)
 VAlUES (1, 'text', 'b9e48460-ee66-11ee-91e5-39a1c9090735', 1, '여기서부터는 확인용 decoration 입니다.', 2),
 (2, 'text', '21e0b63d-832e-44b5-ba8c-98b8278bb8da',1, '설문조사가 종료되었습니다', 7);
 
-INSERT INTO reward_category (id, reward_category_name)
-VALUES (1, '커피'),
-       (2, '상품권'),
-       (3, '베이커리'),
-       (4, '식품');
+insert into reward_category(reward_category_name)
+values ('커피/음료'),
+       ('상품권'),
+       ('편의점'),
+       ('치킨/피자/햄버거'),
+       ('기타');
 
 INSERT INTO reward (id, form_id, reward_category_id, reward_name, count)
 VALUES (1, 1, 1, '스타벅스 아이스 아메리카노 T', 1);

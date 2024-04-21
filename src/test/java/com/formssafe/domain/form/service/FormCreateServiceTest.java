@@ -61,7 +61,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         LocalDateTime startDate = LocalDateTime.now().withSecond(0).withNano(0);
         LocalDateTime endDate = startDate.plusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                endDate, 10, false, null,
+                endDate, 10, null,
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
@@ -99,7 +99,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         LocalDateTime startDate = LocalDateTime.now().withSecond(0).withNano(0);
         LocalDateTime endDate = startDate.plusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                endDate, 10, false, null,
+                endDate, 10, null,
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
@@ -142,7 +142,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.plusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                endDate, 10, false, null,
+                endDate, 10, null,
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
@@ -160,7 +160,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         //given
         LocalDateTime endDate = LocalDateTime.now();
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                endDate, 10, false, null,
+                endDate, 10, null,
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
@@ -179,7 +179,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         LocalDateTime privacyDisposalDate = LocalDateTime.now().minusMinutes(1L);
 
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                endDate, 10, false, privacyDisposalDate,
+                endDate, 10, privacyDisposalDate,
                 List.of(createContentCreate("text", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
@@ -197,7 +197,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.minusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                endDate, 10, false, null,
+                endDate, 10, null,
                 List.of(createContentCreate("invalid", null, "텍스트 블록", null, false),
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
@@ -214,7 +214,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = startDate.minusDays(1L);
         FormCreateDto formCreateDto = new FormCreateDto("제목1", "설명1", null,
-                endDate, 10, false, null,
+                endDate, 10, null,
                 List.of(),
                 List.of("tag1", "tag13"),
                 new RewardCreateDto("경품1", "커피", 4),

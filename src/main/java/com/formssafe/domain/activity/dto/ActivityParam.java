@@ -23,6 +23,7 @@ public final class ActivityParam {
                             List<String> tag,
                             @Schema(description = "마지막 formId")
                             Long top) {
+
         public static SearchDto createNull() {
             return new SearchDto(null, null, null, null, null, null);
         }
