@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/users")
+@RequestMapping("/v1/users")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "users", description = "사용자 관련 API")

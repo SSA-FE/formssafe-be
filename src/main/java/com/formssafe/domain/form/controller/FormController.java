@@ -1,9 +1,7 @@
 package com.formssafe.domain.form.controller;
 
-import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.dto.FormRequest;
 import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
-import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.service.FormCreateService;
 import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.form.service.TempFormUpdateService;
@@ -16,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,24 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "form", description = "설문 CRUD API")
 @RestController
-@RequestMapping("/api/v1/forms")
+@RequestMapping("/v1/forms")
 @Slf4j
 @RequiredArgsConstructor
 public class FormController {
     private final FormService formService;
     private final FormCreateService formCreateService;
     private final TempFormUpdateService tempFormUpdateService;
-
-    @Operation(summary = "설문 전체 조회", description = "모든 설문을 목록으로 조회한다.")
-    @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
-                    examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    List<FormListDto> getFormList(@ModelAttribute SearchDto param) {
-        return formService.getList(param);
-    }
 
     @Operation(summary = "설문 상세 조회", description = "해당 id의 설문을 상세 조회한다.")
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",

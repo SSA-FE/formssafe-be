@@ -1,8 +1,10 @@
 package com.formssafe.domain.result.controller;
 
+import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
+import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.result.dto.ResultResponse;
-import com.formssafe.domain.result.service.ExcelReportService;
 import com.formssafe.domain.result.dto.ResultResponse.ResultResponseDto;
+import com.formssafe.domain.result.service.ExcelReportService;
 import com.formssafe.domain.result.service.ResultService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.global.exception.response.ExceptionResponse;
@@ -24,12 +26,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("api/v1/forms")
+@RequestMapping("/v1/result")
 @RequiredArgsConstructor
 @Tag(name = "result", description = "설문 응답 결과 조회 관련 api")
 public class ResultController {
     private final ExcelReportService excelReportService;
     private final ResultService resultService;
+    private final FormService formService;
+
+    @Operation(summary = "설문 상세 조회", description = "설문 결과 전체 조회")
+    @ApiResponse(responseCode = "200", description = "설문 결과 조회 성공",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ResultResponse.class)))
+    @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
+    @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ExceptionResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
+    @GetMapping("/forms/{formId}")
+    @ResponseStatus(HttpStatus.OK)
+    public FormDetailDto getFormResult(@PathVariable Long formId,
+                                       @AuthenticationPrincipal LoginUserDto loginUserDto) {
+        return formService.getFormDetail(formId, loginUserDto);
+    }
 
     @Operation(summary = "설문 결과 조회", description = "설문 응답 결과 전체 조회")
     @ApiResponse(responseCode = "200", description = "설문 응답결과 조회 성공",
@@ -44,7 +67,7 @@ public class ResultController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
-    @GetMapping("/{formId}/result")
+    @GetMapping("/forms/{formId}/submissions")
     @ResponseStatus(HttpStatus.OK)
     public ResultResponseDto getTotalResult(@PathVariable Long formId,
                                             @AuthenticationPrincipal LoginUserDto loginUserDto) {
@@ -62,7 +85,7 @@ public class ResultController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
-    @GetMapping("/{formId}/result/download")
+    @GetMapping("/forms/{formId}/download")
     public void resultDownload(HttpServletResponse response,
                                @PathVariable Long formId,
                                @AuthenticationPrincipal LoginUserDto loginUser) {

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/subscribe")
+@RequestMapping("/v1/subscribe")
 @AllArgsConstructor
 public class SubscribeController {
     private final SubscribeService subscribeService;
