@@ -1,6 +1,5 @@
 package com.formssafe.domain.submission.controller;
 
-import com.formssafe.domain.auth.service.SessionService;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionCreateDto;
 import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionResponseDto;
 import com.formssafe.domain.submission.service.SubmissionService;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "submission", description = "설문 참여 및 수정")
 public class SubmissionController {
-    private final SessionService sessionService;
     private final SubmissionService submissionService;
 
     @Operation(summary = "설문 참여하기", description = "처음으로 설문에 참여할 때 사용")
@@ -69,7 +67,7 @@ public class SubmissionController {
         submissionService.modify(formId, request, loginUser);
     }
 
-    @Operation(summary = "설문 가져오기", description = "설문 수정을 위해 기존 설문 응답을 조회")
+    @Operation(summary = "작성한 임시 설문 응답 가져오기", description = "설문 수정을 위해 기존 설문 응답을 조회")
     @ApiResponse(responseCode = "200", description = "설문 수정 완료")
     @ApiResponse(responseCode = "400", description = "설문이 존재하지 않거나 만료되었을 때",
             content = @Content(mediaType = "application/json",

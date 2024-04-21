@@ -47,7 +47,7 @@ public class ActivityController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
-    @GetMapping("/forms/{formId}/responses")
+    @GetMapping("/forms/{formId}/submissions")
     public ResponseEntity<ParticipateSubmissionDto> getSelfResponse(@PathVariable Long formId,
                                                                     @AuthenticationPrincipal LoginUserDto loginUser) {
         ParticipateSubmissionDto participateSubmissionDto = activityService.getSelfResponse(formId, loginUser);
@@ -74,7 +74,7 @@ public class ActivityController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
-    @GetMapping(path = "/responses", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public List<FormListDto> getParticipatedFormList(@ModelAttribute SearchDto param,
                                                      @AuthenticationPrincipal LoginUserDto loginUser) {
