@@ -25,7 +25,7 @@ public class Subscribe {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reward_category_id", nullable = false)
     private RewardCategory rewardCategory;
 

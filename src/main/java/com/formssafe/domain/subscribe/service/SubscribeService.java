@@ -26,14 +26,9 @@ public class SubscribeService {
     private final UserRepository userRepository;
 
     public List<CategoryListDto> getRewardCategoryWithSubscribe(LoginUserDto loginUser) {
-        User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+        User user = userRepository.getReferenceById(loginUser.id());
 
-        if (user.isDeleted()) {
-            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
-        }
-
-        return rewardCategoryRepository.getRewardCategoryWithSubscribe(loginUser.id()).stream()
+        return rewardCategoryRepository.getRewardCategoryWithSubscribe(user.getId()).stream()
                 .map(CategoryListDto::fromObject)
                 .collect(Collectors.toList());
     }
@@ -51,10 +46,12 @@ public class SubscribeService {
     }
 
     private void createSubscribe(List<Long> rewardCategoryIdList, User user) {
-        for (Long rewardCategoryId : rewardCategoryIdList) {
-            RewardCategory rewardCategory = rewardCategoryRepository.findById(rewardCategoryId).orElseThrow(
-                    () -> new DataNotFoundException("경품 카테고리가 존재하지 않습니다.")
-            );
+        List<RewardCategory> rewardCategoryList = rewardCategoryRepository.findByIdIn(rewardCategoryIdList);
+        if (rewardCategoryList.size() != rewardCategoryIdList.size()) {
+            throw new DataNotFoundException("존재하지 않는 카테고리가 있습니다.");
+        }
+
+        for (RewardCategory rewardCategory : rewardCategoryList) {
             Subscribe subscribe = Subscribe.builder()
                     .user(user)
                     .rewardCategory(rewardCategory)

@@ -11,6 +11,8 @@ public interface RewardCategoryRepository extends JpaRepository<RewardCategory, 
 
     Optional<RewardCategory> findByRewardCategoryName(String categoryName);
 
+    List<RewardCategory> findByIdIn(List<Long> ids);
+
     @Query("""
             SELECT rc.id, rc.rewardCategoryName, CASE WHEN s.id IS NOT NULL THEN true ELSE false END
             FROM RewardCategory rc

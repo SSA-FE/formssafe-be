@@ -13,11 +13,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,6 +38,7 @@ public class SubscribeController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/reward")
+    @ResponseStatus(HttpStatus.OK)
     public List<CategoryListDto> getRewardCategoryWithSubscribe(@AuthenticationPrincipal LoginUserDto loginUser) {
         return subscribeService.getRewardCategoryWithSubscribe(loginUser);
     }
@@ -54,6 +57,7 @@ public class SubscribeController {
                     schema = @Schema(implementation = ExceptionResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PostMapping("/reward")
+    @ResponseStatus(HttpStatus.OK)
     public void subscribeCategory(@AuthenticationPrincipal LoginUserDto loginUser,
                                   @RequestBody RewardListDto rewardListDto) {
         subscribeService.subscribeCategory(loginUser, rewardListDto);
