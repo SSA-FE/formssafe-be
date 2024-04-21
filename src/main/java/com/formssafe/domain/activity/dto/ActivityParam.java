@@ -22,10 +22,14 @@ public final class ActivityParam {
                             @Schema(description = "태그")
                             List<String> tag,
                             @Schema(description = "마지막 formId")
-                            Long top) {
+                            Long top,
+
+                            @Schema(description = "임시 여부")
+                            Boolean temp
+    ) {
 
         public static SearchDto createNull() {
-            return new SearchDto(null, null, null, null, null, null);
+            return new SearchDto(null, null, null, null, null, null, null);
         }
     }
 }

@@ -74,6 +74,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .where(matchUser(author),
                         isUserNotDeleted(),
                         isNotDeleted(),
+                        matchTemp(searchDto.temp()),
                         userIdLast(searchDto.top()),
                         containsKeyword(searchDto.keyword()),
                         matchStatus(searchDto.status()),
@@ -114,11 +115,11 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
         return user.isDeleted.eq(false);
     }
 
-    public BooleanExpression isNotDeleted() {
+    private BooleanExpression isNotDeleted() {
         return form.isDeleted.eq(false);
     }
 
-    public BooleanExpression isNotTemp() {
+    private BooleanExpression isNotTemp() {
         return form.isTemp.eq(false);
     }
 
@@ -128,6 +129,10 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
 
     private BooleanExpression matchUser(User user) {
         return user != null ? form.user.eq(user) : null;
+    }
+
+    private BooleanExpression matchTemp(Boolean isTemp) {
+        return isTemp != null ? form.isTemp.eq(isTemp) : null;
     }
 
     private BooleanExpression matchStatus(String status) {
