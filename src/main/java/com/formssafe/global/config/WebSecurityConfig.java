@@ -46,7 +46,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .rememberMe(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(request ->
-                request.requestMatchers("/api/v1/auth/social/**").permitAll()
+                request.requestMatchers("/v1/auth/social/**").permitAll()
                         .anyRequest().authenticated());
 
         http.cors(cors -> cors
@@ -77,8 +77,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new UserActivationInterceptor(userRepository))
-                .excludePathPatterns("/api/v1/auth/social/**",
-                        "/api/v1/users/join", "/api/v1/users/profile", "/api/v1/users/{id}",
+                .excludePathPatterns("/v1/auth/social/**",
+                        "/v1/users/join", "/v1/users/profile", "/v1/users/{id}",
                         "/swagger-ui/**",
                         "/swagger-resources/**",
                         "/v3/api-docs/**",
