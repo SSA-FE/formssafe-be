@@ -3,20 +3,17 @@ package com.formssafe.domain.content.question.entity;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.form.entity.Form;
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public abstract class Question extends Content {
     @Column(nullable = false)
     protected String title;
@@ -32,7 +29,19 @@ public abstract class Question extends Content {
                        int position,
                        boolean isRequired,
                        boolean isPrivacy) {
-        super(id, form, detail, position);
+        super(id, UUID.randomUUID().toString(), form, detail, position);
+        this.title = title;
+        this.isRequired = isRequired;
+        this.isPrivacy = isPrivacy;
+    }
+
+    protected Question(String uuid,
+                       String title,
+                       String detail,
+                       int position,
+                       boolean isRequired,
+                       boolean isPrivacy) {
+        super(uuid, detail, position);
         this.title = title;
         this.isRequired = isRequired;
         this.isPrivacy = isPrivacy;

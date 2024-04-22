@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.formssafe.config.IntegrationTestConfig;
-import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
+import com.formssafe.domain.form.dto.FormResponse.FormResultDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
@@ -83,7 +83,7 @@ class FormServiceTest extends IntegrationTestConfig {
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when
-            FormDetailDto formDetail = formService.getFormDetail(form.getId(), loginUserDto);
+            FormResultDto formDetail = formService.getFormResult(form.getId(), loginUserDto);
             //then
             assertThat(formDetail).isNotNull()
                     .extracting("title", "description", "status", "questionCnt")
@@ -96,7 +96,7 @@ class FormServiceTest extends IntegrationTestConfig {
             Form form = formRepository.save(createDeletedForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when then
-            assertThatThrownBy(() -> formService.getFormDetail(form.getId(), loginUserDto))
+            assertThatThrownBy(() -> formService.getFormResult(form.getId(), loginUserDto))
                     .isInstanceOf(DataNotFoundException.class);
         }
 
@@ -106,7 +106,7 @@ class FormServiceTest extends IntegrationTestConfig {
             Form form = formRepository.save(createTemporaryForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
             //when then
-            assertThatThrownBy(() -> formService.getFormDetail(form.getId(), loginUserDto))
+            assertThatThrownBy(() -> formService.getForm(form.getId(), loginUserDto))
                     .isInstanceOf(DataNotFoundException.class);
         }
     }

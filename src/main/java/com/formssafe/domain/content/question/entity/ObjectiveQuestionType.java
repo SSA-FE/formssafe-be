@@ -5,15 +5,21 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum ObjectiveQuestionType {
     SINGLE("single"),
     CHECKBOX("checkbox"),
     DROPDOWN("dropdown");
 
-    private static final Map<String, ObjectiveQuestionType> convertor =
-            Arrays.stream(ObjectiveQuestionType.values())
-                    .collect(Collectors.toMap(ObjectiveQuestionType::displayName, Function.identity()));
+    private static final Map<String, ObjectiveQuestionType> convertor = Stream.concat(
+                    Arrays.stream(ObjectiveQuestionType.values())
+                            .collect(Collectors.toMap(ObjectiveQuestionType::displayName, Function.identity()))
+                            .entrySet().stream(),
+                    Arrays.stream(ObjectiveQuestionType.values())
+                            .collect(Collectors.toMap(ObjectiveQuestionType::name, Function.identity()))
+                            .entrySet().stream())
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     private final String displayName;
 
     ObjectiveQuestionType(String displayName) {

@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,9 +20,18 @@ public class Decoration extends Content {
     @Column(nullable = false)
     private DecorationType type;
 
+    private Decoration(String uuid, DecorationType type, String detail, int position) {
+        super(uuid, detail, position);
+        this.type = type;
+    }
+
     @Builder
     private Decoration(Long id, Form form, String detail, int position, DecorationType type){
-        super(id, form, detail, position);
+        super(id, UUID.randomUUID().toString(), form, detail, position);
         this.type = type;
+    }
+
+    public static Decoration of(String uuid, DecorationType type, String detail, int position) {
+        return new Decoration(uuid, type, detail, position);
     }
 }

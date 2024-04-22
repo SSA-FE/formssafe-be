@@ -5,14 +5,20 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum DescriptiveQuestionType {
     SHORT("short"),
     LONG("long");
 
     private static final Map<String, DescriptiveQuestionType> convertor =
-            Arrays.stream(DescriptiveQuestionType.values())
-                    .collect(Collectors.toMap(DescriptiveQuestionType::displayName, Function.identity()));
+            Stream.concat(Arrays.stream(DescriptiveQuestionType.values())
+                                    .collect(Collectors.toMap(DescriptiveQuestionType::displayName, Function.identity()))
+                                    .entrySet().stream(),
+                            Arrays.stream(DescriptiveQuestionType.values())
+                                    .collect(Collectors.toMap(DescriptiveQuestionType::name, Function.identity()))
+                                    .entrySet().stream())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     private final String displayName;
 
     DescriptiveQuestionType(String displayName) {

@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class FormDoneService {
     private final FormValidateService formValidateService;
-    private final FormCommonService formCommonService;
+    private final FormReadService formReadService;
 
     @Transactional
     public Form execute(Long formId, Long loginUserId) {
         log.debug("Form Done: id: {}, loginUser: {}", formId, loginUserId);
 
-        Form form = formCommonService.findForm(formId);
+        Form form = formReadService.findForm(formId);
         formValidateService.validAuthor(form, loginUserId);
         formValidateService.validFormProgress(form);
 

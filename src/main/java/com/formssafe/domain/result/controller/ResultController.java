@@ -1,6 +1,6 @@
 package com.formssafe.domain.result.controller;
 
-import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
+import com.formssafe.domain.form.dto.FormResponse.FormResultDto;
 import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.result.dto.ResultResponse;
 import com.formssafe.domain.result.dto.ResultResponse.ResultResponseDto;
@@ -49,9 +49,9 @@ public class ResultController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/forms/{formId}")
     @ResponseStatus(HttpStatus.OK)
-    public FormDetailDto getFormResult(@PathVariable Long formId,
+    public FormResultDto getFormResult(@PathVariable Long formId,
                                        @AuthenticationPrincipal LoginUserDto loginUserDto) {
-        return formService.getFormDetail(formId, loginUserDto);
+        return formService.getFormResult(formId, loginUserDto);
     }
 
     @Operation(summary = "설문 결과 조회", description = "설문 응답 결과 전체 조회")

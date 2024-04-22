@@ -6,6 +6,7 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
+import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.dto.UserResponse;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
@@ -20,7 +21,7 @@ public final class FormResponse {
     }
 
     @Schema(description = "설문 상세 조회 응답 DTO")
-    public record FormDetailDto(@Schema(description = "설문 id")
+    public record FormResultDto(@Schema(description = "설문 id")
                                 Long id,
                                 @Schema(description = "설문 제목")
                                 String title,
@@ -36,8 +37,6 @@ public final class FormResponse {
                                 LocalDateTime endDate,
                                 @Schema(description = "설문 참여 예상 시간")
                                 int expectTime,
-                                @Schema(description = "작성자 이메일 공개 동의 여부")
-                                boolean emailVisibility,
                                 @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각")
                                 LocalDateTime privacyDisposalDate,
                                 @Schema(description = "설문 문항 목록")
@@ -54,15 +53,17 @@ public final class FormResponse {
                                 @Schema(description = "설문 응답 개수")
                                 int responseCnt,
                                 @Schema(description = "설문 상태가 rewarded인 경우, 경품에 추첨된 인원 목록")
+                                @JsonInclude(JsonInclude.Include.NON_NULL)
                                 List<UserListDto> recipients) {
 
-        public static FormDetailDto from(Form form,
+        public static FormResultDto from(Form form,
                                          UserAuthorDto authorDto,
                                          List<ContentResponseDto> contents,
                                          RewardListDto reward,
                                          List<TagListDto> tags,
                                          List<UserListDto> recipients) {
-            return new FormDetailDto(form.getId(),
+
+            return new FormResultDto(form.getId(),
                     form.getTitle(),
                     form.getDetail(),
                     JsonConverter.toList(form.getImageUrl(), String.class),
@@ -70,7 +71,6 @@ public final class FormResponse {
                     form.getStartDate(),
                     form.getEndDate(),
                     form.getExpectTime(),
-                    form.isEmailVisible(),
                     form.getPrivacyDisposalDate(),
                     contents,
                     reward,
@@ -79,6 +79,65 @@ public final class FormResponse {
                     form.getQuestionCnt(),
                     form.getResponseCnt(),
                     recipients);
+        }
+    }
+
+    @Schema(description = "설문 문항 포함 조회 응답 DTO")
+    public record FormWithQuestionResponse(@Schema(description = "설문 id")
+                                           Long id,
+                                           @Schema(description = "설문 제목")
+                                           String title,
+                                           @Schema(description = "설문 설명")
+                                           String description,
+                                           @Schema(description = "설문 설명 이미지 목록")
+                                           List<String> image,
+                                           @Schema(description = "설문 등록자")
+                                           UserAuthorDto author,
+                                           @Schema(description = "설문 시작 시각")
+                                           LocalDateTime startDate,
+                                           @Schema(description = "설문 마감 시각")
+                                           LocalDateTime endDate,
+                                           @Schema(description = "설문 참여 예상 시간")
+                                           int expectTime,
+                                           @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각")
+                                           LocalDateTime privacyDisposalDate,
+                                           @Schema(description = "설문 문항 목록")
+                                           List<ContentResponseDto> contents,
+                                           @Schema(description = "설문 경품")
+                                           @JsonInclude(JsonInclude.Include.NON_NULL)
+                                           RewardListDto reward,
+                                           @Schema(description = "설문 태그 목록")
+                                           List<TagListDto> tags,
+                                           @Schema(description = "설문 상태")
+                                           String status,
+                                           @Schema(description = "설문 질문 개수")
+                                           int questionCnt) {
+
+        public static FormWithQuestionResponse from(Form form,
+                                                    List<ContentResponseDto> contents,
+                                                    RewardListDto reward) {
+
+            return new FormWithQuestionResponse(form.getId(),
+                    form.getTitle(),
+                    form.getDetail(),
+                    JsonConverter.toList(form.getImageUrl(), String.class),
+                    UserAuthorDto.from(form.getUser(), form.isEmailVisible()),
+                    form.getStartDate(),
+                    form.getEndDate(),
+                    form.getExpectTime(),
+                    form.getPrivacyDisposalDate(),
+                    contents,
+                    reward,
+                    toTagList(form),
+                    form.getStatus().displayName(),
+                    form.getQuestionCnt());
+        }
+
+        private static List<TagListDto> toTagList(Form form) {
+            return form.getFormTagList().stream()
+                    .map(FormTag::getTag)
+                    .map(TagListDto::from)
+                    .toList();
         }
     }
 
@@ -108,6 +167,7 @@ public final class FormResponse {
                               List<TagCountDto> tags,
                               @Schema(description = "설문 상태")
                               String status) {
+
         public static FormListDto from(Form form) {
             String imageUrl = null;
             if (!form.getImageUrl().equals("null")) {
@@ -131,5 +191,7 @@ public final class FormResponse {
                     form.getStatus().displayName());
         }
     }
+
+
 }
 

@@ -14,6 +14,7 @@ public final class QuestionResponse{
 
     public record QuestionDetailDto(@Schema(description = "설문 문항 id") String id,
                                     @Schema(description = "설문 문항 타입") String type,
+                                    @JsonInclude(JsonInclude.Include.NON_NULL)
                                     @Schema(description = "설문 문항 질문") String title,
                                     @Schema(description = "설문 문항 설명") String description,
                                     @Schema(description = "객관식 문항일 시, 보기 목록")

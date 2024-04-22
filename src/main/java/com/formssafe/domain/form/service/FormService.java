@@ -4,9 +4,8 @@ import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
-import com.formssafe.domain.form.dto.FormParam.SearchDto;
-import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
-import com.formssafe.domain.form.dto.FormResponse.FormListDto;
+import com.formssafe.domain.form.dto.FormResponse.FormResultDto;
+import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionResponse;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
@@ -20,8 +19,6 @@ import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.global.exception.type.DataNotFoundException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,32 +32,36 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class FormService {
-    private final FormCommonService formCommonService;
+    private final FormReadService formReadService;
     private final FormValidateService formValidateService;
     private final RewardRecipientsSelectService rewardRecipientsSelectService;
     private final FormDoneService formDoneService;
     private final FormRepository formRepository;
 
-    public List<FormListDto> getList(SearchDto searchDto) {
-        log.info(searchDto.toString());
+    public FormWithQuestionResponse getForm(Long formId, LoginUserDto loginUser) {
+        Form form = formReadService.findFormWithUserAndTag(formId);
+        formValidateService.validAuthorAndTemp(form, loginUser.id());
 
-        List<Form> result = formRepository.findFormWithFiltered(searchDto);
-        return result.stream()
-                .map(FormListDto::from)
-                .toList();
+        List<ContentResponseDto> contentDetailDtos = getContentList(form.getId());
+        RewardListDto rewardDto = getReward(form);
+
+        return FormWithQuestionResponse.from(form,
+                contentDetailDtos,
+                rewardDto);
     }
 
-    public FormDetailDto getFormDetail(Long formId, LoginUserDto loginUser) {
-        Form form = formCommonService.findForm(formId);
-        formValidateService.validAuthorAndTemp(form, loginUser.id());
+    public FormResultDto getFormResult(Long formId, LoginUserDto loginUser) {
+        Form form = formReadService.findForm(formId);
+        formValidateService.validAuthor(form, loginUser.id());
+        formValidateService.validNotTempForm(form);
 
         UserAuthorDto userAuthorDto = getAuthor(form);
         List<TagListDto> tagListDtos = getTagList(form);
-        List<ContentResponseDto> contentDetailDtos = getContentList(form);
+        List<ContentResponseDto> contentDetailDtos = getContentList(form.getId());
         RewardListDto rewardDto = getReward(form);
         List<UserListDto> rewardRecipientsDtos = getRewardRecipients(rewardDto, form);
 
-        return FormDetailDto.from(form,
+        return FormResultDto.from(form,
                 userAuthorDto,
                 contentDetailDtos,
                 rewardDto,
@@ -69,14 +70,7 @@ public class FormService {
     }
 
     public Form getForm(Long id) {
-        Form form = formRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
-
-        if (form.isDeleted()) {
-            throw new DataNotFoundException(id + "번 설문이 존재하지 않습니다.");
-        }
-
-        return form;
+        return formReadService.findForm(id);
     }
 
     public int getRequiredQuestionCnt(Form form) {
@@ -110,6 +104,13 @@ public class FormService {
                 .toList();
     }
 
+    private List<ContentResponseDto> getContentList(Long formId) {
+        return formReadService.getContentList(formId).stream()
+                .sorted(Comparator.comparingInt(Content::getPosition))
+                .map(ContentResponseDto::from)
+                .toList();
+    }
+
     private RewardListDto getReward(Form form) {
         Reward reward = form.getReward();
         if (reward == null) {
@@ -120,26 +121,10 @@ public class FormService {
     }
 
     private List<UserListDto> getRewardRecipients(RewardListDto rewardDto, Form form) {
-        List<UserListDto> rewardRecipientsDtos = Collections.emptyList();
-        if (rewardDto != null) {
-            rewardRecipientsDtos = getRewardRecipientList(form);
+        if (rewardDto == null) {
+            return null;
         }
-        return rewardRecipientsDtos;
-    }
 
-    private List<ContentResponseDto> getContentList(Form form) {
-        List<Content> contents = new ArrayList<>();
-        contents.addAll(form.getDescriptiveQuestionList());
-        contents.addAll(form.getObjectiveQuestionList());
-        contents.addAll(form.getDecorationList());
-        contents.sort(Comparator.comparingInt(Content::getPosition));
-
-        return contents.stream()
-                .map(ContentResponseDto::from)
-                .toList();
-    }
-
-    private List<UserListDto> getRewardRecipientList(Form form) {
         if (FormStatus.REWARDED != form.getStatus()) {
             return Collections.emptyList();
         }
@@ -154,7 +139,7 @@ public class FormService {
     public void deleteForm(Long id, LoginUserDto loginUser) {
         log.debug("Form delete: id: {}, loginUser: {}", id, loginUser.id());
 
-        Form form = formCommonService.findForm(id);
+        Form form = formReadService.findForm(id);
         formValidateService.validAuthor(form, loginUser.id());
 
         form.delete();

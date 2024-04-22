@@ -9,6 +9,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "descriptive_question", indexes = {
         @Index(name = "idx_uuid", columnList = "uuid")
 })
+@EqualsAndHashCode(callSuper = true)
 public class DescriptiveQuestion extends Question {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,6 +36,22 @@ public class DescriptiveQuestion extends Question {
                                 boolean isPrivacy) {
         super(id, form, title, detail, position, isRequired, isPrivacy);
         this.questionType = questionType;
+    }
+
+    private DescriptiveQuestion(String uuid,
+                                DescriptiveQuestionType questionType,
+                                String title,
+                                String detail,
+                                int position,
+                                boolean isRequired,
+                                boolean isPrivacy) {
+        super(uuid, title, detail, position, isRequired, isPrivacy);
+        this.questionType = questionType;
+    }
+
+    public static DescriptiveQuestion of(String uuid, DescriptiveQuestionType questionType, String title,
+                                         String detail, boolean isPrivacy, boolean isRequired, int position) {
+        return new DescriptiveQuestion(uuid, questionType, title, detail, position, isRequired, isPrivacy);
     }
 
     @Override

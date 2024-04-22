@@ -1,7 +1,7 @@
 package com.formssafe.domain.form.controller;
 
 import com.formssafe.domain.form.dto.FormRequest;
-import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
+import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionResponse;
 import com.formssafe.domain.form.service.FormCreateService;
 import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.form.service.TempFormUpdateService;
@@ -51,9 +51,9 @@ public class FormController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    FormDetailDto getForm(@PathVariable Long id,
+    FormWithQuestionResponse getForm(@PathVariable Long id,
                           @AuthenticationPrincipal LoginUserDto loginUser) {
-        return formService.getFormDetail(id, loginUser);
+        return formService.getForm(id, loginUser);
     }
 
     @Operation(summary = "설문 등록", description = "새로운 설문을 등록한다.")
