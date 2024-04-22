@@ -3,7 +3,7 @@ package com.formssafe.domain.file.controller;
 import com.formssafe.domain.file.dto.FileResponseDto;
 import com.formssafe.domain.file.service.FileService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.global.exception.response.ExceptionResponse;
+import com.formssafe.global.error.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -31,7 +31,7 @@ public class FileController {
     @Operation(summary = "이미지 업로드를 위한 presigned-url 발급")
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/upload/{fileName}")
     @ResponseStatus(HttpStatus.OK)

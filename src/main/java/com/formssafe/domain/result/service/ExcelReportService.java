@@ -12,7 +12,7 @@ import com.formssafe.domain.submission.entity.Submission;
 import com.formssafe.domain.submission.entity.SubmissionResponse;
 import com.formssafe.domain.submission.repository.SubmissionRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.global.exception.type.FormssafeException;
+import com.formssafe.global.error.type.FormssafeException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;

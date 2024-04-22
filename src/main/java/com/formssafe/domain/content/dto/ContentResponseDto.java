@@ -5,7 +5,7 @@ import com.formssafe.domain.content.decoration.entity.Decoration;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.content.question.dto.QuestionResponseDto;
 import com.formssafe.domain.content.question.entity.Question;
-import com.formssafe.global.exception.type.DtoConvertException;
+import com.formssafe.global.error.type.DtoConvertException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

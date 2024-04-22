@@ -11,7 +11,7 @@ import com.formssafe.domain.content.question.entity.ObjectiveQuestionType;
 import com.formssafe.domain.content.question.repository.DescriptiveQuestionRepository;
 import com.formssafe.domain.content.question.repository.ObjectiveQuestionRepository;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.global.exception.type.BadRequestException;
+import com.formssafe.global.error.type.BadRequestException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

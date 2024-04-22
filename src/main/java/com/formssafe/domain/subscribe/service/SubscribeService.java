@@ -9,7 +9,9 @@ import com.formssafe.domain.subscribe.repository.SubscribeRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.error.ErrorCode;
+import com.formssafe.global.error.type.DataNotFoundException;
+import com.formssafe.global.error.type.UserNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +38,10 @@ public class SubscribeService {
     @Transactional
     public void subscribeCategory(LoginUserDto loginUser, RewardListDto rewardListDto) {
         User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
-            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
         deleteSubscribe(user);
         createSubscribe(rewardListDto.reward(), user);
@@ -48,7 +50,8 @@ public class SubscribeService {
     private void createSubscribe(List<Long> rewardCategoryIdList, User user) {
         List<RewardCategory> rewardCategoryList = rewardCategoryRepository.findByIdIn(rewardCategoryIdList);
         if (rewardCategoryList.size() != rewardCategoryIdList.size()) {
-            throw new DataNotFoundException("존재하지 않는 카테고리가 있습니다.");
+            throw new DataNotFoundException(ErrorCode.REWARD_CATEGORY_NOT_FOUND,
+                    "Cannot find reward category id among " + rewardCategoryIdList);
         }
 
         for (RewardCategory rewardCategory : rewardCategoryList) {

@@ -9,7 +9,7 @@ import com.formssafe.domain.file.dto.FileResponseDto;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.error.type.UserNotFoundException;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
@@ -29,10 +29,10 @@ public class FileService {
 
     public FileResponseDto createPresignedUrl(String prefix, String fileName, LoginUserDto loginUser) {
         User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new DataNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
-            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         if (!prefix.isEmpty()) {
