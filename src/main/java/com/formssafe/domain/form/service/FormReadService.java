@@ -31,6 +31,10 @@ public class FormReadService {
                 .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + formId));
     }
 
+    public List<Form> findFormListWithFilter(SearchDto searchDto) {
+        return formRepository.findFormWithFiltered(searchDto);
+    }
+
     public List<Content> getContentList(Long formId) {
         return formRepository.findContentsById(formId).stream()
                 .map(contentConverter::convert)
@@ -43,9 +47,5 @@ public class FormReadService {
                 .map(contentConverter::convert)
                 .sorted(Comparator.comparingInt(Content::getPosition))
                 .toList();
-    }
-
-    public List<Form> findFormListWithFilter(SearchDto searchDto) {
-        return formRepository.findFormWithFiltered(searchDto);
     }
 }

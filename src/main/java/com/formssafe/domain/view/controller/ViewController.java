@@ -3,7 +3,7 @@ package com.formssafe.domain.view.controller;
 
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.dto.FormResponse.FormListDto;
-import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionResponse;
+import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
 import com.formssafe.domain.view.service.ViewService;
 import com.formssafe.global.exception.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +54,7 @@ public class ViewController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/forms/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    FormWithQuestionResponse getForm(@PathVariable Long id) {
+    FormWithQuestionDto getForm(@PathVariable Long id) {
         return viewService.getFormWithQuestion(id);
     }
 }

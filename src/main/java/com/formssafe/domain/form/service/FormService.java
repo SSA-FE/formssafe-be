@@ -1,26 +1,18 @@
 package com.formssafe.domain.form.service;
 
-import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.form.dto.FormResponse.FormResultDto;
-import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionResponse;
+import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
-import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.reward.service.RewardRecipientsSelectService;
-import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
-import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,38 +27,41 @@ public class FormService {
     private final FormReadService formReadService;
     private final FormValidateService formValidateService;
     private final RewardRecipientsSelectService rewardRecipientsSelectService;
-    private final FormDoneService formDoneService;
+    private final FormFinishService formFinishService;
     private final FormRepository formRepository;
 
-    public FormWithQuestionResponse getForm(Long formId, LoginUserDto loginUser) {
+    public FormWithQuestionDto getForm(Long formId, LoginUserDto loginUser) {
         Form form = formReadService.findFormWithUserAndTag(formId);
         formValidateService.validAuthorAndTemp(form, loginUser.id());
 
-        List<ContentResponseDto> contentDetailDtos = getContentList(form.getId());
-        RewardListDto rewardDto = getReward(form);
+        List<Content> contents = formReadService.getContentList(formId);
+        List<FormTag> formTags = form.getFormTagList();
+        Reward reward = form.getReward();
 
-        return FormWithQuestionResponse.from(form,
-                contentDetailDtos,
-                rewardDto);
+        return FormWithQuestionDto.from(form,
+                FormResponseMapper.toContentResponseDto(contents),
+                FormResponseMapper.toTagListDto(formTags),
+                FormResponseMapper.toRewardDto(reward));
     }
 
     public FormResultDto getFormResult(Long formId, LoginUserDto loginUser) {
-        Form form = formReadService.findForm(formId);
+        Form form = formReadService.findFormWithUserAndTag(formId);
         formValidateService.validAuthor(form, loginUser.id());
         formValidateService.validNotTempForm(form);
 
-        UserAuthorDto userAuthorDto = getAuthor(form);
-        List<TagListDto> tagListDtos = getTagList(form);
-        List<ContentResponseDto> contentDetailDtos = getContentList(form.getId());
-        RewardListDto rewardDto = getReward(form);
-        List<UserListDto> rewardRecipientsDtos = getRewardRecipients(rewardDto, form);
+        List<Content> contents = formReadService.getContentList(formId);
+        List<FormTag> formTags = form.getFormTagList();
+        Reward reward = form.getReward();
+        List<RewardRecipient> rewardRecipients = null;
+        if (reward != null) {
+            rewardRecipients = form.getRewardRecipientList();
+        }
 
         return FormResultDto.from(form,
-                userAuthorDto,
-                contentDetailDtos,
-                rewardDto,
-                tagListDtos,
-                rewardRecipientsDtos);
+                FormResponseMapper.toContentResponseDto(contents),
+                FormResponseMapper.toTagListDto(formTags),
+                FormResponseMapper.toRewardDto(reward),
+                FormResponseMapper.toRewardRecipientsListDto(rewardRecipients));
     }
 
     public Form getForm(Long id) {
@@ -92,49 +87,6 @@ public class FormService {
         formRepository.deleteFormByUserId(user.getId());
     }
 
-    private UserAuthorDto getAuthor(Form form) {
-        User author = form.getUser();
-        return UserAuthorDto.from(author, form.isEmailVisible());
-    }
-
-    private List<TagListDto> getTagList(Form form) {
-        return form.getFormTagList().stream()
-                .map(FormTag::getTag)
-                .map(TagListDto::from)
-                .toList();
-    }
-
-    private List<ContentResponseDto> getContentList(Long formId) {
-        return formReadService.getContentList(formId).stream()
-                .sorted(Comparator.comparingInt(Content::getPosition))
-                .map(ContentResponseDto::from)
-                .toList();
-    }
-
-    private RewardListDto getReward(Form form) {
-        Reward reward = form.getReward();
-        if (reward == null) {
-            return null;
-        }
-
-        return RewardListDto.from(reward, reward.getRewardCategory());
-    }
-
-    private List<UserListDto> getRewardRecipients(RewardListDto rewardDto, Form form) {
-        if (rewardDto == null) {
-            return null;
-        }
-
-        if (FormStatus.REWARDED != form.getStatus()) {
-            return Collections.emptyList();
-        }
-
-        return form.getRewardRecipientList().stream()
-                .map(RewardRecipient::getUser)
-                .map(UserListDto::from)
-                .toList();
-    }
-
     @Transactional
     public void deleteForm(Long id, LoginUserDto loginUser) {
         log.debug("Form delete: id: {}, loginUser: {}", id, loginUser.id());
@@ -149,7 +101,7 @@ public class FormService {
     public void closeForm(Long id, LoginUserDto loginUser) {
         log.debug("Form close: id: {}, loginUser: {}", id, loginUser.id());
 
-        Form form = formDoneService.execute(id, loginUser.id());
+        Form form = formFinishService.execute(id, loginUser.id());
         if (form.getReward() != null) {
             rewardRecipientsSelectService.execute(form);
         }

@@ -3,10 +3,9 @@ package com.formssafe.domain.form.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
+import com.formssafe.domain.reward.dto.RewardResponse.RewardDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
-import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.dto.UserResponse;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
@@ -43,7 +42,7 @@ public final class FormResponse {
                                 List<ContentResponseDto> contents,
                                 @Schema(description = "설문 경품")
                                 @JsonInclude(JsonInclude.Include.NON_NULL)
-                                RewardListDto reward,
+                                    RewardDto reward,
                                 @Schema(description = "설문 태그 목록")
                                 List<TagListDto> tags,
                                 @Schema(description = "설문 상태")
@@ -57,17 +56,16 @@ public final class FormResponse {
                                 List<UserListDto> recipients) {
 
         public static FormResultDto from(Form form,
-                                         UserAuthorDto authorDto,
                                          List<ContentResponseDto> contents,
-                                         RewardListDto reward,
                                          List<TagListDto> tags,
+                                         RewardDto reward,
                                          List<UserListDto> recipients) {
 
             return new FormResultDto(form.getId(),
                     form.getTitle(),
                     form.getDetail(),
                     JsonConverter.toList(form.getImageUrl(), String.class),
-                    authorDto,
+                    UserAuthorDto.from(form.getUser(), form.isEmailVisible()),
                     form.getStartDate(),
                     form.getEndDate(),
                     form.getExpectTime(),
@@ -83,41 +81,42 @@ public final class FormResponse {
     }
 
     @Schema(description = "설문 문항 포함 조회 응답 DTO")
-    public record FormWithQuestionResponse(@Schema(description = "설문 id")
+    public record FormWithQuestionDto(@Schema(description = "설문 id")
                                            Long id,
-                                           @Schema(description = "설문 제목")
+                                      @Schema(description = "설문 제목")
                                            String title,
-                                           @Schema(description = "설문 설명")
+                                      @Schema(description = "설문 설명")
                                            String description,
-                                           @Schema(description = "설문 설명 이미지 목록")
+                                      @Schema(description = "설문 설명 이미지 목록")
                                            List<String> image,
-                                           @Schema(description = "설문 등록자")
+                                      @Schema(description = "설문 등록자")
                                            UserAuthorDto author,
-                                           @Schema(description = "설문 시작 시각")
+                                      @Schema(description = "설문 시작 시각")
                                            LocalDateTime startDate,
-                                           @Schema(description = "설문 마감 시각")
+                                      @Schema(description = "설문 마감 시각")
                                            LocalDateTime endDate,
-                                           @Schema(description = "설문 참여 예상 시간")
+                                      @Schema(description = "설문 참여 예상 시간")
                                            int expectTime,
-                                           @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각")
+                                      @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각")
                                            LocalDateTime privacyDisposalDate,
-                                           @Schema(description = "설문 문항 목록")
+                                      @Schema(description = "설문 문항 목록")
                                            List<ContentResponseDto> contents,
-                                           @Schema(description = "설문 경품")
+                                      @Schema(description = "설문 경품")
                                            @JsonInclude(JsonInclude.Include.NON_NULL)
-                                           RewardListDto reward,
-                                           @Schema(description = "설문 태그 목록")
+                                      RewardDto reward,
+                                      @Schema(description = "설문 태그 목록")
                                            List<TagListDto> tags,
-                                           @Schema(description = "설문 상태")
+                                      @Schema(description = "설문 상태")
                                            String status,
-                                           @Schema(description = "설문 질문 개수")
+                                      @Schema(description = "설문 질문 개수")
                                            int questionCnt) {
 
-        public static FormWithQuestionResponse from(Form form,
-                                                    List<ContentResponseDto> contents,
-                                                    RewardListDto reward) {
+        public static FormWithQuestionDto from(Form form,
+                                               List<ContentResponseDto> contents,
+                                               List<TagListDto> tags,
+                                               RewardDto reward) {
 
-            return new FormWithQuestionResponse(form.getId(),
+            return new FormWithQuestionDto(form.getId(),
                     form.getTitle(),
                     form.getDetail(),
                     JsonConverter.toList(form.getImageUrl(), String.class),
@@ -128,16 +127,9 @@ public final class FormResponse {
                     form.getPrivacyDisposalDate(),
                     contents,
                     reward,
-                    toTagList(form),
+                    tags,
                     form.getStatus().displayName(),
                     form.getQuestionCnt());
-        }
-
-        private static List<TagListDto> toTagList(Form form) {
-            return form.getFormTagList().stream()
-                    .map(FormTag::getTag)
-                    .map(TagListDto::from)
-                    .toList();
         }
     }
 
@@ -162,7 +154,7 @@ public final class FormResponse {
                               @Schema(description = "설문 마감 시각")
                               LocalDateTime endDate,
                               @Schema(description = "설문 참여 시 받을 수 있는 경품")
-                              RewardListDto reward,
+                                  RewardDto reward,
                               @Schema(description = "설문 태그 목록")
                               List<TagCountDto> tags,
                               @Schema(description = "설문 상태")
@@ -174,9 +166,9 @@ public final class FormResponse {
                 imageUrl = JsonConverter.toList(form.getImageUrl(), String.class).get(0);
             }
 
-            RewardListDto rewardListDto = null;
+            RewardDto rewardDto = null;
             if (form.getReward() != null) {
-                rewardListDto = RewardListDto.from(form.getReward(), form.getReward().getRewardCategory());
+                rewardDto = RewardDto.from(form.getReward(), form.getReward().getRewardCategory());
             }
 
             List<TagCountDto> tagCountDtos = null;
@@ -187,7 +179,7 @@ public final class FormResponse {
                     UserAuthorDto.from(form.getUser(), form.isEmailVisible()),
                     form.getExpectTime(), form.getQuestionCnt(),
                     form.getResponseCnt(),
-                    form.getStartDate(), form.getEndDate(), rewardListDto, tagCountDtos,
+                    form.getStartDate(), form.getEndDate(), rewardDto, tagCountDtos,
                     form.getStatus().displayName());
         }
     }

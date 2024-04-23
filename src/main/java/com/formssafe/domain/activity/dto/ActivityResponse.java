@@ -1,7 +1,7 @@
 package com.formssafe.domain.activity.dto;
 
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.reward.dto.RewardResponse.RewardListDto;
+import com.formssafe.domain.reward.dto.RewardResponse.RewardDto;
 import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
@@ -37,7 +37,7 @@ public final class ActivityResponse {
                               @Schema(description = "설문 마감 시각")
                               LocalDateTime endDate,
                               @Schema(description = "설문 참여 시 받을 수 있는 경품")
-                              RewardListDto reward,
+                                  RewardDto reward,
                               @Schema(description = "설문 태그 목록")
                               List<TagCountDto> tags,
                               @Schema(description = "설문 상태")
@@ -51,9 +51,9 @@ public final class ActivityResponse {
                 imageUrl = JsonConverter.toList(form.getImageUrl(), String.class).get(0);
             }
 
-            RewardListDto rewardListDto = null;
+            RewardDto rewardDto = null;
             if (form.getReward() != null) {
-                rewardListDto = RewardListDto.from(form.getReward(), form.getReward().getRewardCategory());
+                rewardDto = RewardDto.from(form.getReward(), form.getReward().getRewardCategory());
             }
 
             List<TagCountDto> tagCountDtos = null;
@@ -71,7 +71,7 @@ public final class ActivityResponse {
                     form.getResponseCnt(),
                     form.getStartDate(),
                     form.getEndDate(),
-                    rewardListDto,
+                    rewardDto,
                     tagCountDtos,
                     form.getStatus().displayName(),
                     form.isTemp());

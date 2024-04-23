@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class FormDoneService {
+public class FormFinishService {
     private final FormValidateService formValidateService;
     private final FormReadService formReadService;
 
