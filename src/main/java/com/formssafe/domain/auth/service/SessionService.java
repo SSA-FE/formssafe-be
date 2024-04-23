@@ -1,7 +1,7 @@
 package com.formssafe.domain.auth.service;
 
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.global.exception.type.SessionNotFoundException;
+import com.formssafe.global.error.type.SessionNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

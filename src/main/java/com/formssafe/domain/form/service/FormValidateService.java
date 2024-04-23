@@ -2,9 +2,10 @@ package com.formssafe.domain.form.service;
 
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
-import com.formssafe.global.exception.type.BadRequestException;
-import com.formssafe.global.exception.type.DataNotFoundException;
-import com.formssafe.global.exception.type.ForbiddenException;
+import com.formssafe.global.error.ErrorCode;
+import com.formssafe.global.error.type.BadRequestException;
+import com.formssafe.global.error.type.DataNotFoundException;
+import com.formssafe.global.error.type.ForbiddenException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,8 @@ public class FormValidateService {
 
     public void validAuthorAndTemp(Form form, Long loginUserId) {
         if (!Objects.equals(form.getUser().getId(), loginUserId) && form.isTemp()) {
-            throw new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + form.getId());
+            throw new DataNotFoundException(ErrorCode.FORM_NOT_FOUND,
+                    "login user - " + loginUserId + ": 임시 설문 작성자가 아닙니다.: " + form.getUser().getId());
         }
     }
 

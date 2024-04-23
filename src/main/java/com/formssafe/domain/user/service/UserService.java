@@ -9,9 +9,9 @@ import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
 import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.global.exception.type.BadRequestException;
-import com.formssafe.global.exception.type.DataNotFoundException;
-import com.formssafe.global.exception.type.ForbiddenException;
+import com.formssafe.global.error.type.BadRequestException;
+import com.formssafe.global.error.type.ForbiddenException;
+import com.formssafe.global.error.type.UserNotFoundException;
 import com.formssafe.global.util.CommonUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class UserService {
     public void join(JoinDto request, LoginUserDto loginUser) {
         Long userId = loginUser.id();
         User user = userRepository.findById(userId).orElseThrow(() ->
-                new DataNotFoundException("존재하지 않는 userId입니다.: " + userId));
+                new UserNotFoundException("존재하지 않는 userId입니다.: " + userId));
         if (user.isActive()) {
             throw new BadRequestException("이미 회원가입하셨습니다.");
         }
@@ -44,10 +44,10 @@ public class UserService {
 
     public UserProfileDto getProfile(LoginUserDto loginUser) {
         User user = userRepository.findById(loginUser.id()).orElseThrow(() ->
-                new DataNotFoundException("존재하지 않는 userId입니다.: " + loginUser.id()));
+                new UserNotFoundException("존재하지 않는 userId입니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
-            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         return UserProfileDto.from(user);
@@ -57,10 +57,10 @@ public class UserService {
     public void updateNickname(NicknameUpdateDto request, LoginUserDto loginUser) {
         String nickname = request.nickname();
         User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new BadRequestException("존재하지 않는 userId입니다."));
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 userId입니다."));
 
         if (user.isDeleted()) {
-            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         if (user.getNickname().equals(nickname) || userRepository.existsByNickname(nickname)) {
@@ -81,7 +81,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("올바른 ID가 존재하지 않습니다."));
 
         if (user.isDeleted()) {
-            throw new DataNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         oauthMemberClientComposite.deleteAccount(user.getOauthId().getOauthServerType(), user.getRefreshToken());

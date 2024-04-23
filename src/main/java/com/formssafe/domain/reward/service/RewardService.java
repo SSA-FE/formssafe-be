@@ -6,7 +6,7 @@ import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.reward.repository.RewardRepository;
-import com.formssafe.global.exception.type.BadRequestException;
+import com.formssafe.global.error.type.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

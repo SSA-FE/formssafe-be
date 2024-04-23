@@ -1,4 +1,4 @@
-package com.formssafe.global.exception.type;
+package com.formssafe.global.error.type;
 
 import java.util.Arrays;
 

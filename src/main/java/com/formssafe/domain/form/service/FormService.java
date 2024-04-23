@@ -20,7 +20,8 @@ import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.error.ErrorCode;
+import com.formssafe.global.error.type.DataNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -70,10 +71,11 @@ public class FormService {
 
     public Form getForm(Long id) {
         Form form = formRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundException(id + "번 설문이 존재하지 않습니다."));
+                .orElseThrow(
+                        () -> new DataNotFoundException(ErrorCode.FORM_NOT_FOUND, "Form doesn't exist for id " + id));
 
         if (form.isDeleted()) {
-            throw new DataNotFoundException(id + "번 설문이 존재하지 않습니다.");
+            throw new DataNotFoundException(ErrorCode.FORM_NOT_FOUND, "Form doesn't exist for id " + id);
         }
 
         return form;

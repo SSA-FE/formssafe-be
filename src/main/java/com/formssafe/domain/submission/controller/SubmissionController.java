@@ -4,7 +4,7 @@ import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionCreateDto
 import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionResponseDto;
 import com.formssafe.domain.submission.service.SubmissionService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.global.exception.response.ExceptionResponse;
+import com.formssafe.global.error.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -37,11 +37,11 @@ public class SubmissionController {
     @ApiResponse(responseCode = "200", description = "설문 응답 완료")
     @ApiResponse(responseCode = "400", description = "설문이 존재하지 않거나 만료되었을 때",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"설문이 존재하지 않거나 만료되었습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않는 경우",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PostMapping("/{formId}/submission")
     @ResponseStatus(HttpStatus.OK)
@@ -54,11 +54,11 @@ public class SubmissionController {
     @ApiResponse(responseCode = "200", description = "설문 수정 완료")
     @ApiResponse(responseCode = "400", description = "설문이 존재하지 않거나 만료되었을 때",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"설문이 존재하지 않거나 만료되었습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않는 경우",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PutMapping("/{formId}/submission")
     @ResponseStatus(HttpStatus.OK)
@@ -71,11 +71,11 @@ public class SubmissionController {
     @ApiResponse(responseCode = "200", description = "설문 수정 완료")
     @ApiResponse(responseCode = "400", description = "설문이 존재하지 않거나 만료되었을 때",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"설문이 존재하지 않거나 만료되었습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않는 경우",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/{formId}/submission")
     public ResponseEntity<SubmissionResponseDto> getSumbission(@PathVariable long formId,
