@@ -1,6 +1,5 @@
 package com.formssafe.domain.batch.form.service;
 
-import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.IntegrationTestConfig;
@@ -29,7 +28,7 @@ class FormBatchServiceTest extends IntegrationTestConfig {
 
     @BeforeEach
     void setUp() {
-        testUser = userRepository.save(createUser("testUser"));
+        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
     }
 
     @Nested

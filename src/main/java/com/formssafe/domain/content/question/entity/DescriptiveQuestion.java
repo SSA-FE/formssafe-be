@@ -36,6 +36,22 @@ public class DescriptiveQuestion extends Question {
         this.questionType = questionType;
     }
 
+    private DescriptiveQuestion(String uuid,
+                                DescriptiveQuestionType questionType,
+                                String title,
+                                String detail,
+                                int position,
+                                boolean isRequired,
+                                boolean isPrivacy) {
+        super(uuid, title, detail, position, isRequired, isPrivacy);
+        this.questionType = questionType;
+    }
+
+    public static DescriptiveQuestion of(String uuid, DescriptiveQuestionType questionType, String title,
+                                         String detail, boolean isPrivacy, boolean isRequired, int position) {
+        return new DescriptiveQuestion(uuid, questionType, title, detail, position, isRequired, isPrivacy);
+    }
+
     @Override
     public String toString() {
         return "DescriptiveQuestion{" +

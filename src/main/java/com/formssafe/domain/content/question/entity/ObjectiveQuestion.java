@@ -46,6 +46,22 @@ public class ObjectiveQuestion extends Question {
         this.questionOption = JsonConverter.toJson(questionOption);
     }
 
+    private ObjectiveQuestion(String uuid, ObjectiveQuestionType questionType, String title, String detail,
+                              List<ObjectiveQuestionOption> questionOption, boolean isRequired, boolean isPrivacy,
+                              int position) {
+        super(uuid, title, detail, position, isRequired, isPrivacy);
+        this.questionType = questionType;
+        this.questionOption = JsonConverter.toJson(questionOption);
+    }
+
+    public static ObjectiveQuestion of(String uuid, ObjectiveQuestionType questionType, String title, String detail,
+                                       List<ObjectiveQuestionOption> questionOption, boolean isRequired,
+                                       boolean isPrivacy,
+                                       int position) {
+        return new ObjectiveQuestion(uuid, questionType, title, detail, questionOption, isRequired, isPrivacy,
+                position);
+    }
+
     @Override
     public String toString() {
         return "ObjectiveQuestion{" + "id=" + id + ", form=" + form + ", questionType=" + questionType + ", title='"

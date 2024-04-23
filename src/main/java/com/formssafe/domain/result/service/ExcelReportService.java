@@ -3,7 +3,7 @@ package com.formssafe.domain.result.service;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.content.question.entity.Question;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.form.service.FormCommonService;
+import com.formssafe.domain.form.service.FormReadService;
 import com.formssafe.domain.form.service.FormValidateService;
 import com.formssafe.domain.result.dto.ResultExportResponse.ResultExportRow;
 import com.formssafe.domain.submission.entity.DescriptiveSubmission;
@@ -34,13 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class ExcelReportService {
-    private final FormCommonService formCommonService;
+    private final FormReadService formReadService;
     private final FormValidateService formValidateService;
     private final ResultExcelExportService resultExcelExportService;
     private final SubmissionRepository submissionRepository;
 
     public void execute(HttpServletResponse response, Long formId, LoginUserDto loginUser) {
-        Form form = formCommonService.findForm(formId);
+        Form form = formReadService.findForm(formId);
         formValidateService.validAuthor(form, loginUser.id());
         formValidateService.validNotTempForm(form);
 

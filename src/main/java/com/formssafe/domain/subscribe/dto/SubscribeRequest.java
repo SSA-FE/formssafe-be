@@ -9,7 +9,7 @@ public final class SubscribeRequest {
     ) {
         @Override
         public String toString() {
-            return "RewardListDto{reward =" + reward + "}";
+            return "RewardDto{reward =" + reward + "}";
         }
     }
 }

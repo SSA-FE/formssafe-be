@@ -9,18 +9,16 @@ import static com.formssafe.util.Fixture.createReward;
 import static com.formssafe.util.Fixture.createRewardCategory;
 import static com.formssafe.util.Fixture.createSubmissions;
 import static com.formssafe.util.Fixture.createTemporaryForm;
-import static com.formssafe.util.Fixture.createUser;
 import static com.formssafe.util.Fixture.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.formssafe.config.IntegrationTestConfig;
-import com.formssafe.domain.form.dto.FormResponse.FormDetailDto;
+import com.formssafe.domain.form.dto.FormResponse.FormResultDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.entity.RewardCategory;
-import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.reward.repository.RewardRepository;
 import com.formssafe.domain.submission.entity.Submission;
@@ -70,7 +68,7 @@ class FormServiceTest extends IntegrationTestConfig {
 
     @BeforeEach
     void setUp() {
-        testUser = userRepository.save(createUser("testUser"));
+        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
         rewardCategory = rewardCategoryRepository.save(createRewardCategory("경품 카테고리1"));
     }
 
@@ -83,7 +81,7 @@ class FormServiceTest extends IntegrationTestConfig {
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when
-            FormDetailDto formDetail = formService.getFormDetail(form.getId(), loginUserDto);
+            FormResultDto formDetail = formService.getFormResult(form.getId(), loginUserDto);
             //then
             assertThat(formDetail).isNotNull()
                     .extracting("title", "description", "status", "questionCnt")
@@ -96,7 +94,7 @@ class FormServiceTest extends IntegrationTestConfig {
             Form form = formRepository.save(createDeletedForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when then
-            assertThatThrownBy(() -> formService.getFormDetail(form.getId(), loginUserDto))
+            assertThatThrownBy(() -> formService.getFormResult(form.getId(), loginUserDto))
                     .isInstanceOf(DataNotFoundException.class);
         }
 
@@ -106,7 +104,7 @@ class FormServiceTest extends IntegrationTestConfig {
             Form form = formRepository.save(createTemporaryForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
             //when then
-            assertThatThrownBy(() -> formService.getFormDetail(form.getId(), loginUserDto))
+            assertThatThrownBy(() -> formService.getForm(form.getId(), loginUserDto))
                     .isInstanceOf(DataNotFoundException.class);
         }
     }
@@ -240,11 +238,16 @@ class FormServiceTest extends IntegrationTestConfig {
             form = formRepository.findById(form.getId()).orElseThrow(IllegalStateException::new);
             assertThat(form.getStatus()).isEqualTo(FormStatus.REWARDED);
             assertThat(form.getEndDate()).isNotNull();
-            List<User> rewardRecipients = form.getRewardRecipientList().stream()
-                    .map(RewardRecipient::getUser)
+            List<Long> rewardRecipientIds = form.getRewardRecipientList().stream()
+                    .map(rewardRecipient -> rewardRecipient.getUser().getId())
                     .toList();
-            assertThat(rewardRecipients).hasSize(5)
-                    .containsAll(users);
+
+            List<Long> userIds = users.stream()
+                    .map(User::getId)
+                    .toList();
+
+            assertThat(rewardRecipientIds).hasSize(5)
+                    .containsAll(userIds);
         }
 
         @Test

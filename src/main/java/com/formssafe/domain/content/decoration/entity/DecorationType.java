@@ -5,13 +5,20 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum DecorationType {
     TEXT("text");
 
     private static final Map<String, DecorationType> convertor =
-            Arrays.stream(DecorationType.values())
-                    .collect(Collectors.toMap(DecorationType::displayName, Function.identity()));
+            Stream.concat(
+                            Arrays.stream(DecorationType.values())
+                                    .collect(Collectors.toMap(DecorationType::displayName, Function.identity()))
+                                    .entrySet().stream(),
+                            Arrays.stream(DecorationType.values())
+                                    .collect(Collectors.toMap(DecorationType::name, Function.identity()))
+                                    .entrySet().stream())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     private final String displayName;
 
     DecorationType(String displayName) {

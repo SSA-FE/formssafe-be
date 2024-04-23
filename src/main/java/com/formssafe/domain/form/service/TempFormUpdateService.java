@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class TempFormUpdateService {
-    private final FormCommonService formCommonService;
+    private final FormReadService formReadService;
     private final FormValidateService formValidateService;
     private final TagService tagService;
     private final ContentService contentService;
@@ -31,7 +31,7 @@ public class TempFormUpdateService {
     public void execute(Long formId, FormUpdateDto request, LoginUserDto loginUser) {
         log.debug("TempFormUpdateService.execute: \nrequest {}\n loginUser {}");
 
-        Form form = formCommonService.findForm(formId);
+        Form form = formReadService.findForm(formId);
         formValidateService.validAuthor(form, loginUser.id());
         formValidateService.validTempForm(form);
 

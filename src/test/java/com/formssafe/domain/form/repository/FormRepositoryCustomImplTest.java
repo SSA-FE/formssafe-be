@@ -2,7 +2,6 @@ package com.formssafe.domain.form.repository;
 
 import static com.formssafe.global.constants.FormConstants.PAGE_SIZE;
 import static com.formssafe.util.Fixture.createForm;
-import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.IntegrationTestConfig;
@@ -35,6 +34,8 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @Autowired
     private UserRepository userRepository;
 
+    private User testUser;
+
     static Stream<Arguments> getTagList() {
         return Stream.of(
                 Arguments.of(List.of("tag1")),
@@ -51,6 +52,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
 
     @BeforeEach
     void setUp() {
+        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
         rewardCategoryRepository.findAll();
     }
 
@@ -114,13 +116,10 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @ValueSource(longs = {4})
     void 특정아이디이후의_설문목록을_조회한다(long topOffset) {
         //given
-        User testUser = createUser("testUser");
-        User user = userRepository.save(testUser);
-
         LocalDateTime startTime = LocalDateTime.of(2024, 3, 2, 0, 0, 0);
         List<Form> formList = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
-            formList.add(createForm(user, "test" + i, "detail" + i));
+            formList.add(createForm(testUser, "test" + i, "detail" + i));
             startTime = startTime.plusDays(1);
         }
         List<Form> forms = formRepository.saveAll(formList);

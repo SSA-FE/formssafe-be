@@ -16,6 +16,25 @@ public interface FormRepository extends JpaRepository<Form, Long>, FormRepositor
             """)
     Optional<Form> findById(@Param("id") Long id);
 
+    @Query(value = """
+            select uuid, question_type, title, detail, null as options, is_privacy, is_required, position from descriptive_question where form_id = :id
+            union
+            select uuid, question_type, title, detail, question_option, is_privacy, is_required, position from objective_question where form_id = :id
+            union
+            select uuid, type, null, detail, null, null, null, position from decoration where form_id = :id
+            """, nativeQuery = true)
+    List<Object[]> findContentsById(@Param("id") Long id);
+
+    @Query(value = """
+            select f
+            FROM Form f
+            JOIN FETCH f.user
+            LEFT JOIN FETCH f.formTagList ft
+            LEFT JOIN FETCH ft.tag
+            WHERE f.id = :id and f.isDeleted = false
+            """)
+    Optional<Form> findFormWithUserAndTag(@Param("id") Long id);
+
     @Modifying
     @Query("""
             UPDATE Form f SET f.isDeleted = true where f.user.id = :userId

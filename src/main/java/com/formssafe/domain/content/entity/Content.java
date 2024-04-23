@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,10 +32,16 @@ public abstract class Content extends BaseTimeEntity {
 
     protected int position;
 
-    protected Content(Long id, Form form, String detail, int position){
+    protected Content(Long id, String uuid, Form form, String detail, int position) {
         this.id = id;
-        this.uuid = UUID.randomUUID().toString();
+        this.uuid = uuid;
         this.form = form;
+        this.detail = detail;
+        this.position = position;
+    }
+
+    protected Content(String uuid, String detail, int position) {
+        this.uuid = uuid;
         this.detail = detail;
         this.position = position;
     }

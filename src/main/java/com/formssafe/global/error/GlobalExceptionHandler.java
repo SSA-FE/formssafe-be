@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(basePackages = {
         "com.formssafe.domain.auth.controller",
+        "com.formssafe.domain.view.controller",
         "com.formssafe.domain.form.controller",
         "com.formssafe.domain.user.controller",
         "com.formssafe.domain.file.controller",
         "com.formssafe.domain.activity.controller",
         "com.formssafe.domain.result.controller",
         "com.formssafe.domain.submission.controller",
+        "com.formssafe.domain.subscribe.controller",
 })
 @Slf4j
 public class GlobalExceptionHandler {
