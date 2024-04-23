@@ -6,14 +6,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(callSuper = true)
 public abstract class Question extends Content {
     @Column(nullable = false)
     protected String title;

@@ -19,7 +19,6 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.entity.RewardCategory;
-import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.reward.repository.RewardRepository;
 import com.formssafe.domain.submission.entity.Submission;
@@ -239,11 +238,16 @@ class FormServiceTest extends IntegrationTestConfig {
             form = formRepository.findById(form.getId()).orElseThrow(IllegalStateException::new);
             assertThat(form.getStatus()).isEqualTo(FormStatus.REWARDED);
             assertThat(form.getEndDate()).isNotNull();
-            List<User> rewardRecipients = form.getRewardRecipientList().stream()
-                    .map(RewardRecipient::getUser)
+            List<Long> rewardRecipientIds = form.getRewardRecipientList().stream()
+                    .map(rewardRecipient -> rewardRecipient.getUser().getId())
                     .toList();
-            assertThat(rewardRecipients).hasSize(5)
-                    .containsAll(users);
+
+            List<Long> userIds = users.stream()
+                    .map(User::getId)
+                    .toList();
+
+            assertThat(rewardRecipientIds).hasSize(5)
+                    .containsAll(userIds);
         }
 
         @Test

@@ -9,7 +9,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "descriptive_question", indexes = {
         @Index(name = "idx_uuid", columnList = "uuid")
 })
-@EqualsAndHashCode(callSuper = true)
 public class DescriptiveQuestion extends Question {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

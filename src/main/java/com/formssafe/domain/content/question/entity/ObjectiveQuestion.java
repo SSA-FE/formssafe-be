@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -23,7 +22,6 @@ import org.hibernate.type.SqlTypes;
 @Table(name = "objective_question", indexes = {
         @Index(name = "idx_uuid", columnList = "uuid")
 })
-@EqualsAndHashCode(callSuper = true)
 public class ObjectiveQuestion extends Question {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
