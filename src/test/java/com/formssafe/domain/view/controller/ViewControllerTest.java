@@ -73,5 +73,24 @@ class ViewControllerTest {
                     .andReturn()
                     .getResponse();
         }
+
+        @Test
+        @WithMockSessionAuthentication
+        @DisplayName("존재하지 않는 설문 조회 시 예외가 발생한다")
+        void fail_NonExistForm() throws Exception {
+            // given
+            Form form = formRepository.save(Fixture.createForm(testUser, "제목1", "설명1"));
+
+            RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/view/forms/{id}", form.getId() + 1)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .characterEncoding(StandardCharsets.UTF_8.displayName());
+            //when then
+            mockMvc.perform(requestBuilder)
+                    .andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andReturn()
+                    .getResponse();
+        }
     }
 }
