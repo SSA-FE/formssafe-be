@@ -19,7 +19,7 @@ public final class FormResponse {
     private FormResponse() {
     }
 
-    @Schema(description = "설문 상세 조회 응답 DTO")
+    @Schema(description = "설문 결과 조회 시 설문 상세 조회 응답 DTO")
     public record FormResultDto(@Schema(description = "설문 id")
                                 Long id,
                                 @Schema(description = "설문 제목")
