@@ -1,8 +1,6 @@
 package com.formssafe.domain.form.entity;
 
-import com.formssafe.domain.content.decoration.entity.DecorationType;
-import com.formssafe.global.exception.type.BadRequestException;
-
+import com.formssafe.global.error.type.BadRequestException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;

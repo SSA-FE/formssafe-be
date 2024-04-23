@@ -2,7 +2,7 @@ package com.formssafe.domain.submission.dto;
 
 import com.formssafe.domain.submission.entity.DescriptiveSubmission;
 import com.formssafe.domain.submission.entity.ObjectiveSubmission;
-import com.formssafe.global.exception.type.DtoConvertException;
+import com.formssafe.global.error.type.DtoConvertException;
 import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;

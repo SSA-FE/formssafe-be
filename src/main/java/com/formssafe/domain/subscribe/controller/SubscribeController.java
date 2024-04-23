@@ -5,7 +5,7 @@ import com.formssafe.domain.subscribe.dto.SubscribeRequest.RewardListDto;
 import com.formssafe.domain.subscribe.dto.SubscribeResponse.CategoryListDto;
 import com.formssafe.domain.subscribe.service.SubscribeService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.global.exception.response.ExceptionResponse;
+import com.formssafe.global.error.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -35,7 +35,7 @@ public class SubscribeController {
                     schema = @Schema(implementation = SelfSubmissionResponse.class)))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/reward")
     @ResponseStatus(HttpStatus.OK)
@@ -50,11 +50,11 @@ public class SubscribeController {
                     schema = @Schema(implementation = SelfSubmissionResponse.class)))
     @ApiResponse(responseCode = "400", description = "경품 카테고리가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"입력한 경품 카테고리가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PostMapping("/reward")
     @ResponseStatus(HttpStatus.OK)

@@ -5,7 +5,8 @@ import com.formssafe.domain.content.question.dto.ContentConverter;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.repository.FormRepository;
-import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.error.ErrorCode;
+import com.formssafe.global.error.type.DataNotFoundException;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,14 @@ public class FormReadService {
 
     public Form findForm(Long formId) {
         return formRepository.findById(formId)
-                .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + formId));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.FORM_NOT_FOUND,
+                        "Form doesn't exist for id " + formId));
     }
 
     public Form findFormWithUserAndTag(Long formId) {
         return formRepository.findFormWithUserAndTag(formId)
-                .orElseThrow(() -> new DataNotFoundException("해당 설문이 존재하지 않습니다.: " + formId));
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.FORM_NOT_FOUND,
+                        "Form doesn't exist for id " + formId));
     }
 
     public List<Form> findFormListWithFilter(SearchDto searchDto) {

@@ -3,7 +3,7 @@ package com.formssafe.global.auth;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.global.exception.type.DataNotFoundException;
+import com.formssafe.global.error.type.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class UserActivationInterceptor implements HandlerInterceptor {
         LoginUserDto loginUser = (LoginUserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = loginUser.id();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new DataNotFoundException("존재하지 않는 userId입니다.: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 userId입니다.: " + userId));
 
         if (!user.isActive()) {
             log.info("user is not active: " + userId);

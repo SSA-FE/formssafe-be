@@ -2,7 +2,7 @@ package com.formssafe.domain.content.question.service;
 
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.repository.DescriptiveQuestionRepository;
-import com.formssafe.global.exception.type.BadRequestException;
+import com.formssafe.global.error.type.BadRequestException;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

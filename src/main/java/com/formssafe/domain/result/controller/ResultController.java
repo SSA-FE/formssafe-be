@@ -7,7 +7,7 @@ import com.formssafe.domain.result.dto.ResultResponse.ResultResponseDto;
 import com.formssafe.domain.result.service.ExcelReportService;
 import com.formssafe.domain.result.service.ResultService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.global.exception.response.ExceptionResponse;
+import com.formssafe.global.error.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -41,11 +41,11 @@ public class ResultController {
                     schema = @Schema(implementation = ResultResponse.class)))
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/forms/{formId}")
     @ResponseStatus(HttpStatus.OK)
@@ -61,11 +61,11 @@ public class ResultController {
                     schema = @Schema(implementation = ResultResponse.class)))
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/forms/{formId}/submissions")
     @ResponseStatus(HttpStatus.OK)
@@ -79,11 +79,11 @@ public class ResultController {
     @ApiResponse(responseCode = "200", description = "설문 응답 결과 다운로드 링크 제공 or 자동 다운로드")
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/forms/{formId}/download")
     public void resultDownload(HttpServletResponse response,

@@ -18,7 +18,7 @@ import com.formssafe.domain.tag.repository.TagRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.global.exception.type.BadRequestException;
+import com.formssafe.global.error.type.BadRequestException;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;

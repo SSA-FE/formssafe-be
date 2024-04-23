@@ -6,7 +6,7 @@ import com.formssafe.domain.activity.dto.ActivityResponse.ParticipateSubmissionD
 import com.formssafe.domain.activity.dto.SelfSubmissionResponse;
 import com.formssafe.domain.activity.service.ActivityService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.global.exception.response.ExceptionResponse;
+import com.formssafe.global.error.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -40,11 +40,11 @@ public class ActivityController {
                     schema = @Schema(implementation = SelfSubmissionResponse.class)))
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/forms/{formId}/submissions")
     public ResponseEntity<ParticipateSubmissionDto> getSelfResponse(@PathVariable Long formId,
@@ -59,7 +59,7 @@ public class ActivityController {
     @Operation(summary = "내가 등록한 설문 전체 조회", description = "내가 등록한 설문을 목록으로 조회한다.")
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/forms", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -71,7 +71,7 @@ public class ActivityController {
     @Operation(summary = "내가 참여한 설문 전체 조회", description = "내가 참여한 설문을 목록으로 조회한다.")
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

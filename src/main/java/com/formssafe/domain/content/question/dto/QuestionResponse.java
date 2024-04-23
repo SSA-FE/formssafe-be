@@ -5,7 +5,7 @@ import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestionOption;
 import com.formssafe.domain.content.question.entity.Question;
-import com.formssafe.global.exception.type.DtoConvertException;
+import com.formssafe.global.error.type.DtoConvertException;
 import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;

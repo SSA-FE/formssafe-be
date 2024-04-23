@@ -6,7 +6,7 @@ import com.formssafe.domain.form.service.FormCreateService;
 import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.form.service.TempFormUpdateService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.global.exception.response.ExceptionResponse;
+import com.formssafe.global.error.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -43,11 +43,11 @@ public class FormController {
     @Operation(summary = "설문 상세 조회", description = "해당 id의 설문을 상세 조회한다.")
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -59,7 +59,7 @@ public class FormController {
     @Operation(summary = "설문 등록", description = "새로운 설문을 등록한다.")
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -71,11 +71,11 @@ public class FormController {
     @Operation(summary = "설문 수동 마감", description = "해당 id의 설문을 수동으로 마감한다.")
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PatchMapping(path = "/{id}/close", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -87,11 +87,11 @@ public class FormController {
     @Operation(summary = "설문 수정", description = "해당 id의, 임시 등록 상태인 설문을 수정한다.")
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
@@ -104,11 +104,11 @@ public class FormController {
     @Operation(summary = "설문 삭제", description = "해당 id의 설문을 삭제한다.")
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

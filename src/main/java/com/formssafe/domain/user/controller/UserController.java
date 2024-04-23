@@ -5,7 +5,7 @@ import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.dto.UserRequest.NicknameUpdateDto;
 import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
 import com.formssafe.domain.user.service.UserService;
-import com.formssafe.global.exception.response.ExceptionResponse;
+import com.formssafe.global.error.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -38,15 +38,15 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "사이트 회원가입 완료")
     @ApiResponse(responseCode = "400", description = "닉네임 중복",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"중복된 닉네임이 존재합니다.\"}")))
     @ApiResponse(responseCode = "400", description = "이미 회원가입 진행됨",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"이미 회원가입하셨습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
@@ -65,7 +65,7 @@ public class UserController {
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/profile")
     @ResponseStatus(HttpStatus.OK)
@@ -77,11 +77,11 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "닉네임 변경 완료")
     @ApiResponse(responseCode = "400", description = "닉네임 중복",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"중복된 닉네임이 존재합니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PatchMapping("")
     @ResponseStatus(HttpStatus.OK)
@@ -94,15 +94,15 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "회원 탈퇴 완료")
     @ApiResponse(responseCode = "400", description = "userId가 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"userId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "403", description = "사용자가 올바르지 않음",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ExceptionResponse.class),
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"사용자가 올바르지 않습니다.\"}")))
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
