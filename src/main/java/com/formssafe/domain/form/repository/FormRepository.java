@@ -30,7 +30,7 @@ public interface FormRepository extends JpaRepository<Form, Long>, FormRepositor
             FROM Form f
             JOIN FETCH f.user
             LEFT JOIN FETCH f.formTagList ft
-            JOIN FETCH ft.tag
+            LEFT JOIN FETCH ft.tag
             WHERE f.id = :id and f.isDeleted = false
             """)
     Optional<Form> findFormWithUserAndTag(@Param("id") Long id);

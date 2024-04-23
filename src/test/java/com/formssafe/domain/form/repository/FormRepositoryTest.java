@@ -7,7 +7,6 @@ import static com.formssafe.util.Fixture.createObjectiveQuestion;
 import static com.formssafe.util.Fixture.createReward;
 import static com.formssafe.util.Fixture.createRewardCategory;
 import static com.formssafe.util.Fixture.createTag;
-import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.IntegrationTestConfig;
@@ -33,6 +32,7 @@ import com.formssafe.global.util.JsonConverter;
 import com.formssafe.util.Fixture;
 import jakarta.persistence.EntityManager;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -57,14 +57,19 @@ class FormRepositoryTest extends IntegrationTestConfig {
     @Autowired
     private EntityManager em;
 
+    private User testUser;
+
+    @BeforeEach
+    void setUp() {
+        rewardCategoryRepository.save(RewardCategory.builder().rewardCategoryName("커피").build());
+        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
+    }
+
     @Test
     void 이미지url_포함_설문을_저장한다() {
         //given
-        User testUser = createUser("testUser");
-        User user = userRepository.save(testUser);
-
         List<String> images = List.of("http://localhost/url1", "http://localhost/url2");
-        Form form = Fixture.createFormWithImages(user, "설문1", "설문 설명1", images);
+        Form form = Fixture.createFormWithImages(testUser, "설문1", "설문 설명1", images);
         //when
         Form savedForm = formRepository.save(form);
         //then
@@ -75,10 +80,7 @@ class FormRepositoryTest extends IntegrationTestConfig {
     @Test
     void 태그가_존재하는_설문을_가져온다() {
         //given
-        User testUser = createUser("testUser");
-        User user = userRepository.save(testUser);
-
-        Form form = createForm(user, "설문1", "설문 설명1");
+        Form form = createForm(testUser, "설문1", "설문 설명1");
         form = formRepository.save(form);
 
         List<Tag> tagList = List.of(createTag("testTag1"), createTag("testTag2"));
@@ -101,10 +103,7 @@ class FormRepositoryTest extends IntegrationTestConfig {
     @Test
     void 경품이_존재하는_설문을_가져온다() {
         //given
-        User testUser = createUser("testUser");
-        User user = userRepository.save(testUser);
-
-        Form form = createForm(user, "설문1", "설문 설명1");
+        Form form = createForm(testUser, "설문1", "설문 설명1");
         form = formRepository.save(form);
 
         RewardCategory rewardCategory = createRewardCategory("경품카테고리1");
@@ -128,10 +127,7 @@ class FormRepositoryTest extends IntegrationTestConfig {
     @Test
     void 질문이_존재하는_설문을_가져온다() {
         //given
-        User testUser = createUser("testUser");
-        User user = userRepository.save(testUser);
-
-        Form form = createForm(user, "설문1", "설문 설명1");
+        Form form = createForm(testUser, "설문1", "설문 설명1");
         form = formRepository.save(form);
 
         DescriptiveQuestion descriptiveQuestion = createDescriptiveQuestion(form,

@@ -3,7 +3,6 @@ package com.formssafe.domain.activity.service;
 import static com.formssafe.util.Fixture.createDeletedForm;
 import static com.formssafe.util.Fixture.createForm;
 import static com.formssafe.util.Fixture.createTemporaryForm;
-import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.IntegrationTestConfig;
@@ -40,8 +39,8 @@ class ActivityServiceTest extends IntegrationTestConfig {
 
     @BeforeEach
     void setUp() {
-        testUser = userRepository.save(createUser("testUser"));
-        otherUser = userRepository.save(createUser("otherUser", "1234", "user@example.com"));
+        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
+        otherUser = userRepository.findById(2L).orElseThrow(IllegalStateException::new);
     }
 
     @Nested

@@ -27,6 +27,9 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
+  sql:
+    init:
+      mode: always
 
 oauth:
   google:

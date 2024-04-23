@@ -1,7 +1,6 @@
 package com.formssafe.domain.form.service;
 
 import static com.formssafe.util.Fixture.createContentCreate;
-import static com.formssafe.util.Fixture.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -52,7 +51,7 @@ class FormCreateServiceTest extends IntegrationTestConfig {
     @BeforeEach
     void setUp() {
         rewardCategoryRepository.save(RewardCategory.builder().rewardCategoryName("커피").build());
-        testUser = userRepository.save(createUser("testUser"));
+        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
     }
 
     @Test

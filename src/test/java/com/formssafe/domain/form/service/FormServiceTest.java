@@ -9,7 +9,6 @@ import static com.formssafe.util.Fixture.createReward;
 import static com.formssafe.util.Fixture.createRewardCategory;
 import static com.formssafe.util.Fixture.createSubmissions;
 import static com.formssafe.util.Fixture.createTemporaryForm;
-import static com.formssafe.util.Fixture.createUser;
 import static com.formssafe.util.Fixture.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -70,7 +69,7 @@ class FormServiceTest extends IntegrationTestConfig {
 
     @BeforeEach
     void setUp() {
-        testUser = userRepository.save(createUser("testUser"));
+        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
         rewardCategory = rewardCategoryRepository.save(createRewardCategory("경품 카테고리1"));
     }
 

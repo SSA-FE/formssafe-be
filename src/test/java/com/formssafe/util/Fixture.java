@@ -40,6 +40,21 @@ public final class Fixture {
                 .build();
     }
 
+    public static User createUser(Long id, String nickname) {
+        return User.builder()
+                .id(id)
+                .oauthId(new OauthId("123", OauthServerType.GOOGLE))
+                .nickname(nickname)
+                .email("test@example.com")
+                .imageUrl(
+                        "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1")
+                .authority(Authority.ROLE_USER)
+                .refreshToken("refreshToken1")
+                .isActive(true)
+                .isDeleted(false)
+                .build();
+    }
+
     public static User createUser(String nickname, String oauthId, String email) {
         return User.builder()
                 .oauthId(new OauthId(oauthId, OauthServerType.GOOGLE))
