@@ -31,16 +31,12 @@ public class Notification {
     private User receiver;
 
     @Column(nullable = false)
-    private Long contentId;
-
-    @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private NotificationType notificationType;
 
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private boolean isRead;
 
     @CreatedDate
@@ -50,14 +46,13 @@ public class Notification {
     @Builder
     private Notification(Long id,
                          User receiver,
-                         Long contentId,
                          NotificationType notificationType,
-                         String content) {
+                         String content,
+                         boolean isRead) {
         this.id = id;
         this.receiver = receiver;
-        this.contentId = contentId;
         this.notificationType = notificationType;
         this.content = content;
-        this.isRead = false;
+        this.isRead = isRead;
     }
 }

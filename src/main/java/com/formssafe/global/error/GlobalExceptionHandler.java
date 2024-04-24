@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
         "com.formssafe.domain.result.controller",
         "com.formssafe.domain.submission.controller",
         "com.formssafe.domain.subscribe.controller",
+        "com.formssafe.domain.notification.controller"
 })
 @Slf4j
 public class GlobalExceptionHandler {
