@@ -19,7 +19,8 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     public UnreadNotificationCountResponseDto getUnreadNotificationCount(LoginUserDto loginUserDto) {
-        return null;
+        int unreadCount = notificationRepository.countByReceiverIdAndIsReadFalse(loginUserDto.id());
+        return new UnreadNotificationCountResponseDto(unreadCount);
     }
 
     public List<NotificationResponseDto> getUnreadNotifications(LoginUserDto loginUserDto) {
