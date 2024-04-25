@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum SortType {
-    CREATE_DATE("createDate"),
+    START_DATE("startDate"),
     END_DATE("endDate"),
     RESPONSE_CNT("responseCnt");
 
@@ -21,10 +21,10 @@ public enum SortType {
 
     public static SortType from(String displayName) {
         if (displayName == null) {
-            return END_DATE;
+            return START_DATE;
         }
 
-        return convertor.getOrDefault(displayName, END_DATE);
+        return convertor.getOrDefault(displayName, START_DATE);
     }
 
     public String displayName() {

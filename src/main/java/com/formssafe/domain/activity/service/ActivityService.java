@@ -2,9 +2,12 @@ package com.formssafe.domain.activity.service;
 
 import com.formssafe.domain.activity.dto.ActivityParam.SearchDto;
 import com.formssafe.domain.activity.dto.ActivityResponse.FormListDto;
+import com.formssafe.domain.activity.dto.ActivityResponse.FormListResponseDto;
 import com.formssafe.domain.activity.dto.ActivityResponse.ParticipateSubmissionDto;
+import com.formssafe.domain.form.dto.FormResponse.FormCursorDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.repository.FormRepository;
+import com.formssafe.domain.form.service.SortType;
 import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
 import com.formssafe.domain.submission.entity.Submission;
 import com.formssafe.domain.submission.repository.SubmissionRepository;
@@ -29,7 +32,7 @@ public class ActivityService {
     private final SubmissionRepository submissionRepository;
     private final SubmissionService submissionService;
 
-    public List<FormListDto> getCreatedFormList(SearchDto param, LoginUserDto loginUser) {
+    public FormListResponseDto getCreatedFormList(SearchDto param, LoginUserDto loginUser) {
         log.debug(param == null ? null : param.toString());
 
         User user = userRepository.findById(loginUser.id())
@@ -41,12 +44,14 @@ public class ActivityService {
 
         List<Form> formByUserWithFiltered = formRepository.findFormByUserWithFiltered(param, user);
 
-        return formByUserWithFiltered.stream()
+        return FormListResponseDto.from(formByUserWithFiltered.stream()
                 .map(FormListDto::from)
-                .toList();
+                .toList(), FormCursorDto.from(SortType.from(param.sort()),
+                formByUserWithFiltered.size() != 0 ? formByUserWithFiltered.get(
+                        formByUserWithFiltered.size() - 1) : null));
     }
 
-    public List<FormListDto> getParticipatedFormList(SearchDto param, LoginUserDto loginUser) {
+    public FormListResponseDto getParticipatedFormList(SearchDto param, LoginUserDto loginUser) {
         log.debug(param == null ? null : param.toString());
 
         User user = userRepository.findById(loginUser.id())
@@ -59,9 +64,11 @@ public class ActivityService {
         List<Form> formByParticipateUserWithFiltered = formRepository.findFormByParticipateUserWithFiltered(param,
                 user);
 
-        return formByParticipateUserWithFiltered.stream()
+        return FormListResponseDto.from(formByParticipateUserWithFiltered.stream()
                 .map(FormListDto::from)
-                .toList();
+                .toList(), FormCursorDto.from(SortType.from(param.sort()),
+                formByParticipateUserWithFiltered.size() != 0 ? formByParticipateUserWithFiltered.get(
+                        formByParticipateUserWithFiltered.size() - 1) : null));
     }
 
     public ParticipateSubmissionDto getSelfResponse(Long formId, LoginUserDto loginUser) {

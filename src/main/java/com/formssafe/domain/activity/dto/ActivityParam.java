@@ -1,6 +1,7 @@
 package com.formssafe.domain.activity.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,13 +24,18 @@ public final class ActivityParam {
                             List<String> tag,
                             @Schema(description = "마지막 formId")
                             Long top,
-
+                            @Schema(description = "SortType이 startDate, 마지막 startDate")
+                            LocalDateTime startDate,
+                            @Schema(description = "SortType이 EndDate일때, 마지막 endDate")
+                            LocalDateTime endDate,
+                            @Schema(description = "SortType이 responseCnt일 때, 마지막 responseCnt")
+                            Integer responseCnt,
                             @Schema(description = "임시 여부")
                             Boolean temp
     ) {
 
         public static SearchDto createNull() {
-            return new SearchDto(null, null, null, null, null, null, null);
+            return new SearchDto(null, null, null, null, null, null, null, null, null, null);
         }
     }
 }

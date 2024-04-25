@@ -60,7 +60,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @ParameterizedTest
     void 제목또는설명에_키워드가포함된_설문목록을_조회한다(String keyword) {
         //given
-        SearchDto searchDto = new SearchDto(keyword, null, null, null, null, null);
+        SearchDto searchDto = new SearchDto(keyword, null, null, null, null, null, null, null, null);
         //when
         List<Form> formAllFiltered = formRepository.findFormWithFiltered(searchDto);
         //then
@@ -73,7 +73,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @ParameterizedTest
     void 특정상태의_설문목록을_조회한다(FormStatus status) {
         //given
-        SearchDto searchDto = new SearchDto(null, null, null, status.displayName(), null, null);
+        SearchDto searchDto = new SearchDto(null, null, null, status.displayName(), null, null, null, null, null);
         //when
         List<Form> formAllFiltered = formRepository.findFormWithFiltered(searchDto);
         //then
@@ -86,7 +86,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @MethodSource("getTagList")
     void 특정태그들을_가지는_설문목록을_조회한다(List<String> tagList) {
         //given
-        SearchDto searchDto = new SearchDto(null, null, null, null, tagList, null);
+        SearchDto searchDto = new SearchDto(null, null, null, null, tagList, null, null, null, null);
         //when
         List<Form> result = formRepository.findFormWithFiltered(searchDto);
         //then
@@ -103,7 +103,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @MethodSource("getCategoryList")
     void 특정카테고리의_경품들을_가지는_설문목록을_조회한다(List<String> categoryList) {
         //given
-        SearchDto searchDto = new SearchDto(null, null, categoryList, null, null, null);
+        SearchDto searchDto = new SearchDto(null, null, categoryList, null, null, null, null, null, null);
         //when
         List<Form> result = formRepository.findFormWithFiltered(searchDto);
         //then
@@ -131,7 +131,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
 
         long top = forms.get(0).getId() + topOffset - 1;
 
-        SearchDto searchDto = new SearchDto(null, null, null, null, null, top);
+        SearchDto searchDto = new SearchDto(null, null, null, null, null, top, null, null, null);
 
         //when
         List<Form> result = formRepository.findFormWithFiltered(searchDto);

@@ -1,5 +1,7 @@
 package com.formssafe.domain.activity.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.formssafe.domain.form.dto.FormResponse.FormCursorDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardDto;
 import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
@@ -37,7 +39,7 @@ public final class ActivityResponse {
                               @Schema(description = "설문 마감 시각")
                               LocalDateTime endDate,
                               @Schema(description = "설문 참여 시 받을 수 있는 경품")
-                                  RewardDto reward,
+                              RewardDto reward,
                               @Schema(description = "설문 태그 목록")
                               List<TagCountDto> tags,
                               @Schema(description = "설문 상태")
@@ -75,6 +77,19 @@ public final class ActivityResponse {
                     tagCountDtos,
                     form.getStatus().displayName(),
                     form.isTemp());
+        }
+    }
+
+    @Schema(description = "설문 목록 및 cursor 정보")
+    public record FormListResponseDto(@Schema(description = "설문 목록 리스트")
+                                      List<FormListDto> forms,
+                                      @Schema(description = "마지막 form의 cursor 정보")
+                                      @JsonInclude(JsonInclude.Include.NON_NULL)
+                                      FormCursorDto cursor
+    ) {
+        public static FormListResponseDto from(List<FormListDto> forms,
+                                               FormCursorDto formCursorDto) {
+            return new FormListResponseDto(forms, formCursorDto);
         }
     }
 
