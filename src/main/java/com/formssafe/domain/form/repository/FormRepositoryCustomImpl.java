@@ -49,7 +49,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .where(isNotDeleted(),
                         isUserNotDeleted(),
                         isNotTemp(),
-                        userIdLast(searchDto.top()),
+                        reflectCursor(SortType.from(searchDto.sort()), searchDto),
                         containsKeyword(searchDto.keyword()),
                         matchStatus(searchDto.status()),
                         containsTag(searchDto.tag()),
@@ -154,5 +154,19 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
 
     private BooleanExpression userIdLast(Long top) {
         return top != null ? form.id.gt(top) : null;
+    }
+
+    private BooleanExpression reflectCursor(SortType sortType, SearchDto searchDto) {
+        return switch (sortType) {
+            case START_DATE -> searchDto.startDate() != null ?
+                    (form.startDate.eq(searchDto.startDate()).and(form.id.gt(searchDto.top())))
+                            .or(form.startDate.before(searchDto.startDate())) : null;
+            case END_DATE -> searchDto.endDate() != null ?
+                    (form.endDate.eq(searchDto.endDate()).and(form.id.gt(searchDto.top())))
+                            .or(form.endDate.after(searchDto.endDate())) : null;
+            case RESPONSE_CNT -> searchDto.responseCnt() != null ?
+                    (form.responseCnt.eq(searchDto.responseCnt()).and(form.id.gt(searchDto.top())))
+                            .or(form.responseCnt.lt(searchDto.responseCnt())) : null;
+        };
     }
 }
