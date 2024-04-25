@@ -1,5 +1,7 @@
 package com.formssafe.domain.notification.dto;
 
+import com.formssafe.domain.notification.entity.Notification;
+
 public final class NotificationResponse {
 
     private NotificationResponse() {
@@ -13,5 +15,13 @@ public final class NotificationResponse {
                                           String content,
                                           boolean isRead,
                                           String createDate) {
+
+        public static NotificationResponseDto from(Notification notification) {
+            return new NotificationResponseDto(notification.getId(),
+                    notification.getNotificationType().name(),
+                    notification.getContent(),
+                    notification.isRead(),
+                    notification.getCreateDate().toString());
+        }
     }
 }
