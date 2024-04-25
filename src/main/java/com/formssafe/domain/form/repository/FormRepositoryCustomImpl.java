@@ -28,7 +28,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
     private OrderSpecifier<?> getOrderSpecifier(SortType sortType) {
         log.info(sortType.name());
         return switch (sortType) {
-            case CREATE_DATE -> form.createDate.asc();
+            case START_DATE -> form.startDate.desc();
             case END_DATE -> form.endDate.asc();
             case RESPONSE_CNT -> form.responseCnt.desc();
             default -> throw new IllegalArgumentException("Invalid sorting type: " + sortType);

@@ -3,6 +3,7 @@ package com.formssafe.domain.form.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.form.service.SortType;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagCountDto;
 import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
@@ -42,7 +43,7 @@ public final class FormResponse {
                                 List<ContentResponseDto> contents,
                                 @Schema(description = "설문 경품")
                                 @JsonInclude(JsonInclude.Include.NON_NULL)
-                                    RewardDto reward,
+                                RewardDto reward,
                                 @Schema(description = "설문 태그 목록")
                                 List<TagListDto> tags,
                                 @Schema(description = "설문 상태")
@@ -82,34 +83,34 @@ public final class FormResponse {
 
     @Schema(description = "설문 문항 포함 조회 응답 DTO")
     public record FormWithQuestionDto(@Schema(description = "설문 id")
-                                           Long id,
+                                      Long id,
                                       @Schema(description = "설문 제목")
-                                           String title,
+                                      String title,
                                       @Schema(description = "설문 설명")
-                                           String description,
+                                      String description,
                                       @Schema(description = "설문 설명 이미지 목록")
-                                           List<String> image,
+                                      List<String> image,
                                       @Schema(description = "설문 등록자")
-                                           UserAuthorDto author,
+                                      UserAuthorDto author,
                                       @Schema(description = "설문 시작 시각")
-                                           LocalDateTime startDate,
+                                      LocalDateTime startDate,
                                       @Schema(description = "설문 마감 시각")
-                                           LocalDateTime endDate,
+                                      LocalDateTime endDate,
                                       @Schema(description = "설문 참여 예상 시간")
-                                           int expectTime,
+                                      int expectTime,
                                       @Schema(description = "개인 정보를 묻는 질문 존재 시, 개인 정보 응답 항목 삭제 시각")
-                                           LocalDateTime privacyDisposalDate,
+                                      LocalDateTime privacyDisposalDate,
                                       @Schema(description = "설문 문항 목록")
-                                           List<ContentResponseDto> contents,
+                                      List<ContentResponseDto> contents,
                                       @Schema(description = "설문 경품")
-                                           @JsonInclude(JsonInclude.Include.NON_NULL)
+                                      @JsonInclude(JsonInclude.Include.NON_NULL)
                                       RewardDto reward,
                                       @Schema(description = "설문 태그 목록")
-                                           List<TagListDto> tags,
+                                      List<TagListDto> tags,
                                       @Schema(description = "설문 상태")
-                                           String status,
+                                      String status,
                                       @Schema(description = "설문 질문 개수")
-                                           int questionCnt) {
+                                      int questionCnt) {
 
         public static FormWithQuestionDto from(Form form,
                                                List<ContentResponseDto> contents,
@@ -154,7 +155,7 @@ public final class FormResponse {
                               @Schema(description = "설문 마감 시각")
                               LocalDateTime endDate,
                               @Schema(description = "설문 참여 시 받을 수 있는 경품")
-                                  RewardDto reward,
+                              RewardDto reward,
                               @Schema(description = "설문 태그 목록")
                               List<TagCountDto> tags,
                               @Schema(description = "설문 상태")
@@ -184,6 +185,46 @@ public final class FormResponse {
         }
     }
 
+    @Schema(description = "설문 목록 및 cursor 정보")
+    public record FormListResponseDto(@Schema(description = "설문 목록 리스트")
+                                      List<FormListDto> forms,
+                                      @Schema(description = "마지막 form의 cursor 정보")
+                                      FormCursorDto cursor
+    ) {
+        public static FormListResponseDto from(List<FormListDto> forms, FormCursorDto formCursorDto) {
+            return new FormListResponseDto(forms, formCursorDto);
+        }
+    }
 
+    @Schema(description = "설문 cursor 정보 dto")
+    public record FormCursorDto(@Schema(description = "설문 정렬 방식")
+                                String sort,
+                                @Schema(description = "커서 위치의 formId")
+                                Long top,
+                                @Schema(description = "설문 정렬 방식이 startDate일때 커서 위치")
+                                @JsonInclude(JsonInclude.Include.NON_NULL)
+                                LocalDateTime startDate,
+                                @Schema(description = "설문 정렬 방식이 endDate일때 커서 위치")
+                                @JsonInclude(JsonInclude.Include.NON_NULL)
+                                LocalDateTime endDate,
+                                @Schema(description = "설문 정렬 방식이 responseCnt일때 커서 위치")
+                                @JsonInclude(JsonInclude.Include.NON_NULL)
+                                Integer responseCnt
+    ) {
+        public static FormCursorDto from(SortType sortType, Form form) {
+            FormCursorDto formCursorDto = null;
+            switch (sortType) {
+                case START_DATE ->
+                        formCursorDto = new FormCursorDto(sortType.name(), form.getId(), form.getStartDate(), null,
+                                null);
+                case END_DATE ->
+                        formCursorDto = new FormCursorDto(sortType.name(), form.getId(), null, form.getEndDate(),
+                                null);
+                case RESPONSE_CNT -> formCursorDto = new FormCursorDto(sortType.name(), form.getId(), null, null,
+                        form.getResponseCnt());
+            }
+            return formCursorDto;
+        }
+    }
 }
 

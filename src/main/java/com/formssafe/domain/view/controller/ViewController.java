@@ -2,7 +2,7 @@ package com.formssafe.domain.view.controller;
 
 
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
-import com.formssafe.domain.form.dto.FormResponse.FormListDto;
+import com.formssafe.domain.form.dto.FormResponse.FormListResponseDto;
 import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
 import com.formssafe.domain.view.service.ViewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,7 @@ public class ViewController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping(path = "/forms", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    List<FormListDto> getFormList(@ModelAttribute SearchDto param) {
+    FormListResponseDto getFormList(@ModelAttribute SearchDto param) {
         return viewService.getFormList(param);
     }
 
