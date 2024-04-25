@@ -3,6 +3,8 @@ package com.formssafe.domain.notification.implement;
 import com.formssafe.domain.notification.dto.NotificationParam.NotificationSearchDto;
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.repository.NotificationRepository;
+import com.formssafe.global.error.ErrorCode;
+import com.formssafe.global.error.type.DataNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,16 +18,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationReader {
     private final NotificationRepository notificationRepository;
 
-    public int getUnreadNotificationCount(Long userId) {
+    public Notification findNotification(Long notificationId) {
+        return notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new DataNotFoundException(ErrorCode.NOTIFICATION_NOT_FOUND,
+                        "Notification not found for id " + notificationId));
+    }
+
+    public int findUnreadNotificationCount(Long userId) {
         return notificationRepository.countByReceiverIdAndIsReadFalse(userId);
     }
 
-    public List<Notification> getUnreadNotifications(Long userId) {
+    public List<Notification> findUnreadNotifications(Long userId) {
         return notificationRepository.findAllByReceiverIdAndIsReadFalse(userId);
     }
 
-    public List<Notification> getNotifications(Long userId,
-                                               NotificationSearchDto searchDto) {
-        return notificationRepository.findAllByReceiverIdAndIdAfter(userId, searchDto.cursor());
+    public List<Notification> findNotifications(Long userId,
+                                                NotificationSearchDto searchDto) {
+        return notificationRepository.findAllByReceiverIdAndIdAfter(userId, searchDto.top());
     }
 }

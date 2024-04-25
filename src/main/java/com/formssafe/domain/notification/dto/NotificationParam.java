@@ -5,6 +5,6 @@ public final class NotificationParam {
     private NotificationParam() {
     }
 
-    public record NotificationSearchDto(Long cursor) {
+    public record NotificationSearchDto(Long top) {
     }
 }

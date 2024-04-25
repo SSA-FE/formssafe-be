@@ -55,4 +55,8 @@ public class Notification {
         this.content = content;
         this.isRead = isRead;
     }
+
+    public void read() {
+        this.isRead = true;
+    }
 }

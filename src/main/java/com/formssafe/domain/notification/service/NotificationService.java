@@ -5,6 +5,8 @@ import com.formssafe.domain.notification.dto.NotificationResponse.NotificationRe
 import com.formssafe.domain.notification.dto.NotificationResponse.UnreadNotificationCountResponseDto;
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.implement.NotificationReader;
+import com.formssafe.domain.notification.implement.NotificationUpdater;
+import com.formssafe.domain.notification.implement.NotificationValidator;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class NotificationService {
     private final NotificationReader notificationReader;
+    private final NotificationUpdater notificationUpdater;
 
     public UnreadNotificationCountResponseDto getUnreadNotificationCount(LoginUserDto loginUserDto) {
-        int unreadCount = notificationReader.getUnreadNotificationCount(loginUserDto.id());
+        int unreadCount = notificationReader.findUnreadNotificationCount(loginUserDto.id());
         return new UnreadNotificationCountResponseDto(unreadCount);
     }
 
     public List<NotificationResponseDto> getUnreadNotifications(LoginUserDto loginUserDto) {
-        List<Notification> notifications = notificationReader.getUnreadNotifications(loginUserDto.id());
+        List<Notification> notifications = notificationReader.findUnreadNotifications(loginUserDto.id());
 
         return notifications.stream()
                 .map(NotificationResponseDto::from)
@@ -35,7 +38,7 @@ public class NotificationService {
 
     public List<NotificationResponseDto> getNotifications(NotificationSearchDto searchDto,
                                                           LoginUserDto loginUserDto) {
-        List<Notification> notifications = notificationReader.getNotifications(loginUserDto.id(), searchDto);
+        List<Notification> notifications = notificationReader.findNotifications(loginUserDto.id(), searchDto);
 
         return notifications.stream()
                 .map(NotificationResponseDto::from)
@@ -45,7 +48,10 @@ public class NotificationService {
 
     public void markAsRead(Long notificationId,
                            LoginUserDto loginUserDto) {
+        Notification notification = notificationReader.findNotification(notificationId);
+        NotificationValidator.validReceiver(notification, loginUserDto.id());
 
+        notificationUpdater.markAsRead(notification);
     }
 
     public void markAllAsRead(LoginUserDto loginUserDto) {
