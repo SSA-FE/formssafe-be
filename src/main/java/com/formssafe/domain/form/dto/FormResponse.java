@@ -218,7 +218,7 @@ public final class FormResponse {
                 return null;
             }
             FormCursorDto formCursorDto = null;
-            String sort = CommonUtil.snakeCaseToCamelCase(sortType.name());
+            String sort = CommonUtil.snakeCaseToCamelCase(sortType.displayName());
 
             switch (sortType) {
                 case START_DATE -> formCursorDto = new FormCursorDto(sort, form.getId(), form.getStartDate(), null,
