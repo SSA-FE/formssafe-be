@@ -4,6 +4,7 @@ import com.formssafe.domain.notification.dto.NotificationParam.NotificationSearc
 import com.formssafe.domain.notification.dto.NotificationResponse.NotificationResponseDto;
 import com.formssafe.domain.notification.dto.NotificationResponse.UnreadNotificationCountResponseDto;
 import com.formssafe.domain.notification.entity.Notification;
+import com.formssafe.domain.notification.implement.NotificationMapper;
 import com.formssafe.domain.notification.implement.NotificationReader;
 import com.formssafe.domain.notification.implement.NotificationUpdater;
 import com.formssafe.domain.notification.implement.NotificationValidator;
@@ -24,26 +25,21 @@ public class NotificationService {
 
     public UnreadNotificationCountResponseDto getUnreadNotificationCount(LoginUserDto loginUserDto) {
         int unreadCount = notificationReader.findUnreadNotificationCount(loginUserDto.id());
-        return new UnreadNotificationCountResponseDto(unreadCount);
+
+        return NotificationMapper.createUnreadNotificationCountResponseDto(unreadCount);
     }
 
     public List<NotificationResponseDto> getUnreadNotifications(LoginUserDto loginUserDto) {
         List<Notification> notifications = notificationReader.findUnreadNotifications(loginUserDto.id());
 
-        return notifications.stream()
-                .map(NotificationResponseDto::from)
-                .sorted((n1, n2) -> n2.createDate().compareTo(n1.createDate()))
-                .toList();
+        return NotificationMapper.createNotificationResponseDtoList(notifications);
     }
 
     public List<NotificationResponseDto> getNotifications(NotificationSearchDto searchDto,
                                                           LoginUserDto loginUserDto) {
         List<Notification> notifications = notificationReader.findNotifications(loginUserDto.id(), searchDto);
 
-        return notifications.stream()
-                .map(NotificationResponseDto::from)
-                .sorted((n1, n2) -> n2.createDate().compareTo(n1.createDate()))
-                .toList();
+        return NotificationMapper.createNotificationResponseDtoList(notifications);
     }
 
     @Transactional
