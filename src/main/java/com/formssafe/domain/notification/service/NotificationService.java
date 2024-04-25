@@ -46,6 +46,7 @@ public class NotificationService {
                 .toList();
     }
 
+    @Transactional
     public void markAsRead(Long notificationId,
                            LoginUserDto loginUserDto) {
         Notification notification = notificationReader.findNotification(notificationId);
@@ -54,6 +55,7 @@ public class NotificationService {
         notificationUpdater.markAsRead(notification);
     }
 
+    @Transactional
     public void markAllAsRead(LoginUserDto loginUserDto) {
         notificationUpdater.markAllAsRead(loginUserDto.id());
     }
