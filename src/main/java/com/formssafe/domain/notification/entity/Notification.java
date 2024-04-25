@@ -37,10 +37,12 @@ public class Notification {
     @Column(nullable = false)
     private String content;
 
+    private Long contentId;
+
     private boolean isRead;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
 
     @Builder
@@ -48,11 +50,13 @@ public class Notification {
                          User receiver,
                          NotificationType notificationType,
                          String content,
+                         Long contentId,
                          boolean isRead) {
         this.id = id;
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = content;
+        this.contentId = contentId;
         this.isRead = isRead;
     }
 

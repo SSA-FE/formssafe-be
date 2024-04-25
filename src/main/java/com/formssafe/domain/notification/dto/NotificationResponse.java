@@ -13,6 +13,7 @@ public final class NotificationResponse {
     public record NotificationResponseDto(Long id,
                                           String type,
                                           String content,
+                                          Long contentId,
                                           boolean isRead,
                                           String createDate) {
 
@@ -20,6 +21,7 @@ public final class NotificationResponse {
             return new NotificationResponseDto(notification.getId(),
                     notification.getNotificationType().name(),
                     notification.getContent(),
+                    notification.getContentId(),
                     notification.isRead(),
                     notification.getCreateDate().toString());
         }

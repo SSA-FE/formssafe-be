@@ -112,7 +112,9 @@ class NotificationControllerTest {
             Notification readN3 = createNotification(testUser1, "내용7", NotificationType.FINISH_FORM, true);
             Notification n5 = createNotification(testUser1, "내용8", NotificationType.FINISH_FORM, false);
             Notification n6 = createNotification(testUser1, "내용9", NotificationType.FINISH_FORM, false);
-            notificationRepository.saveAll(List.of(n1, n2, readN1, n3, readN2, n4, readN3, n5, n6));
+            Notification n7 = createNotification(testUser1, "내용10", NotificationType.FINISH_FORM, false);
+            Notification n8 = createNotification(testUser1, "내용11", NotificationType.FINISH_FORM, false);
+            notificationRepository.saveAll(List.of(n1, n2, readN1, n3, readN2, n4, readN3, n5, n6, n7, n8));
 
             RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/notifications/unread")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -130,7 +132,7 @@ class NotificationControllerTest {
             });
             assertThat(notificationResponseDtos).hasSize(5);
             assertThat(notificationResponseDtos).extracting("content")
-                    .containsExactly("내용9", "내용8", "내용4", "내용2", "내용1");
+                    .containsExactly("내용11", "내용10", "내용9", "내용8", "내용4");
         }
     }
 
@@ -255,8 +257,8 @@ class NotificationControllerTest {
                     .andDo(print())
                     .andExpect(MockMvcResultMatchers.status().isOk());
 
-            assertThat(notificationRepository.findAllByReceiverIdAndIsReadFalse(testUser1.getId())).isEmpty();
-            assertThat(notificationRepository.findAllByReceiverIdAndIsReadFalse(testUser2.getId())).hasSize(5);
+            assertThat(notificationRepository.countByReceiverIdAndIsReadFalse(testUser1.getId())).isZero();
+            assertThat(notificationRepository.countByReceiverIdAndIsReadFalse(testUser2.getId())).isEqualTo(5);
         }
     }
 }

@@ -29,7 +29,7 @@ public class NotificationReader {
     }
 
     public List<Notification> findUnreadNotifications(Long userId) {
-        return notificationRepository.findAllByReceiverIdAndIsReadFalse(userId);
+        return notificationRepository.findTop5ByReceiverIdAndIsReadFalseOrderByCreateDateDesc(userId);
     }
 
     public List<Notification> findNotifications(Long userId,
