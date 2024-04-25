@@ -6,7 +6,6 @@ import com.formssafe.domain.notification.dto.NotificationResponse.UnreadNotifica
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.implement.NotificationReader;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,11 +33,19 @@ public class NotificationService {
                 .toList();
     }
 
-    public List<NotificationResponseDto> getNotifications(NotificationSearchDto searchDto, LoginUserDto loginUserDto) {
-        return Collections.EMPTY_LIST;
+    public List<NotificationResponseDto> getNotifications(NotificationSearchDto searchDto,
+                                                          LoginUserDto loginUserDto) {
+        List<Notification> notifications = notificationReader.getNotifications(loginUserDto.id(), searchDto);
+
+        return notifications.stream()
+                .map(NotificationResponseDto::from)
+                .sorted((n1, n2) -> n2.createDate().compareTo(n1.createDate()))
+                .toList();
     }
 
-    public void markAsRead(Long notificationId, LoginUserDto loginUserDto) {
+    public void markAsRead(Long notificationId,
+                           LoginUserDto loginUserDto) {
+
     }
 
     public void markAllAsRead(LoginUserDto loginUserDto) {

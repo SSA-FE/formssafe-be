@@ -1,5 +1,6 @@
 package com.formssafe.domain.notification.implement;
 
+import com.formssafe.domain.notification.dto.NotificationParam.NotificationSearchDto;
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.repository.NotificationRepository;
 import java.util.List;
@@ -21,5 +22,10 @@ public class NotificationReader {
 
     public List<Notification> getUnreadNotifications(Long userId) {
         return notificationRepository.findAllByReceiverIdAndIsReadFalse(userId);
+    }
+
+    public List<Notification> getNotifications(Long userId,
+                                               NotificationSearchDto searchDto) {
+        return notificationRepository.findAllByReceiverIdAndIdAfter(userId, searchDto.cursor());
     }
 }
