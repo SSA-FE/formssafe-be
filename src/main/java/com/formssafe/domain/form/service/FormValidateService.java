@@ -21,9 +21,8 @@ public class FormValidateService {
 
     public void validAuthor(Form form, Long loginUserId) {
         if (!Objects.equals(form.getUser().getId(), loginUserId)) {
-            throw new ForbiddenException(ErrorCode.INVALID_RECEIVER,
-                    "login user - " + loginUserId + ": 설문 작성자가 아닙니다.: " + form.getUser().getId()
-            );
+            throw new ForbiddenException(ErrorCode.INVALID_AUTHOR,
+                    "Invalid author id " + loginUserId + " for form author id " + form.getUser().getId());
         }
     }
 

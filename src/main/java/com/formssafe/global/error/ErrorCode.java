@@ -11,12 +11,18 @@ public enum ErrorCode {
      * 인증
      */
     UNAUTHORIZED_ACCESS(UNAUTHORIZED, "AUTH000", "권한이 없습니다"),
-    FORBIDDEN_USER(FORBIDDEN, "AUTH001", "권한이 없는 유저입니다."),
+
+    /**
+     * 사용자
+     */
+    USER_NOT_FOUND(BAD_REQUEST, "USER000", "해당 유저가 존재하지 않습니다."),
+    INVALID_USER(FORBIDDEN, "USER001", "권한이 없습니다."),
 
     /**
      * 설문
      */
     FORM_NOT_FOUND(BAD_REQUEST, "FORM000", "해당 설문이 존재하지 않습니다."),
+    INVALID_AUTHOR(FORBIDDEN, "FORM001", "작성자가 아닙니다."),
 
     /**
      * 경품 카테고리
