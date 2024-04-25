@@ -50,20 +50,4 @@ public class CommonUtil {
         }
         return sb.toString();
     }
-
-    public static String snakeCaseToCamelCase(String snakeCase) {
-        snakeCase = snakeCase.toLowerCase();
-
-        String[] parts = snakeCase.split("_");
-        if (parts.length == 0) {
-            return "";
-        }
-
-        StringBuilder camelString = new StringBuilder(parts[0]);
-        for (int i = 1; i < parts.length; i++) {
-            camelString.append(parts[i].substring(0, 1).toUpperCase()).append(parts[i].substring(1));
-        }
-
-        return camelString.toString();
-    }
 }

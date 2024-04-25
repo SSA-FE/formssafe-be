@@ -10,7 +10,6 @@ import com.formssafe.domain.tag.dto.TagResponse.TagListDto;
 import com.formssafe.domain.user.dto.UserResponse;
 import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
-import com.formssafe.global.util.CommonUtil;
 import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -218,15 +217,15 @@ public final class FormResponse {
                 return null;
             }
             FormCursorDto formCursorDto = null;
-            String sort = CommonUtil.snakeCaseToCamelCase(sortType.displayName());
 
             switch (sortType) {
-                case START_DATE -> formCursorDto = new FormCursorDto(sort, form.getId(), form.getStartDate(), null,
-                        null);
-                case END_DATE -> formCursorDto = new FormCursorDto(sort, form.getId(), null, form.getEndDate(),
-                        null);
-                case RESPONSE_CNT -> formCursorDto = new FormCursorDto(sort, form.getId(), null, null,
-                        form.getResponseCnt());
+                case START_DATE ->
+                        formCursorDto = new FormCursorDto(sortType.displayName(), form.getId(), form.getStartDate(),
+                                null, null);
+                case END_DATE -> formCursorDto = new FormCursorDto(sortType.displayName(), form.getId(), null,
+                        form.getEndDate(), null);
+                case RESPONSE_CNT -> formCursorDto = new FormCursorDto(sortType.displayName(), form.getId(), null,
+                        null, form.getResponseCnt());
             }
             return formCursorDto;
         }
