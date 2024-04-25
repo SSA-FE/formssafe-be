@@ -66,7 +66,7 @@ class NotificationControllerTest {
     @DisplayName("[읽지 않은 알림 개수 조회]")
     class getUnreadNotificationCount {
 
-        @DisplayName("사용자가 읽지 않은 알림의 개수를 조회한다.")
+        @DisplayName("사용자가 읽지 않은 알림의 개수를 조회한다")
         @Test
         @WithMockSessionAuthentication
         void success() throws Exception {
@@ -98,7 +98,7 @@ class NotificationControllerTest {
     @DisplayName("[읽지 않은 5개 알림 목록 조회]")
     class getUnreadNotifications {
 
-        @DisplayName("사용자가 읽지 않은 최근 5개 알림을 목록 조회한다.")
+        @DisplayName("사용자가 읽지 않은 최근 5개 알림을 목록 조회한다")
         @Test
         @WithMockSessionAuthentication
         void success() throws Exception {
@@ -138,7 +138,7 @@ class NotificationControllerTest {
     @DisplayName("[알림 목록 조회]")
     class getNotifications {
 
-        @DisplayName("사용자의 알림을 10개씩 최근 순으로 목록 조회한다.")
+        @DisplayName("사용자의 알림을 10개씩 최근 순으로 목록 조회한다")
         @Test
         @WithMockSessionAuthentication
         void success() throws Exception {
@@ -223,6 +223,40 @@ class NotificationControllerTest {
                     .andExpect(jsonPath("$.code")
                             .value(ErrorCode.INVALID_RECEIVER.getCode()))
                     .andReturn();
+        }
+    }
+
+    @Nested
+    @DisplayName("[모든 알림 읽기]")
+    class markAllAsRead {
+
+        @DisplayName("사용자의 모든 알림을 읽음 처리한다")
+        @Test
+        @WithMockSessionAuthentication
+        void success() throws Exception {
+            //given
+            for (int i = 0; i < 5; i++) {
+                Notification notification = createNotification(testUser1, "내용" + i, NotificationType.FINISH_FORM,
+                        false);
+                notificationRepository.save(notification);
+            }
+            for (int i = 0; i < 5; i++) {
+                Notification notification = createNotification(testUser2, "내용" + i, NotificationType.FINISH_FORM,
+                        false);
+                notificationRepository.save(notification);
+            }
+
+            RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/v1/notifications/read")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .characterEncoding(StandardCharsets.UTF_8.displayName());
+            //when then
+            mockMvc.perform(requestBuilder)
+                    .andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+
+            assertThat(notificationRepository.findAllByReceiverIdAndIsReadFalse(testUser1.getId())).isEmpty();
+            assertThat(notificationRepository.findAllByReceiverIdAndIsReadFalse(testUser2.getId())).hasSize(5);
         }
     }
 }

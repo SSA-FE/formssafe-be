@@ -19,8 +19,6 @@ public class NotificationUpdater {
     }
 
     public void markAllAsRead(Long userId) {
-//        List<Notification> notifications = notificationRepository.findAllByReceiverIdAndIsReadFalse(userId);
-//
-//        notifications.forEach(Notification::markAsRead);
+        notificationRepository.markAllAsReadByReceiverId(userId);
     }
 }

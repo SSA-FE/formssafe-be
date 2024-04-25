@@ -55,6 +55,6 @@ public class NotificationService {
     }
 
     public void markAllAsRead(LoginUserDto loginUserDto) {
-
+        notificationUpdater.markAllAsRead(loginUserDto.id());
     }
 }
