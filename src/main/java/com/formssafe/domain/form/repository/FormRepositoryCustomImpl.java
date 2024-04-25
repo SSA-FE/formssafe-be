@@ -75,7 +75,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                         isUserNotDeleted(),
                         isNotDeleted(),
                         matchTemp(searchDto.temp()),
-                        userIdLast(searchDto.top()),
+                        afterCursor(SortType.from(searchDto.sort()), searchDto),
                         containsKeyword(searchDto.keyword()),
                         matchStatus(searchDto.status()),
                         containsTag(searchDto.tag()),
@@ -100,7 +100,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .orderBy(orderSpecifier)
                 .where(matchParticipant(participant),
                         isNotDeleted(),
-                        userIdLast(searchDto.top()),
+                        afterCursor(SortType.from(searchDto.sort()), searchDto),
                         containsKeyword(searchDto.keyword()),
                         matchStatus(searchDto.status()),
                         containsTag(searchDto.tag()),
@@ -151,12 +151,22 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
         return categories != null && !categories.isEmpty() ? reward.rewardCategory.rewardCategoryName.in(categories)
                 : null;
     }
-
-    private BooleanExpression userIdLast(Long top) {
-        return top != null ? form.id.gt(top) : null;
+    
+    private BooleanExpression afterCursor(SortType sortType, SearchDto searchDto) {
+        return switch (sortType) {
+            case START_DATE -> searchDto.startDate() != null ?
+                    (form.startDate.eq(searchDto.startDate()).and(form.id.gt(searchDto.top())))
+                            .or(form.startDate.before(searchDto.startDate())) : null;
+            case END_DATE -> searchDto.endDate() != null ?
+                    (form.endDate.eq(searchDto.endDate()).and(form.id.gt(searchDto.top())))
+                            .or(form.endDate.after(searchDto.endDate())) : null;
+            case RESPONSE_CNT -> searchDto.responseCnt() != null ?
+                    (form.responseCnt.eq(searchDto.responseCnt()).and(form.id.gt(searchDto.top())))
+                            .or(form.responseCnt.lt(searchDto.responseCnt())) : null;
+        };
     }
 
-    private BooleanExpression afterCursor(SortType sortType, SearchDto searchDto) {
+    private BooleanExpression afterCursor(SortType sortType, ActivityParam.SearchDto searchDto) {
         return switch (sortType) {
             case START_DATE -> searchDto.startDate() != null ?
                     (form.startDate.eq(searchDto.startDate()).and(form.id.gt(searchDto.top())))

@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.activity.dto.ActivityParam.SearchDto;
-import com.formssafe.domain.activity.dto.ActivityResponse.FormListDto;
+import com.formssafe.domain.activity.dto.ActivityResponse.FormListResponseDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
@@ -60,9 +60,10 @@ class ActivityServiceTest extends IntegrationTestConfig {
 
             LoginUserDto loginUser = new LoginUserDto(testUser.getId());
             //when
-            List<FormListDto> createdFormList = activityService.getCreatedFormList(SearchDto.createNull(), loginUser);
+            FormListResponseDto createdFormResponse = activityService.getCreatedFormList(SearchDto.createNull(),
+                    loginUser);
             //then
-            assertThat(createdFormList).hasSize(3)
+            assertThat(createdFormResponse.forms()).hasSize(3)
                     .extracting("title")
                     .containsExactlyInAnyOrder("설문1", "설문2", "설문4");
         }
