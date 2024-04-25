@@ -189,6 +189,7 @@ public final class FormResponse {
     public record FormListResponseDto(@Schema(description = "설문 목록 리스트")
                                       List<FormListDto> forms,
                                       @Schema(description = "마지막 form의 cursor 정보")
+                                      @JsonInclude(JsonInclude.Include.NON_NULL)
                                       FormCursorDto cursor
     ) {
         public static FormListResponseDto from(List<FormListDto> forms, FormCursorDto formCursorDto) {
@@ -212,7 +213,11 @@ public final class FormResponse {
                                 Integer responseCnt
     ) {
         public static FormCursorDto from(SortType sortType, Form form) {
+            if (form == null) {
+                return null;
+            }
             FormCursorDto formCursorDto = null;
+
             switch (sortType) {
                 case START_DATE ->
                         formCursorDto = new FormCursorDto(sortType.name(), form.getId(), form.getStartDate(), null,

@@ -32,7 +32,8 @@ public class ViewService {
 
         return FormListResponseDto.from(forms.stream()
                 .map(FormListDto::from)
-                .toList(), FormCursorDto.from(SortType.from(searchDto.sort()), forms.get(forms.size() - 1)));
+                .toList(), FormCursorDto.from(SortType.from(searchDto.sort()),
+                forms.size() != 0 ? forms.get(forms.size() - 1) : null));
     }
 
     public FormWithQuestionDto getFormWithQuestion(Long formId) {
