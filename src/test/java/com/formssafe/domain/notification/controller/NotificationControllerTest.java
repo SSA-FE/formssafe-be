@@ -173,6 +173,39 @@ class NotificationControllerTest {
                             last.getId() - 3, last.getId() - 4, last.getId() - 5,
                             last.getId() - 6, last.getId() - 7, last.getId() - 8, last.getId() - 9);
         }
+
+        @DisplayName("검색 파라미터가 없다 사용자의 가장 최근 10개 알림을 목록 조회한다")
+        @Test
+        @WithMockSessionAuthentication
+        void success_NonExistSearchParameter() throws Exception {
+            //given
+            Notification last = null;
+            for (int i = 0; i < 10; i++) {
+                Notification notification = createNotification(testUser1, "내용" + i, NotificationType.FINISH_FORM,
+                        false);
+                last = notificationRepository.save(notification);
+            }
+
+            RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/notifications")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .characterEncoding(StandardCharsets.UTF_8.displayName());
+            //when then
+            MockHttpServletResponse response = mockMvc.perform(requestBuilder)
+                    .andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andReturn()
+                    .getResponse();
+
+            String content = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
+            List<NotificationResponseDto> notificationResponseDtos = mapper.readValue(content, new TypeReference<>() {
+            });
+            assertThat(notificationResponseDtos).hasSize(10);
+            assertThat(notificationResponseDtos).extracting("id")
+                    .containsExactly(last.getId(), last.getId() - 1, last.getId() - 2,
+                            last.getId() - 3, last.getId() - 4, last.getId() - 5,
+                            last.getId() - 6, last.getId() - 7, last.getId() - 8, last.getId() - 9);
+        }
     }
 
     @Nested

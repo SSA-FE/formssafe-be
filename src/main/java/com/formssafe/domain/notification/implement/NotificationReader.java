@@ -34,6 +34,11 @@ public class NotificationReader {
 
     public List<Notification> findNotifications(Long userId,
                                                 NotificationSearchDto searchDto) {
-        return notificationRepository.findAllByReceiverIdAndIdAfter(userId, searchDto.top());
+        Long top = searchDto.top();
+        if (top == null) {
+            top = 0L;
+        }
+
+        return notificationRepository.findAllByReceiverIdAndIdAfter(userId, top);
     }
 }
