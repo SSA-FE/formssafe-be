@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
         "com.formssafe.domain.result.controller",
         "com.formssafe.domain.submission.controller",
         "com.formssafe.domain.subscribe.controller",
+        "com.formssafe.domain.notification.controller"
 })
 @Slf4j
 public class GlobalExceptionHandler {
@@ -48,10 +49,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ExceptionResponse> handleForbiddenException(ForbiddenException e) {
-        log.error("Error: ", e);
-        return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.FORBIDDEN.value(), e.getMessage()),
-                HttpStatus.FORBIDDEN);
+    public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException e) {
+        log.error("ForbiddenException: ", e);
+        return createErrorResponse(e.getErrorCode());
     }
 
     @ExceptionHandler(DataNotFoundException.class)

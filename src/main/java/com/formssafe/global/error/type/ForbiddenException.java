@@ -1,12 +1,14 @@
 package com.formssafe.global.error.type;
 
-public class ForbiddenException extends FormssafeException {
+import com.formssafe.global.error.ErrorCode;
 
-    public ForbiddenException(String message) {
-        super(message);
+public class ForbiddenException extends BusinessException {
+
+    public ForbiddenException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
     }
 
-    public ForbiddenException(String message, Throwable cause) {
-        super(message, cause);
+    public ForbiddenException(ErrorCode errorCode, String message, Throwable cause) {
+        super(errorCode, message, cause);
     }
 }

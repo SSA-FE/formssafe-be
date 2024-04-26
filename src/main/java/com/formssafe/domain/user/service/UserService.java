@@ -9,6 +9,7 @@ import com.formssafe.domain.user.dto.UserResponse.UserProfileDto;
 import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
 import com.formssafe.global.error.type.ForbiddenException;
 import com.formssafe.global.error.type.UserNotFoundException;
@@ -74,7 +75,8 @@ public class UserService {
     public void deleteAccount(long userId, LoginUserDto loginUser) {
         if (userId != loginUser.id()) {
             throw new ForbiddenException(
-                    "현재 로그인한 유저와 탈퇴하려는 유저가 다릅니다.: 탈퇴하려는 유저 id:" + userId + " 로그인한 유저 id:" + loginUser.id());
+                    ErrorCode.INVALID_USER,
+                    "Invalid user id " + loginUser.id() + " for delete user id " + userId);
         }
 
         User user = userRepository.findById(loginUser.id())

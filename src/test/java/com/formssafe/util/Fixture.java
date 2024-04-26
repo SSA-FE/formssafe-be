@@ -8,6 +8,8 @@ import com.formssafe.domain.content.question.entity.ObjectiveQuestionOption;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestionType;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
+import com.formssafe.domain.notification.entity.Notification;
+import com.formssafe.domain.notification.entity.NotificationType;
 import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
@@ -40,7 +42,8 @@ public final class Fixture {
                 .build();
     }
 
-    public static User createUser(Long id, String nickname) {
+    public static User createUser(Long id,
+                                  String nickname) {
         return User.builder()
                 .id(id)
                 .oauthId(new OauthId("123", OauthServerType.GOOGLE))
@@ -55,7 +58,9 @@ public final class Fixture {
                 .build();
     }
 
-    public static User createUser(String nickname, String oauthId, String email) {
+    public static User createUser(String nickname,
+                                  String oauthId,
+                                  String email) {
         return User.builder()
                 .oauthId(new OauthId(oauthId, OauthServerType.GOOGLE))
                 .nickname(nickname)
@@ -69,7 +74,9 @@ public final class Fixture {
                 .build();
     }
 
-    public static User createDeletedUser(String nickname, String oauthId, String email) {
+    public static User createDeletedUser(String nickname,
+                                         String oauthId,
+                                         String email) {
         return User.builder()
                 .oauthId(new OauthId(oauthId, OauthServerType.GOOGLE))
                 .nickname(nickname)
@@ -111,7 +118,9 @@ public final class Fixture {
      * @param detail
      * @return
      */
-    public static Form createForm(User author, String title, String detail) {
+    public static Form createForm(User author,
+                                  String title,
+                                  String detail) {
         return Form.builder()
                 .user(author)
                 .title(title)
@@ -136,7 +145,9 @@ public final class Fixture {
      * @param detail
      * @return
      */
-    public static Form createDeletedForm(User author, String title, String detail) {
+    public static Form createDeletedForm(User author,
+                                         String title,
+                                         String detail) {
         return Form.builder()
                 .user(author)
                 .title(title)
@@ -153,7 +164,10 @@ public final class Fixture {
                 .build();
     }
 
-    public static Form createFormWithStatus(User author, String title, String detail, FormStatus status) {
+    public static Form createFormWithStatus(User author,
+                                            String title,
+                                            String detail,
+                                            FormStatus status) {
         return Form.builder()
                 .user(author)
                 .title(title)
@@ -178,7 +192,9 @@ public final class Fixture {
      * @param detail
      * @return
      */
-    public static Form createTemporaryForm(User author, String title, String detail) {
+    public static Form createTemporaryForm(User author,
+                                           String title,
+                                           String detail) {
         return Form.builder()
                 .user(author)
                 .title(title)
@@ -195,7 +211,10 @@ public final class Fixture {
                 .build();
     }
 
-    public static Form createFormWithEndDate(User author, String title, String detail, LocalDateTime endDate,
+    public static Form createFormWithEndDate(User author,
+                                             String title,
+                                             String detail,
+                                             LocalDateTime endDate,
                                              FormStatus status) {
         return Form.builder()
                 .user(author)
@@ -213,7 +232,10 @@ public final class Fixture {
                 .build();
     }
 
-    public static Form createFormWithImages(User author, String title, String detail, List<String> images) {
+    public static Form createFormWithImages(User author,
+                                            String title,
+                                            String detail,
+                                            List<String> images) {
         return Form.builder()
                 .user(author)
                 .title(title)
@@ -237,14 +259,18 @@ public final class Fixture {
                 .build();
     }
 
-    public static FormTag createFormTag(Form form, Tag tag) {
+    public static FormTag createFormTag(Form form,
+                                        Tag tag) {
         return FormTag.builder()
                 .form(form)
                 .tag(tag)
                 .build();
     }
 
-    public static Reward createReward(String name, Form form, RewardCategory category, int count) {
+    public static Reward createReward(String name,
+                                      Form form,
+                                      RewardCategory category,
+                                      int count) {
         return Reward.builder()
                 .rewardName(name)
                 .form(form)
@@ -291,12 +317,16 @@ public final class Fixture {
                 .build();
     }
 
-    public static ContentCreateDto createContentCreate(String type, String title, String description,
-                                                       List<String> options, boolean isPrivacy) {
+    public static ContentCreateDto createContentCreate(String type,
+                                                       String title,
+                                                       String description,
+                                                       List<String> options,
+                                                       boolean isPrivacy) {
         return new ContentCreateDto(type, title, description, options, false, isPrivacy);
     }
 
-    public static List<Submission> createSubmissions(List<User> users, Form form) {
+    public static List<Submission> createSubmissions(List<User> users,
+                                                     Form form) {
         List<Submission> submissions = new ArrayList<>();
 
         for (User user : users) {
@@ -309,5 +339,17 @@ public final class Fixture {
         }
 
         return submissions;
+    }
+
+    public static Notification createNotification(User receiver,
+                                                  String content,
+                                                  NotificationType type,
+                                                  boolean isRead) {
+        return Notification.builder()
+                .receiver(receiver)
+                .notificationType(type)
+                .content(content)
+                .isRead(isRead)
+                .build();
     }
 }
