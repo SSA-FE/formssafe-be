@@ -1,6 +1,8 @@
 package com.formssafe.domain.notification.event;
 
 import com.formssafe.domain.notification.dto.NotificationEventDto.FormClosedNotificationEventDto;
+import com.formssafe.domain.notification.dto.NotificationEventDto.NotRewardedNotificationEventDto;
+import com.formssafe.domain.notification.dto.NotificationEventDto.RewardedNotificationEventDto;
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.repository.NotificationRepository;
 import java.util.List;
@@ -22,6 +24,24 @@ public class NotificationEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void notifyFormClosed(FormClosedNotificationEvent event) {
         FormClosedNotificationEventDto eventDto = event.getEventDto();
+
+        List<Notification> notifications = eventDto.toEntityList();
+        notificationRepository.saveAll(notifications);
+    }
+
+    @TransactionalEventListener(value = RewardedNotificationEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void notifyRewarded(RewardedNotificationEvent event) {
+        RewardedNotificationEventDto eventDto = event.getEventDto();
+
+        List<Notification> notifications = eventDto.toEntityList();
+        notificationRepository.saveAll(notifications);
+    }
+
+    @TransactionalEventListener(value = NotRewardedNotificationEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void notifyNotRewarded(NotRewardedNotificationEvent event) {
+        NotRewardedNotificationEventDto eventDto = event.getEventDto();
 
         List<Notification> notifications = eventDto.toEntityList();
         notificationRepository.saveAll(notifications);
