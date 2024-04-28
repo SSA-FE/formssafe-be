@@ -3,10 +3,13 @@ package com.formssafe.domain.batch.form.service;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
+import com.formssafe.domain.notification.dto.NotificationEventDto.FormClosedNotificationEventDto;
+import com.formssafe.domain.notification.event.FormClosedNotificationEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class FormBatchService {
     private final FormRepository formRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public void endForm(LocalDateTime now) {
@@ -33,6 +37,10 @@ public class FormBatchService {
             }
             form.finish();
         }
+
+        applicationEventPublisher.publishEvent(new FormClosedNotificationEvent(
+                new FormClosedNotificationEventDto(endForms),
+                this));
 
         log.info("Auto end forms end.");
     }
