@@ -19,7 +19,7 @@ public final class NotificationEventDto {
                     .receiver(form.getUser())
                     .contentId(form.getId())
                     .notificationType(NotificationType.RESPOND_FORM)
-                    .content(user.getNickname() + "님이 '" + form.getTitle() + "'" + "에 대한 새로운 답변을 작성했습니다.")
+                    .content(user.getNickname() + "님이 '" + form.getTitle() + "'" + "에 대한 새로운 응답을 작성했습니다.")
                     .build();
         }
     }
@@ -31,7 +31,7 @@ public final class NotificationEventDto {
             for (Subscribe subscribe : subscribeList) {
                 result.add(Notification.builder()
                         .receiver(subscribe.getUser())
-                        .contentId(subscribe.getId())
+                        .contentId(form.getId())
                         .notificationType(NotificationType.SUBSCRIBED_FORM)
                         .content("구독하신 카테고리 " + "'" + subscribe.getRewardCategory().getRewardCategoryName() + "'"
                                 + "의 새로운 설문조사가 등록되었습니다.")
