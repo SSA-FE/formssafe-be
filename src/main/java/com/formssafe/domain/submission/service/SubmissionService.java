@@ -9,6 +9,8 @@ import com.formssafe.domain.content.question.service.ObjectiveQuestionService;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.service.FormService;
+import com.formssafe.domain.notification.dto.NotificationEventDto.FormParticipantsNotificationEventDto;
+import com.formssafe.domain.notification.event.type.FormParticipantsNotificationEvent;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionCreateDto;
 import com.formssafe.domain.submission.dto.SubmissionRequest.SubmissionDetailDto;
 import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +48,7 @@ public class SubmissionService {
     private final FormService formService;
     private final DescriptiveSubmissionRepository descriptiveSubmissionRepository;
     private final ObjectiveSubmissionRepository objectiveSubmissionRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public void create(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
@@ -69,6 +73,8 @@ public class SubmissionService {
 
         if (!request.isTemp()) {
             form.increaseResponseCount();
+            applicationEventPublisher.publishEvent(
+                    new FormParticipantsNotificationEvent(new FormParticipantsNotificationEventDto(form, user), this));
         }
     }
 
@@ -101,6 +107,8 @@ public class SubmissionService {
 
         if (!request.isTemp()) {
             form.increaseResponseCount();
+            applicationEventPublisher.publishEvent(
+                    new FormParticipantsNotificationEvent(new FormParticipantsNotificationEventDto(form, user), this));
         }
     }
 

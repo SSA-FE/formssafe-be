@@ -1,11 +1,15 @@
 package com.formssafe.domain.notification.event;
 
 import com.formssafe.domain.notification.dto.NotificationEventDto.FormClosedNotificationEventDto;
+import com.formssafe.domain.notification.dto.NotificationEventDto.FormParticipantsNotificationEventDto;
 import com.formssafe.domain.notification.dto.NotificationEventDto.NotRewardedNotificationEventDto;
+import com.formssafe.domain.notification.dto.NotificationEventDto.RewardCategoryRegistNotificationEventDto;
 import com.formssafe.domain.notification.dto.NotificationEventDto.RewardedNotificationEventDto;
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.event.type.FormClosedNotificationEvent;
+import com.formssafe.domain.notification.event.type.FormParticipantsNotificationEvent;
 import com.formssafe.domain.notification.event.type.NotRewardedNotificationEvent;
+import com.formssafe.domain.notification.event.type.RewardCategoryRegistNotificationEvent;
 import com.formssafe.domain.notification.event.type.RewardedNotificationEvent;
 import com.formssafe.domain.notification.repository.NotificationRepository;
 import java.util.List;
@@ -21,6 +25,24 @@ public class NotificationEventListener {
 
     public NotificationEventListener(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;
+    }
+
+    @TransactionalEventListener(value = FormParticipantsNotificationEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void notifyFormParticipate(FormParticipantsNotificationEvent event) {
+        FormParticipantsNotificationEventDto eventDto = event.getEventDto();
+
+        Notification notification = eventDto.toEntity();
+        notificationRepository.save(notification);
+    }
+
+    @TransactionalEventListener(value = RewardCategoryRegistNotificationEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void notifyRewardCategoryFormRegist(RewardCategoryRegistNotificationEvent event) {
+        RewardCategoryRegistNotificationEventDto eventDto = event.getEventDto();
+
+        List<Notification> notifications = eventDto.toEntityList();
+        notificationRepository.saveAll(notifications);
     }
 
     @TransactionalEventListener(value = FormClosedNotificationEvent.class, phase = TransactionPhase.AFTER_COMMIT)

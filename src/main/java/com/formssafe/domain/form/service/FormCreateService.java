@@ -6,7 +6,12 @@ import com.formssafe.domain.content.service.ContentService;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.repository.FormRepository;
+import com.formssafe.domain.notification.dto.NotificationEventDto.RewardCategoryRegistNotificationEventDto;
+import com.formssafe.domain.notification.event.type.RewardCategoryRegistNotificationEvent;
+import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.service.RewardService;
+import com.formssafe.domain.subscribe.entity.Subscribe;
+import com.formssafe.domain.subscribe.service.SubscribeService;
 import com.formssafe.domain.tag.service.TagService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
@@ -16,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +36,8 @@ public class FormCreateService {
     private final TagService tagService;
     private final ContentService contentService;
     private final RewardService rewardService;
+    private final SubscribeService subscribeService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public void execute(FormCreateDto request, LoginUserDto loginUser) {
@@ -80,5 +88,17 @@ public class FormCreateService {
         formRepository.save(form);
 
         createFormRelatedData(request, form);
+
+        if (form.getReward() != null) {
+            publishRewardCategoryEvent(request.reward().category(), form, user);
+        }
+    }
+
+    private void publishRewardCategoryEvent(String rewardCategoryName, Form form, User user) {
+        RewardCategory rewardCategory = rewardService.getRewardCategoryFromRewardCategoryName(rewardCategoryName);
+        List<Subscribe> subscribeList = subscribeService.getSubscribeUserByRewardCategory(
+                rewardCategory.getId(), user);
+        applicationEventPublisher.publishEvent(new RewardCategoryRegistNotificationEvent(
+                new RewardCategoryRegistNotificationEventDto(form, subscribeList), this));
     }
 }

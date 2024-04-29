@@ -22,9 +22,7 @@ public class RewardService {
 
     @Transactional
     public void createReward(RewardCreateDto request, Form form) {
-        RewardCategory rewardCategory = rewardCategoryRepository.findByRewardCategoryName(
-                        request.category())
-                .orElseThrow(() -> new BadRequestException("유효하지 않은 카테고리입니다.: " + request.category()));
+        RewardCategory rewardCategory = getRewardCategoryFromRewardCategoryName(request.category());
 
         Reward reward = Reward.builder()
                 .rewardName(request.name())
@@ -34,6 +32,11 @@ public class RewardService {
                 .build();
 
         rewardRepository.save(reward);
+    }
+
+    public RewardCategory getRewardCategoryFromRewardCategoryName(String rewardCategoryName) {
+        return rewardCategoryRepository.findByRewardCategoryName(rewardCategoryName)
+                .orElseThrow(() -> new BadRequestException("유효하지 않은 카테고리입니다.: " + rewardCategoryName));
     }
 
     @Transactional

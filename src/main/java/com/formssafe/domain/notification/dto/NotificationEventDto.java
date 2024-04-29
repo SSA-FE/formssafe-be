@@ -3,6 +3,7 @@ package com.formssafe.domain.notification.dto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.entity.NotificationType;
+import com.formssafe.domain.subscribe.entity.Subscribe;
 import com.formssafe.domain.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,35 @@ import java.util.List;
 public final class NotificationEventDto {
 
     private NotificationEventDto() {
+    }
+
+    public record FormParticipantsNotificationEventDto(Form form, User user) {
+        public Notification toEntity() {
+            return Notification.builder()
+                    .receiver(form.getUser())
+                    .contentId(form.getId())
+                    .notificationType(NotificationType.RESPOND_FORM)
+                    .content(user.getNickname() + "님이 '" + form.getTitle() + "'" + "에 대한 새로운 응답을 작성했습니다.")
+                    .build();
+        }
+    }
+
+    public record RewardCategoryRegistNotificationEventDto(Form form, List<Subscribe> subscribeList) {
+        public List<Notification> toEntityList() {
+            List<Notification> result = new ArrayList<>();
+
+            for (Subscribe subscribe : subscribeList) {
+                result.add(Notification.builder()
+                        .receiver(subscribe.getUser())
+                        .contentId(form.getId())
+                        .notificationType(NotificationType.SUBSCRIBED_FORM)
+                        .content("구독하신 카테고리 " + "'" + subscribe.getRewardCategory().getRewardCategoryName() + "'"
+                                + "의 새로운 설문조사가 등록되었습니다.")
+                        .build()
+                );
+            }
+            return result;
+        }
     }
 
     public record FormClosedNotificationEventDto(List<Form> forms) {
