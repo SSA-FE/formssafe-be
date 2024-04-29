@@ -47,6 +47,10 @@ public class SubscribeService {
         createSubscribe(rewardListDto.reward(), user);
     }
 
+    public List<Subscribe> getSubscribeUserByRewardCategory(Long rewardCategoryId, User user) {
+        return subscribeRepository.findAllByCategoryId(rewardCategoryId, user.getId());
+    }
+
     private void createSubscribe(List<Long> rewardCategoryIdList, User user) {
         List<RewardCategory> rewardCategoryList = rewardCategoryRepository.findByIdIn(rewardCategoryIdList);
         if (rewardCategoryList.size() != rewardCategoryIdList.size()) {
