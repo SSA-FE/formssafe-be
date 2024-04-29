@@ -36,9 +36,9 @@ public class NotificationReader {
                                                 NotificationSearchDto searchDto) {
         Long top = searchDto.top();
         if (top == null) {
-            top = 0L;
+            top = Long.MAX_VALUE;
         }
 
-        return notificationRepository.findAllByReceiverIdAndIdAfter(userId, top);
+        return notificationRepository.findTop10ByReceiverIdAndIdBeforeOrderByIdDesc(userId, top);
     }
 }

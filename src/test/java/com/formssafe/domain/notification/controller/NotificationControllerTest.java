@@ -169,9 +169,9 @@ class NotificationControllerTest {
             });
             assertThat(notificationResponseDtos).hasSize(10);
             assertThat(notificationResponseDtos).extracting("id")
-                    .containsExactly(last.getId(), last.getId() - 1, last.getId() - 2,
-                            last.getId() - 3, last.getId() - 4, last.getId() - 5,
-                            last.getId() - 6, last.getId() - 7, last.getId() - 8, last.getId() - 9);
+                    .containsExactly(last.getId() - 11, last.getId() - 12, last.getId() - 13,
+                            last.getId() - 14, last.getId() - 15, last.getId() - 16,
+                            last.getId() - 17, last.getId() - 18, last.getId() - 19, last.getId() - 20);
         }
 
         @DisplayName("검색 파라미터가 없다 사용자의 가장 최근 10개 알림을 목록 조회한다")
