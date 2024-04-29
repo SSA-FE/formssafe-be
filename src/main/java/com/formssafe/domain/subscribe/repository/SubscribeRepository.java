@@ -13,5 +13,6 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     void deleteByUserId(@Param("userId") Long id);
 
     @Query("select s from Subscribe s where s.rewardCategory.id = :rewardCategoryId and s.user.id != :userId")
-    List<Subscribe> findAllByCategoryId(@Param("rewardCategoryId") Long rewardCategoryId, @Param("userId") Long userId);
+    List<Subscribe> findAllByCategoryIdExceptAuthor(@Param("rewardCategoryId") Long rewardCategoryId,
+                                                    @Param("userId") Long userId);
 }

@@ -48,7 +48,7 @@ public class SubscribeService {
     }
 
     public List<Subscribe> getSubscribeUserByRewardCategory(Long rewardCategoryId, User user) {
-        return subscribeRepository.findAllByCategoryId(rewardCategoryId, user.getId());
+        return subscribeRepository.findAllByCategoryIdExceptAuthor(rewardCategoryId, user.getId());
     }
 
     private void createSubscribe(List<Long> rewardCategoryIdList, User user) {
