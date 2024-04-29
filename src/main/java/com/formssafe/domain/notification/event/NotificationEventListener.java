@@ -4,6 +4,9 @@ import com.formssafe.domain.notification.dto.NotificationEventDto.FormClosedNoti
 import com.formssafe.domain.notification.dto.NotificationEventDto.NotRewardedNotificationEventDto;
 import com.formssafe.domain.notification.dto.NotificationEventDto.RewardedNotificationEventDto;
 import com.formssafe.domain.notification.entity.Notification;
+import com.formssafe.domain.notification.event.type.FormClosedNotificationEvent;
+import com.formssafe.domain.notification.event.type.NotRewardedNotificationEvent;
+import com.formssafe.domain.notification.event.type.RewardedNotificationEvent;
 import com.formssafe.domain.notification.repository.NotificationRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;

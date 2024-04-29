@@ -1,4 +1,4 @@
-package com.formssafe.domain.notification.event;
+package com.formssafe.domain.notification.event.type;
 
 import com.formssafe.domain.notification.dto.NotificationEventDto.FormClosedNotificationEventDto;
 import org.springframework.context.ApplicationEvent;

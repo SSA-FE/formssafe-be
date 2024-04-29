@@ -2,7 +2,7 @@ package com.formssafe.domain.form.service;
 
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.notification.dto.NotificationEventDto.FormClosedNotificationEventDto;
-import com.formssafe.domain.notification.event.FormClosedNotificationEvent;
+import com.formssafe.domain.notification.event.type.FormClosedNotificationEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

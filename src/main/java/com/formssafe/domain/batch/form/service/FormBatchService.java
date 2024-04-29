@@ -4,7 +4,7 @@ import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.notification.dto.NotificationEventDto.FormClosedNotificationEventDto;
-import com.formssafe.domain.notification.event.FormClosedNotificationEvent;
+import com.formssafe.domain.notification.event.type.FormClosedNotificationEvent;
 import com.formssafe.domain.reward.service.RewardRecipientsSelectService;
 import java.time.LocalDateTime;
 import java.util.List;
