@@ -38,7 +38,13 @@ public enum ErrorCode {
     /**
      * Activity
      */
-    NO_SUBMISSION_PARTICIPATED(BAD_REQUEST, "ACTIVITY000", "해당 설문에 대한 응답이 존재하지 않습니다.");
+    NO_SUBMISSION_PARTICIPATED(BAD_REQUEST, "ACTIVITY000", "해당 설문에 대한 응답이 존재하지 않습니다."),
+
+    /**
+     * Content
+     */
+    INVALID_OPTION(BAD_REQUEST, "CONTENT000", "유효하지 않은 Content Type 입력입니다."),
+    OBJECTIVE_QUESTION_REQUIRED_AT_LEAST_ONE_OPTION(BAD_REQUEST, "CONTENT001", "객관식 질문에는 적어도 한개 이상의 보기가 필요합니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
