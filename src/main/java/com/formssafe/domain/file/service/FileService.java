@@ -7,8 +7,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.formssafe.domain.file.dto.FileResponseDto;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
@@ -24,10 +22,8 @@ public class FileService {
     private String bucket;
 
     private final AmazonS3 amazonS3;
-    private final UserRepository userRepository;
 
     public FileResponseDto createPresignedUrl(String prefix, String fileName, LoginUserDto loginUser) {
-        User user = userRepository.getReferenceById(loginUser.id());
         if (!prefix.isEmpty()) {
             fileName = createPath(prefix, fileName);
         }

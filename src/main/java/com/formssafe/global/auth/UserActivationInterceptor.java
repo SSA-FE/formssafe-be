@@ -2,9 +2,7 @@ package com.formssafe.global.auth;
 
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.global.error.ErrorCode;
-import com.formssafe.global.error.type.UserNotFoundException;
+import com.formssafe.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +13,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 @Slf4j
 public class UserActivationInterceptor implements HandlerInterceptor {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -25,9 +23,7 @@ public class UserActivationInterceptor implements HandlerInterceptor {
         }
         LoginUserDto loginUser = (LoginUserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = loginUser.id();
-        User user = userRepository.findById(userId)
-                .orElseThrow(
-                        () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 userId입니다.: " + userId));
+        User user = userService.getUserById(userId);
 
         if (!user.isActive()) {
             log.info("user is not active: " + userId);
