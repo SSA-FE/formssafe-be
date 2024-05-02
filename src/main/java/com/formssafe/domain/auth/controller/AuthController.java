@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "auth", description = "사용자 인증 및 로그아웃")
 public class AuthController {
-
     private final SessionService sessionService;
     private final OAuthService oauthService;
 
@@ -55,12 +54,13 @@ public class AuthController {
         log.info("referer: {}", referer);
         boolean isLocal = !referer.contains("formssafe.com");
         User user = oauthService.loginOrSignup(oauthServerType, authCode.code(), isLocal);
+
         sessionService.createSession(request, user);
     }
 
     @Operation(summary = "로그아웃", description = "세션에 해당되는 사용자 로그아웃(세션 기록 삭제)")
     @ApiResponse(responseCode = "200", description = "로그아웃 완료")
-    @ApiResponse(responseCode = "400", description = "session 미존재")
+    @ApiResponse(responseCode = "401", description = "session 미존재")
     @GetMapping("/logout")
     void logout(HttpServletRequest request) {
         sessionService.deleteSession(request);

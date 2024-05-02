@@ -6,7 +6,6 @@ import com.formssafe.global.error.type.BadRequestException;
 import com.formssafe.global.error.type.BusinessException;
 import com.formssafe.global.error.type.DataNotFoundException;
 import com.formssafe.global.error.type.ForbiddenException;
-import com.formssafe.global.error.type.SessionNotFoundException;
 import com.formssafe.global.error.type.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,13 +33,6 @@ public class GlobalExceptionHandler {
                 errorCode.getHttpStatus());
     }
 
-    @ExceptionHandler(SessionNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleSessionNotFoundException(SessionNotFoundException e) {
-        log.error("Error: ", e);
-        return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.UNAUTHORIZED.value(), e.getMessage()),
-                HttpStatus.UNAUTHORIZED);
-    }
-
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handleUserNotFoundException(UserNotFoundException e) {
         log.error("Error: ", e);
@@ -61,10 +53,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException e) {
+    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
         log.error("Error: ", e);
-        return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.BAD_REQUEST.value(), e.getMessage()),
-                HttpStatus.BAD_REQUEST);
+        return createErrorResponse(e.getErrorCode());
     }
 
     @ExceptionHandler(BusinessException.class)
@@ -74,9 +65,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ExceptionResponse> handleException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("Error: ", e);
-        return new ResponseEntity<>(ExceptionResponse.of(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return createErrorResponse(ErrorCode.SYSTEM_ERROR);
     }
 }
