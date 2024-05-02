@@ -1,12 +1,18 @@
 package com.formssafe.global.error.type;
 
-public class DtoConvertException extends FormssafeException {
+import com.formssafe.global.error.ErrorCode;
 
-    public DtoConvertException(String message) {
-        super(message);
+public class DtoConvertException extends BusinessException {
+
+    public DtoConvertException(ErrorCode errorCode) {
+        super(errorCode, errorCode.getMessage());
     }
 
-    public DtoConvertException(String message, Throwable cause) {
-        super(message, cause);
+    public DtoConvertException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
+    }
+
+    public DtoConvertException(ErrorCode errorCode, String message, Throwable cause) {
+        super(errorCode, message, cause);
     }
 }

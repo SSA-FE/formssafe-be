@@ -15,6 +15,7 @@ import com.formssafe.domain.submission.service.SubmissionService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.UserNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +37,11 @@ public class ActivityService {
         log.debug(param == null ? null : param.toString());
 
         User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND,
+                        "해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
-            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         List<Form> formByUserWithFiltered = formRepository.findFormByUserWithFiltered(param, user);
@@ -55,10 +57,11 @@ public class ActivityService {
         log.debug(param == null ? null : param.toString());
 
         User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND,
+                        "해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
-            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         List<Form> formByParticipateUserWithFiltered = formRepository.findFormByParticipateUserWithFiltered(param,
@@ -73,10 +76,11 @@ public class ActivityService {
 
     public ParticipateSubmissionDto getSelfResponse(Long formId, LoginUserDto loginUser) {
         User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND,
+                        "해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
-            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())

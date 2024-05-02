@@ -1,5 +1,6 @@
 package com.formssafe.domain.content.decoration.entity;
 
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
 import java.util.Arrays;
 import java.util.Map;
@@ -27,7 +28,7 @@ public enum DecorationType {
 
     public static DecorationType from(String type) {
         if (!convertor.containsKey(type)) {
-            throw new BadRequestException("유효하지 않은 데코레이션 타입입니다.: " + type);
+            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "유효하지 않은 데코레이션 타입입니다.: " + type);
         }
         return convertor.get(type);
     }

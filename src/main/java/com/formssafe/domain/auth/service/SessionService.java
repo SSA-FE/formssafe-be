@@ -1,6 +1,7 @@
 package com.formssafe.domain.auth.service;
 
 import com.formssafe.domain.user.entity.User;
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.SessionNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -28,7 +29,7 @@ public class SessionService {
     public void deleteSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
-            throw new SessionNotFoundException("Session cannot be null");
+            throw new SessionNotFoundException(ErrorCode.SESSION_NOT_FOUND, "Session cannot be null");
         }
         session.invalidate();
         log.debug("Session invalidated.");

@@ -6,6 +6,7 @@ import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestionOption;
 import com.formssafe.domain.content.question.entity.Question;
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.DtoConvertException;
 import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,12 +26,12 @@ public class QuestionResponseDto extends ContentResponseDto {
     boolean isPrivacy;
 
     public QuestionResponseDto(String id, String type, String title, String description,
-                               List<ObjectiveQuestionOption> options, boolean isRequired, boolean isPrivacy){
-            super(id, type, description);
-            this.title = title;
-            this.options = options;
-            this.isRequired = isRequired;
-            this.isPrivacy = isPrivacy;
+                               List<ObjectiveQuestionOption> options, boolean isRequired, boolean isPrivacy) {
+        super(id, type, description);
+        this.title = title;
+        this.options = options;
+        this.isRequired = isRequired;
+        this.isPrivacy = isPrivacy;
     }
 
     public static QuestionResponseDto from(Question question) {
@@ -40,7 +41,7 @@ public class QuestionResponseDto extends ContentResponseDto {
             return fromObjectiveQuestion(oq);
         }
 
-        throw new DtoConvertException("Question 엔티티를 DTO로 변환할 수 없습니다.: " + question.getClass());
+        throw new DtoConvertException(ErrorCode.SYSTEM_ERROR, "Question 엔티티를 DTO로 변환할 수 없습니다.: " + question.getClass());
     }
 
     private static QuestionResponseDto fromDescriptiveQuestion(DescriptiveQuestion question) {
