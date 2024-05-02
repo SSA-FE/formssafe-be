@@ -34,9 +34,9 @@ public class UserService {
     public void join(JoinDto request, LoginUserDto loginUser) {
         Long userId = loginUser.id();
         User user = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException("존재하지 않는 userId입니다.: " + userId));
+                new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 userId입니다.: " + userId));
         if (user.isActive()) {
-            throw new BadRequestException("이미 회원가입하셨습니다.");
+            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "이미 회원가입하셨습니다.");
         }
 
         user.updateNickname(request.nickname());
@@ -45,10 +45,10 @@ public class UserService {
 
     public UserProfileDto getProfile(LoginUserDto loginUser) {
         User user = userRepository.findById(loginUser.id()).orElseThrow(() ->
-                new UserNotFoundException("존재하지 않는 userId입니다.: " + loginUser.id()));
+                new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 userId입니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
-            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         return UserProfileDto.from(user);
@@ -58,14 +58,14 @@ public class UserService {
     public void updateNickname(NicknameUpdateDto request, LoginUserDto loginUser) {
         String nickname = request.nickname();
         User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 userId입니다."));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 userId입니다."));
 
         if (user.isDeleted()) {
-            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         if (user.getNickname().equals(nickname) || userRepository.existsByNickname(nickname)) {
-            throw new BadRequestException("중복된 닉네임이 존재합니다.");
+            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "중복된 닉네임이 존재합니다.");
         }
 
         user.updateNickname(request.nickname());
@@ -83,7 +83,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("올바른 ID가 존재하지 않습니다."));
 
         if (user.isDeleted()) {
-            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
 
         oauthMemberClientComposite.deleteAccount(user.getOauthId().getOauthServerType(), user.getRefreshToken());
