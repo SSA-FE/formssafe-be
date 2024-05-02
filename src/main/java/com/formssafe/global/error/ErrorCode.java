@@ -23,7 +23,7 @@ public enum ErrorCode {
     /**
      * 소셜 로그인
      */
-    UNSUPPORTED_OAUTH_TYPE(UNAUTHORIZED, "OAUTH000", "지원하지 않는 소셜 로그인 타입입니다."),
+    UNSUPPORTED_OAUTH_TYPE(BAD_REQUEST, "OAUTH000", "지원하지 않는 소셜 로그인 타입입니다."),
 
     /**
      * 사용자
