@@ -2,6 +2,7 @@ package com.formssafe.domain.submission.dto;
 
 import com.formssafe.domain.submission.entity.DescriptiveSubmission;
 import com.formssafe.domain.submission.entity.ObjectiveSubmission;
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.DtoConvertException;
 import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,7 +35,8 @@ public final class SubmissionResponse {
             } else if (object instanceof ObjectiveSubmission os) {
                 return fromObjectSubmission(os);
             }
-            throw new DtoConvertException("Question 엔티티를 DTO로 변환할 수 없습니다.: " + object.getClass());
+            throw new DtoConvertException(ErrorCode.SYSTEM_ERROR,
+                    "Question 엔티티를 DTO로 변환할 수 없습니다.: " + object.getClass());
         }
 
         private static SubmissionDetailResponseDto fromObjectSubmission(ObjectiveSubmission submission) {

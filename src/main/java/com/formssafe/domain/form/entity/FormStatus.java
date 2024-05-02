@@ -1,5 +1,6 @@
 package com.formssafe.domain.form.entity;
 
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
 import java.util.Arrays;
 import java.util.Map;
@@ -16,12 +17,14 @@ public enum FormStatus {
     private static final Map<String, FormStatus> convertor =
             Arrays.stream(FormStatus.values())
                     .collect(Collectors.toMap(FormStatus::displayName, Function.identity()));
+
     FormStatus(String displayName) {
         this.displayName = displayName;
     }
+
     public static FormStatus from(String type) {
         if (!convertor.containsKey(type)) {
-            throw new BadRequestException("유효하지 않은 Form상태 입니다.: " + type);
+            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "유효하지 않은 Form상태 입니다.: " + type);
         }
         return convertor.get(type);
     }

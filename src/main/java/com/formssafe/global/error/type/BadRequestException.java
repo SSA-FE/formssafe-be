@@ -1,12 +1,17 @@
 package com.formssafe.global.error.type;
 
-public class BadRequestException extends FormssafeException {
+import com.formssafe.global.error.ErrorCode;
 
-    public BadRequestException(String message) {
-        super(message);
+public class BadRequestException extends BusinessException {
+    public BadRequestException(ErrorCode errorCode) {
+        super(errorCode, errorCode.getMessage());
     }
 
-    public BadRequestException(String message, Throwable cause) {
-        super(message, cause);
+    public BadRequestException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
+    }
+
+    public BadRequestException(ErrorCode errorCode, String message, Throwable cause) {
+        super(errorCode, message, cause);
     }
 }

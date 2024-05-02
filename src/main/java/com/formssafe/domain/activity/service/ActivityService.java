@@ -35,7 +35,6 @@ public class ActivityService {
 
     public FormListResponseDto getCreatedFormList(SearchDto param, LoginUserDto loginUser) {
         log.debug(param == null ? null : param.toString());
-
         User user = userRepository.getReferenceById(loginUser.id());
 
         List<Form> formByUserWithFiltered = formRepository.findFormByUserWithFiltered(param, user);
@@ -49,7 +48,6 @@ public class ActivityService {
 
     public FormListResponseDto getParticipatedFormList(SearchDto param, LoginUserDto loginUser) {
         log.debug(param == null ? null : param.toString());
-
         User user = userRepository.getReferenceById(loginUser.id());
 
         List<Form> formByParticipateUserWithFiltered = formRepository.findFormByParticipateUserWithFiltered(param,
@@ -64,7 +62,6 @@ public class ActivityService {
 
     public ParticipateSubmissionDto getSelfResponse(Long formId, LoginUserDto loginUser) {
         User user = userRepository.getReferenceById(loginUser.id());
-
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NO_SUBMISSION_PARTICIPATED,
                         "No Submission form for formId " + formId));

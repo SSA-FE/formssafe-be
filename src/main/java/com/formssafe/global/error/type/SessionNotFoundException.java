@@ -1,14 +1,18 @@
 package com.formssafe.global.error.type;
 
+import com.formssafe.global.error.ErrorCode;
 import java.util.Arrays;
 
-public class SessionNotFoundException extends FormssafeException {
-
-    public SessionNotFoundException(String message, Object... params) {
-        super(message + Arrays.toString(params));
+public class SessionNotFoundException extends BusinessException {
+    public SessionNotFoundException(ErrorCode errorCode) {
+        super(errorCode, errorCode.getMessage());
     }
 
-    public SessionNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public SessionNotFoundException(ErrorCode errorCode, String message, Object... params) {
+        super(errorCode, message + Arrays.toString(params));
+    }
+
+    public SessionNotFoundException(ErrorCode errorCode, String message, Throwable cause) {
+        super(errorCode, message, cause);
     }
 }

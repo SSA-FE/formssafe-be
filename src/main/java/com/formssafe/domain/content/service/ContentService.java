@@ -11,6 +11,7 @@ import com.formssafe.domain.content.question.entity.ObjectiveQuestionType;
 import com.formssafe.domain.content.question.repository.DescriptiveQuestionRepository;
 import com.formssafe.domain.content.question.repository.ObjectiveQuestionRepository;
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,15 +41,13 @@ public class ContentService {
                 decorations.add(q.toDecoration(form, position));
             } else if (ObjectiveQuestionType.exists(q.type())) {
                 if (q.options() == null || q.options().isEmpty()) {
-                    //TODO : 에러코드 추가
-                    throw new BadRequestException("객관식 질문에는 한개 이상의 보기가 필요합니다.");
+                    throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "객관식 질문에는 보기가 1개 이상 필요합니다.");
                 }
                 objectiveQuestions.add(q.toObjectiveQuestion(form, position));
             } else if (DescriptiveQuestionType.exists(q.type())) {
                 descriptiveQuestions.add(q.toDescriptiveQuestion(form, position));
             } else {
-                //TODO : 에러코드 추가
-                throw new BadRequestException("유효하지 않은 옵션입니다.: " + q.type());
+                throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "유효하지 않은 옵션입니다.: " + q.type());
             }
             ++position;
         }

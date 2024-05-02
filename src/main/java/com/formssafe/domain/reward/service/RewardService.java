@@ -6,6 +6,7 @@ import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.reward.repository.RewardRepository;
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,8 @@ public class RewardService {
 
     public RewardCategory getRewardCategoryFromRewardCategoryName(String rewardCategoryName) {
         return rewardCategoryRepository.findByRewardCategoryName(rewardCategoryName)
-                .orElseThrow(() -> new BadRequestException("유효하지 않은 카테고리입니다.: " + rewardCategoryName));
+                .orElseThrow(() -> new BadRequestException(ErrorCode.SYSTEM_ERROR,
+                        "유효하지 않은 카테고리입니다.: " + rewardCategoryName));
     }
 
     @Transactional

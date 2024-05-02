@@ -28,7 +28,6 @@ public class FileService {
 
     public FileResponseDto createPresignedUrl(String prefix, String fileName, LoginUserDto loginUser) {
         User user = userRepository.getReferenceById(loginUser.id());
-
         if (!prefix.isEmpty()) {
             fileName = createPath(prefix, fileName);
         }

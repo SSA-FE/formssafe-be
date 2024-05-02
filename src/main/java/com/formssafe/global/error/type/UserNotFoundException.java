@@ -1,12 +1,17 @@
 package com.formssafe.global.error.type;
 
-public class UserNotFoundException extends FormssafeException {
+import com.formssafe.global.error.ErrorCode;
 
-    public UserNotFoundException(String message) {
-        super(message);
+public class UserNotFoundException extends BusinessException {
+    public UserNotFoundException(ErrorCode errorCode) {
+        super(errorCode, errorCode.getMessage());
     }
 
-    public UserNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public UserNotFoundException(ErrorCode errorCode, String message) {
+        super(errorCode, message);
+    }
+
+    public UserNotFoundException(ErrorCode errorCode, String message, Throwable cause) {
+        super(errorCode, message, cause);
     }
 }

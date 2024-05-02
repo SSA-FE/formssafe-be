@@ -2,11 +2,21 @@ package com.formssafe.global.error;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
+    /**
+     * 디폴트 에러
+     */
+    SYSTEM_ERROR(INTERNAL_SERVER_ERROR, "SYSTEM000", "서비스에 장애가 발생했습니다."),
+    /**
+     * Session 에러
+     */
+    SESSION_NOT_FOUND(NOT_FOUND, "SESSION000", "사용자 세션이 존재하지 않습니다."),
     /**
      * 인증
      */

@@ -38,10 +38,11 @@ public class SubscribeService {
     @Transactional
     public void subscribeCategory(LoginUserDto loginUser, RewardListDto rewardListDto) {
         User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException("해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND,
+                        "해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
 
         if (user.isDeleted()) {
-            throw new UserNotFoundException("해당 유저를 찾을 수 없습니다.:" + loginUser.id());
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
         }
         deleteSubscribe(user);
         createSubscribe(rewardListDto.reward(), user);
