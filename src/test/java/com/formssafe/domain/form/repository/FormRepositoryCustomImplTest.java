@@ -13,6 +13,7 @@ import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     private RewardCategoryRepository rewardCategoryRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EntityManager em;
 
     private User testUser;
 
@@ -113,7 +116,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {4})
+    @ValueSource(longs = {4, 19})
     void 특정아이디이후의_설문목록을_조회한다(long topOffset) {
         //given
         LocalDateTime startTime = LocalDateTime.of(2024, 3, 2, 0, 0, 0);
@@ -124,14 +127,16 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
         }
         List<Form> forms = formRepository.saveAll(formList);
 
+        long top = forms.get(forms.size() - 1 - (int) topOffset).getId();
+        LocalDateTime startDate = forms.get(forms.size() - 1 - (int) topOffset).getStartDate();
+        System.out.println(top);
+        System.out.println(startDate);
         List<Long> expected = new ArrayList<>();
-        for (int i = (int) topOffset; i < topOffset + PAGE_SIZE; i++) {
-            expected.add(forms.get(i).getId());
+        for (int i = (int) topOffset + 1; i < topOffset + PAGE_SIZE + 1; i++) {
+            expected.add(forms.get(forms.size() - 1 - i).getId());
         }
 
-        long top = forms.get(0).getId() + topOffset - 1;
-
-        SearchDto searchDto = new SearchDto(null, null, null, null, null, top, null, null, null);
+        SearchDto searchDto = new SearchDto(null, "startDate", null, null, null, top, startDate, null, null);
 
         //when
         List<Form> result = formRepository.findFormWithFiltered(searchDto);

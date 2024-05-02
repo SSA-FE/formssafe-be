@@ -37,8 +37,8 @@ public class RewardService {
 
     public RewardCategory getRewardCategoryFromRewardCategoryName(String rewardCategoryName) {
         return rewardCategoryRepository.findByRewardCategoryName(rewardCategoryName)
-                .orElseThrow(() -> new BadRequestException(ErrorCode.SYSTEM_ERROR,
-                        "유효하지 않은 카테고리입니다.: " + rewardCategoryName));
+                .orElseThrow(() -> new BadRequestException(ErrorCode.REWARD_CATEGORY_NOT_FOUND,
+                        "Reward category not found: " + rewardCategoryName));
     }
 
     @Transactional

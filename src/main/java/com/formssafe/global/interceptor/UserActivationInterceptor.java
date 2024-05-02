@@ -1,4 +1,4 @@
-package com.formssafe.global.auth;
+package com.formssafe.global.interceptor;
 
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;

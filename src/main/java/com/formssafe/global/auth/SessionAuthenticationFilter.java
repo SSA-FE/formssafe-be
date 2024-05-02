@@ -34,13 +34,11 @@ public class SessionAuthenticationFilter extends OncePerRequestFilter {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             HttpSession session = request.getSession(false);
             if (session == null) {
-                log.info("No session found.");
                 return;
             }
 
             Object userIdValue = session.getAttribute("userId");
             if (userIdValue == null) {
-                log.info("Session doesn't have userId.");
                 return;
             }
 

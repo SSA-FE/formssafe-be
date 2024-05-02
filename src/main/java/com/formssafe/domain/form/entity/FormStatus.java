@@ -14,9 +14,8 @@ public enum FormStatus {
     REWARDED("rewarded");
 
     private final String displayName;
-    private static final Map<String, FormStatus> convertor =
-            Arrays.stream(FormStatus.values())
-                    .collect(Collectors.toMap(FormStatus::displayName, Function.identity()));
+    private static final Map<String, FormStatus> convertor = Arrays.stream(FormStatus.values())
+            .collect(Collectors.toMap(FormStatus::displayName, Function.identity()));
 
     FormStatus(String displayName) {
         this.displayName = displayName;
@@ -24,7 +23,7 @@ public enum FormStatus {
 
     public static FormStatus from(String type) {
         if (!convertor.containsKey(type)) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "유효하지 않은 Form상태 입니다.: " + type);
+            throw new BadRequestException(ErrorCode.INVALID_FORM_STATUS, "Invalid form status type: " + type);
         }
         return convertor.get(type);
     }
