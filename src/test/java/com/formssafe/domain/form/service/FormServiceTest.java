@@ -8,7 +8,6 @@ import static com.formssafe.util.Fixture.createFormWithStatus;
 import static com.formssafe.util.Fixture.createReward;
 import static com.formssafe.util.Fixture.createRewardCategory;
 import static com.formssafe.util.Fixture.createSubmissions;
-import static com.formssafe.util.Fixture.createTemporaryForm;
 import static com.formssafe.util.Fixture.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -99,13 +98,23 @@ class FormServiceTest extends IntegrationTestConfig {
         }
 
         @Test
-        void 작성자가아니고_임시등록된_설문_상세_조회시_예외가_발생한다() {
+        void 작성자가아닌_사용자가_설문_상세_조회시_예외가_발생한다() {
             //given
-            Form form = formRepository.save(createTemporaryForm(testUser, "설문1", "설문설명1"));
+            Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
             //when then
             assertThatThrownBy(() -> formService.getForm(form.getId(), loginUserDto))
-                    .isInstanceOf(DataNotFoundException.class);
+                    .isInstanceOf(ForbiddenException.class);
+        }
+
+        @Test
+        void 작성자가_임시설문이_아닌_설문_상세_조회시_예외가_발생한다() {
+            //given
+            Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
+            LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
+            //when then
+            assertThatThrownBy(() -> formService.getForm(form.getId(), loginUserDto))
+                    .isInstanceOf(BadRequestException.class);
         }
     }
 

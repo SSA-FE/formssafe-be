@@ -38,7 +38,7 @@ public class TempFormUpdateService {
 
     @Transactional
     public void execute(Long formId, FormUpdateDto request, LoginUserDto loginUser) {
-        log.debug("TempFormUpdateService.execute: \nrequest {}\n loginUser {}");
+        log.debug("TempFormUpdateService.execute: \nid {}\n loginUser {}", formId, loginUser);
 
         Form form = formReadService.findForm(formId);
         formValidateService.validAuthor(form, loginUser.id());

@@ -32,7 +32,8 @@ public class FormService {
 
     public FormWithQuestionDto getForm(Long formId, LoginUserDto loginUser) {
         Form form = formReadService.findFormWithUserAndTag(formId);
-        formValidateService.validAuthorAndTemp(form, loginUser.id());
+        formValidateService.validAuthor(form, loginUser.id());
+        formValidateService.validTempForm(form);
 
         List<Content> contents = formReadService.getContentList(formId);
         List<FormTag> formTags = form.getFormTagList();
