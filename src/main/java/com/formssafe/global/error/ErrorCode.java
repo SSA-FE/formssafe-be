@@ -56,12 +56,20 @@ public enum ErrorCode {
      * Submission
      */
     UNSUPPORTED_SUBMISSION_RESPONSE_TYPE(BAD_REQUEST, "SUBMISSION000", "올바르지 않은 submission type입니다."),
-
+    ONLY_ONE_SUBMISSION_ALLOWED(BAD_REQUEST, "SUBMISSION001", "한 사용자가 하나의 설문에 하나의 응답만 작성 가능합니다."),
+    NO_EXISTING_SUBMISSION_FOUND(BAD_REQUEST, "SUBMISSION002", "등록되어 있는 응답이 존재하지 않습니다."),
+    NOT_TEMPORARY_SUBMISSION(BAD_REQUEST, "SUBMISSION003", "해당 응답은 완료된 응답입니다."),
+    SUBMISSION_TYPE_MISMATCH(BAD_REQUEST, "SUBMISSION004", "질문 타입이 올바르지 않습니다."),
+    ENTRY_SUBMITTED_EXCEEDS_QUESTIONS(BAD_REQUEST, "SUBMISSION005", "입력된 제출의 갯수가 질문의 문항 수보다 많습니다."),
+    REQUIRED_QUESTIONS_UNANSWERED(BAD_REQUEST, "SUBMISSION006", "답변되지 않은 필수문항이 존재합니다."),
+    FORM_STATUS_NOT_IN_PROGRESS(BAD_REQUEST, "SUBMISSION007", "참여하고자 하는 설문이 진행중이지 않습니다."),
+    CANNOT_SUBMIT_FORM_YOU_CREATED(BAD_REQUEST, "SUBMISSION008", "자신이 작성한 설문에는 답변할 수 없습니다."),
     /**
      * Result
      */
     EXCEL_FILE_CREATE_ERROR(INTERNAL_SERVER_ERROR, "RESULT000", "엑셀 파일을 생성하는데 실패하였습니다."),
     INVALID_AUTHOR_TO_CHECK_RESULT(FORBIDDEN, "RESULT001", "자신이 작성한 form의 결과만 확인 가능합니다."),
+
     /**
      * Content
      */

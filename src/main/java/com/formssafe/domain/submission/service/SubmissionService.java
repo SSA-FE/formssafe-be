@@ -23,10 +23,9 @@ import com.formssafe.domain.submission.repository.ObjectiveSubmissionRepository;
 import com.formssafe.domain.submission.repository.SubmissionRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.domain.user.service.UserService;
 import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
-import com.formssafe.global.error.type.UserNotFoundException;
 import com.formssafe.global.util.DateTimeUtil;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class SubmissionService {
     private final SubmissionRepository submissionRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final DescriptiveQuestionService descriptiveQuestionService;
     private final ObjectiveQuestionService objectiveQuestionService;
     private final FormService formService;
@@ -53,18 +52,13 @@ public class SubmissionService {
 
     @Transactional
     public void create(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
-        User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
-
-        if (user.isDeleted()) {
-            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
-        }
+        User user = userService.getUserById(loginUser.id());
 
         Form form = formService.getForm(formId);
 
         if (getSubmissionByUserAndForm(user, form) != null) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "한 사용자가 하나의 설문에 대하여 두 개 이상의 응답을 작성할 수 없습니다.");
+            throw new BadRequestException(ErrorCode.ONLY_ONE_SUBMISSION_ALLOWED,
+                    "한 사용자가 하나의 설문에 대하여 두 개 이상의 응답을 작성할 수 없습니다.");
         }
 
         validate(user, form);
@@ -82,22 +76,17 @@ public class SubmissionService {
 
     @Transactional
     public void modify(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
-        User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
-
-        if (user.isDeleted()) {
-            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
-        }
+        User user = userService.getUserById(loginUser.id());
 
         Form form = formService.getForm(formId);
 
         Submission submission = getSubmissionByUserAndForm(user, form);
+
         if (submission == null) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "등록되어 있는 응답이 존재하지 않습니다.");
+            throw new BadRequestException(ErrorCode.NO_EXISTING_SUBMISSION_FOUND);
         }
         if (!submission.isTemp()) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "해당 응답은 완료된 응답입니다.");
+            throw new BadRequestException(ErrorCode.NOT_TEMPORARY_SUBMISSION);
         }
 
         validate(user, form);
@@ -116,13 +105,7 @@ public class SubmissionService {
     }
 
     public SubmissionResponseDto getSubmission(long formId, LoginUserDto loginUser) {
-        User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
-
-        if (user.isDeleted()) {
-            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "해당 유저를 찾을 수 없습니다.:" + loginUser.id());
-        }
+        User user = userService.getUserById(loginUser.id());
 
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElse(null);
@@ -180,7 +163,8 @@ public class SubmissionService {
                 ObjectiveQuestion objectiveQuestion = objectiveQuestionService.getObjectiveQuestionByUuid(
                         dtos.questionId(), form.getId());
                 if (!objectiveQuestion.getQuestionType().displayName().equals(dtos.type())) {
-                    throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "연관된 질문 타입이 올바르지 않습니다.");
+                    throw new BadRequestException(ErrorCode.SUBMISSION_TYPE_MISMATCH,
+                            "연관된 질문 타입이 올바르지 않습니다. : " + dtos.type());
                 }
                 objectiveSubmissions.add(dtos.toObjectiveSubmission(submission, objectiveQuestion));
                 if (objectiveQuestion.isRequired()) {
@@ -191,23 +175,23 @@ public class SubmissionService {
                 DescriptiveQuestion descriptiveQuestion = descriptiveQuestionService.getDescriptiveQuestionByUuid(
                         dtos.questionId(), form.getId());
                 if (!descriptiveQuestion.getQuestionType().displayName().equals(dtos.type())) {
-                    throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "연관된 질문 타입이 올바르지 않습니다.");
+                    throw new BadRequestException(ErrorCode.SUBMISSION_TYPE_MISMATCH, "연관된 질문 타입이 올바르지 않습니다.");
                 }
                 descriptiveSubmissions.add(dtos.toDescriptiveSubmission(submission, descriptiveQuestion));
                 if (descriptiveQuestion.isRequired()) {
                     requiredCnt++;
                 }
             } else {
-                throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "올바르지 않은 질문 type 입니다.");
+                throw new BadRequestException(ErrorCode.SUBMISSION_TYPE_MISMATCH);
             }
         }
 
         if (form.getQuestionCnt() < objectiveSubmissions.size() + descriptiveSubmissions.size()) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "입력된 제출의 개수가 질문 문항보다 많습니다.");
+            throw new BadRequestException(ErrorCode.ENTRY_SUBMITTED_EXCEEDS_QUESTIONS);
         }
 
         if (requiredCnt != formService.getRequiredQuestionCnt(form)) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "답변되지 않은 필수 문항이 존재합니다.");
+            throw new BadRequestException(ErrorCode.REQUIRED_QUESTIONS_UNANSWERED);
         }
         descriptiveSubmissionRepository.saveAll(descriptiveSubmissions);
         objectiveSubmissionRepository.saveAll(objectiveSubmissions);
@@ -215,11 +199,11 @@ public class SubmissionService {
 
     private void validate(User user, Form form) {
         if (form.getStatus() != FormStatus.PROGRESS) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "참여하고자 하는 설문의 상태가 올바르지 않습니다.");
+            throw new BadRequestException(ErrorCode.FORM_STATUS_NOT_IN_PROGRESS);
         }
 
         if (user.getId() == form.getUser().getId()) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "자신이 작성한 설문에는 참여할 수 없습니다.");
+            throw new BadRequestException(ErrorCode.CANNOT_SUBMIT_FORM_YOU_CREATED);
         }
     }
 
