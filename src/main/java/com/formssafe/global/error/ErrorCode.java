@@ -53,6 +53,16 @@ public enum ErrorCode {
     NO_SUBMISSION_PARTICIPATED(BAD_REQUEST, "ACTIVITY000", "해당 설문에 대한 응답이 존재하지 않습니다."),
 
     /**
+     * Submission
+     */
+    UNSUPPORTED_SUBMISSION_RESPONSE_TYPE(BAD_REQUEST, "SUBMISSION000", "올바르지 않은 submission type입니다."),
+
+    /**
+     * Result
+     */
+    EXCEL_FILE_CREATE_ERROR(INTERNAL_SERVER_ERROR, "RESULT000", "엑셀 파일을 생성하는데 실패하였습니다."),
+    INVALID_AUTHOR_TO_CHECK_RESULT(FORBIDDEN, "RESULT001", "자신이 작성한 form의 결과만 확인 가능합니다."),
+    /**
      * Content
      */
     INVALID_OPTION(BAD_REQUEST, "CONTENT000", "유효하지 않은 Content Type 입력입니다."),

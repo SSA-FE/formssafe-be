@@ -36,6 +36,10 @@ public class ActivityController {
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ParticipateSubmissionDto.class)))
+    @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음.",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "400", description = "form에 대한 설문 응답이 존재하지 않음",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class),

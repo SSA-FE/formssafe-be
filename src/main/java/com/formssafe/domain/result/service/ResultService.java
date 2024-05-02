@@ -11,10 +11,9 @@ import com.formssafe.domain.submission.service.SubmissionService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.domain.user.service.UserService;
 import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
-import com.formssafe.global.error.type.UserNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,18 +26,16 @@ import org.springframework.stereotype.Service;
 public class ResultService {
     private final SubmissionRepository submissionRepository;
     private final SubmissionService submissionService;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final FormService formService;
 
     public ResultResponseDto getTotalResult(LoginUserDto loginUser, Long formId) {
-        User user = userRepository.findById(loginUser.id())
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND,
-                        "해당 유저를 찾을 수 없습니다.: " + loginUser.id()));
+        User user = userService.getUserById(loginUser.id());
 
         Form form = formService.getForm(formId);
 
         if (user.getId() != form.getUser().getId()) {
-            throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "자신이 작성한 설문만 설문 결과를 확인할 수 있습니다.");
+            throw new BadRequestException(ErrorCode.INVALID_AUTHOR_TO_CHECK_RESULT, "자신이 작성한 설문만 설문 결과를 확인할 수 있습니다.");
         }
 
         List<TotalResponse> totalResponseList = new ArrayList<>();

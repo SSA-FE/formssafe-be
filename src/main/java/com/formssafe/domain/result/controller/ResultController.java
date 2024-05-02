@@ -43,6 +43,10 @@ public class ResultController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
+    @ApiResponse(responseCode = "400", description = "form에 대한 설문 응답이 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"설문 응답이 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class),
@@ -67,6 +71,10 @@ public class ResultController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
+    @ApiResponse(responseCode = "403", description = "설문 결과는 자신만 확인 가능",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"자신이 작성한 설문의 결과만 확인 가능합니다.\"}")))
     @GetMapping("/forms/{formId}/submissions")
     @ResponseStatus(HttpStatus.OK)
     public ResultResponseDto getTotalResult(@PathVariable Long formId,

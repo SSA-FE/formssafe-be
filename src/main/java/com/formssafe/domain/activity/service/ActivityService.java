@@ -7,6 +7,7 @@ import com.formssafe.domain.activity.dto.ActivityResponse.ParticipateSubmissionD
 import com.formssafe.domain.form.dto.FormResponse.FormCursorDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.repository.FormRepository;
+import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.form.service.SortType;
 import com.formssafe.domain.submission.dto.SubmissionResponse.SubmissionDetailResponseDto;
 import com.formssafe.domain.submission.entity.Submission;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ActivityService {
     private final FormRepository formRepository;
+    private final FormService formService;
     private final UserRepository userRepository;
     private final SubmissionRepository submissionRepository;
     private final SubmissionService submissionService;
@@ -62,6 +64,8 @@ public class ActivityService {
 
     public ParticipateSubmissionDto getSelfResponse(Long formId, LoginUserDto loginUser) {
         User user = userRepository.getReferenceById(loginUser.id());
+        Form form = formService.getForm(formId);
+
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NO_SUBMISSION_PARTICIPATED,
                         "해당 form에 대한 설문 응답이 존재하지 않습니다 : " + formId));
