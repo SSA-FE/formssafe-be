@@ -1,8 +1,12 @@
 package com.formssafe.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.global.auth.SessionAuthenticationAccessDeniedHandler;
+import com.formssafe.global.auth.SessionAuthenticationEntryPoint;
 import com.formssafe.global.auth.SessionAuthenticationFilter;
-import com.formssafe.global.auth.UserActivationInterceptor;
+import com.formssafe.global.interceptor.UserActivationInterceptor;
+import com.formssafe.global.logging.LoggingFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
     @Bean
     public WebSecurityCustomizer configure() {
@@ -48,12 +53,17 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         http.authorizeHttpRequests(request ->
                 request.requestMatchers("/v1/auth/social/**").permitAll()
                         .anyRequest().authenticated());
+        http.exceptionHandling(config ->
+                config.authenticationEntryPoint(new SessionAuthenticationEntryPoint(objectMapper))
+                        .accessDeniedHandler(new SessionAuthenticationAccessDeniedHandler(objectMapper)));
 
         http.cors(cors -> cors
                 .configurationSource(corsConfigurationSource()));
 
         http.addFilterBefore(sessionAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(loggingFilter(),
+                SessionAuthenticationFilter.class);
 
         http.requestCache(RequestCacheConfigurer::disable);
 
@@ -89,6 +99,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Bean
     public SessionAuthenticationFilter sessionAuthenticationFilter() {
         return new SessionAuthenticationFilter();
+    }
+
+    @Bean
+    public LoggingFilter loggingFilter() {
+        return new LoggingFilter();
     }
 
     @Bean

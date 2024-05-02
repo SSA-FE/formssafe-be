@@ -14,11 +14,12 @@ public enum ErrorCode {
      * 디폴트 에러
      */
     SYSTEM_ERROR(INTERNAL_SERVER_ERROR, "SYSTEM000", "서비스에 장애가 발생했습니다."),
+    BAD_REQUEST_ERROR(BAD_REQUEST, "SYSTEM001", "유효하지 않은 요청입니다."),
 
     /**
      * 인증
      */
-    UNAUTHORIZED_ACCESS(UNAUTHORIZED, "AUTH000", "권한이 없습니다"),
+    SESSION_NOT_FOUND(UNAUTHORIZED, "AUTH000", "인증이 필요합니다."),
 
     /**
      * 소셜 로그인

@@ -12,6 +12,7 @@ import com.formssafe.domain.submission.entity.Submission;
 import com.formssafe.domain.submission.entity.SubmissionResponse;
 import com.formssafe.domain.submission.repository.SubmissionRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
+import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.FormssafeException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -102,7 +103,7 @@ public class ExcelReportService {
             resultExcelExportService.exportToExcel(sheets, "응답", headers, body);
             sheets.write(outputStream);
         } catch (IOException e) {
-            throw new FormssafeException("엑셀 파일 생성 중 에러가 발생했습니다.", e);
+            throw new FormssafeException(ErrorCode.SYSTEM_ERROR, "Error while creating excel sheets.", e);
         }
     }
 
