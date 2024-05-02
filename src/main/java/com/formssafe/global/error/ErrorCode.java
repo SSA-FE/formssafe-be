@@ -27,6 +27,8 @@ public enum ErrorCode {
      */
     USER_NOT_FOUND(BAD_REQUEST, "USER000", "해당 유저가 존재하지 않습니다."),
     INVALID_USER(FORBIDDEN, "USER001", "권한이 없습니다."),
+    USER_ALREADY_JOIN(BAD_REQUEST, "USER002", "이미 회원가입 하셨습니다."),
+    USER_NICKNAME_DUPLICATE(BAD_REQUEST, "USER003", "중복된 닉네임이 존재합니다."),
 
     /**
      * 설문
