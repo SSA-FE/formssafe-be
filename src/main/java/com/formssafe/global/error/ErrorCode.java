@@ -56,8 +56,9 @@ public enum ErrorCode {
      * Content
      */
     INVALID_OPTION(BAD_REQUEST, "CONTENT000", "유효하지 않은 Content Type 입력입니다."),
-    OBJECTIVE_QUESTION_REQUIRED_AT_LEAST_ONE_OPTION(BAD_REQUEST, "CONTENT001", "객관식 질문에는 적어도 한개 이상의 보기가 필요합니다.");
-
+    OBJECTIVE_QUESTION_REQUIRED_AT_LEAST_ONE_OPTION(BAD_REQUEST, "CONTENT001", "객관식 질문에는 적어도 한개 이상의 보기가 필요합니다."),
+    QUESTION_DTO_CONVERT_ERROR(BAD_REQUEST, "CONTENT002", "Question 엔티티를 DTO로 변환할 수 없습니다."),
+    UNEXPECTED_CONTENT_TYPE(BAD_REQUEST, "CONTENT003", "올바르지 않은 Content type입니다.");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
