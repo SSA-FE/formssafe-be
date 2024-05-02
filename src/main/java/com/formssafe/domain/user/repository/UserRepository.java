@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByOauthId(OauthId oauthId);
 
     @Query("""
-            select m from member m where id =:id and isDeleted = true 
+            select u from User u where u.id =:id and u.isDeleted = false 
             """)
     Optional<User> findById(@Param("id") Long id);
 
