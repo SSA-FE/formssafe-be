@@ -5,6 +5,8 @@ import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.oauth.dto.AuthCode;
 import com.formssafe.domain.oauth.service.OAuthService;
 import com.formssafe.domain.user.entity.User;
+import com.formssafe.global.error.ErrorCode;
+import com.formssafe.global.error.type.BadRequestException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,6 +54,9 @@ public class AuthController {
                HttpServletRequest request) {
         String referer = request.getHeader("referer");
         log.info("referer: {}", referer);
+        if (referer == null) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST_ERROR, "referer is null");
+        }
         boolean isLocal = !referer.contains("formssafe.com");
         User user = oauthService.loginOrSignup(oauthServerType, authCode.code(), isLocal);
 
