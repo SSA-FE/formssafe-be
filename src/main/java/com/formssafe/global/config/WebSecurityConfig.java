@@ -1,7 +1,7 @@
 package com.formssafe.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.formssafe.domain.user.repository.UserRepository;
+import com.formssafe.domain.user.service.UserService;
 import com.formssafe.global.auth.SessionAuthenticationAccessDeniedHandler;
 import com.formssafe.global.auth.SessionAuthenticationEntryPoint;
 import com.formssafe.global.auth.SessionAuthenticationFilter;
@@ -29,7 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableMethodSecurity
 @EnableWebSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final ObjectMapper objectMapper;
 
     @Bean
@@ -86,7 +86,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new UserActivationInterceptor(userRepository))
+        registry.addInterceptor(new UserActivationInterceptor(userService))
                 .excludePathPatterns("/v1/auth/social/**",
                         "/v1/users/join", "/v1/users/profile", "/v1/users/{id}",
                         "/swagger-ui/**",
@@ -108,6 +108,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public UserActivationInterceptor userActivationInterceptor() {
-        return new UserActivationInterceptor(userRepository);
+        return new UserActivationInterceptor(userService);
     }
 }

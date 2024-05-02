@@ -8,6 +8,8 @@ import com.formssafe.domain.content.question.entity.DescriptiveQuestionType;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestionOption;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestionType;
+import com.formssafe.global.error.ErrorCode;
+import com.formssafe.global.error.type.DtoConvertException;
 import com.formssafe.global.util.JsonConverter;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -25,7 +27,7 @@ public class ContentConverter implements Converter<Object[], Content> {
         } else if (ObjectiveQuestionType.exists(type)) {
             return convertToObjectiveQuestion(source);
         } else {
-            throw new IllegalStateException("Unexpected type: " + type);
+            throw new DtoConvertException(ErrorCode.UNEXPECTED_CONTENT_TYPE, "올바르지 않은 Content type 입니다 : " + type);
         }
     }
 

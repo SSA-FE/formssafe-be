@@ -35,7 +35,7 @@ public final class SubmissionResponse {
             } else if (object instanceof ObjectiveSubmission os) {
                 return fromObjectSubmission(os);
             }
-            throw new DtoConvertException(ErrorCode.SYSTEM_ERROR,
+            throw new DtoConvertException(ErrorCode.QUESTION_DTO_CONVERT_ERROR,
                     "Question 엔티티를 DTO로 변환할 수 없습니다.: " + object.getClass());
         }
 

@@ -41,13 +41,14 @@ public class ContentService {
                 decorations.add(q.toDecoration(form, position));
             } else if (ObjectiveQuestionType.exists(q.type())) {
                 if (q.options() == null || q.options().isEmpty()) {
-                    throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "객관식 질문에는 보기가 1개 이상 필요합니다.");
+                    throw new BadRequestException(ErrorCode.OBJECTIVE_QUESTION_REQUIRED_AT_LEAST_ONE_OPTION,
+                            "객관식 질문에는 보기가 1개 이상 필요합니다.");
                 }
                 objectiveQuestions.add(q.toObjectiveQuestion(form, position));
             } else if (DescriptiveQuestionType.exists(q.type())) {
                 descriptiveQuestions.add(q.toDescriptiveQuestion(form, position));
             } else {
-                throw new BadRequestException(ErrorCode.SYSTEM_ERROR, "유효하지 않은 옵션입니다.: " + q.type());
+                throw new BadRequestException(ErrorCode.INVALID_OPTION, "유효하지 않은 옵션입니다.: " + q.type());
             }
             ++position;
         }

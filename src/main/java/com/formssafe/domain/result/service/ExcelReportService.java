@@ -13,7 +13,8 @@ import com.formssafe.domain.submission.entity.SubmissionResponse;
 import com.formssafe.domain.submission.repository.SubmissionRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.global.error.ErrorCode;
-import com.formssafe.global.error.type.FormssafeException;
+import com.formssafe.global.error.type.BadRequestException;
+import com.formssafe.global.error.type.BusinessException;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -91,7 +92,8 @@ public class ExcelReportService {
         } else if (submissionResponse instanceof DescriptiveSubmission ds) {
             return ds.getContent();
         } else {
-            throw new IllegalStateException("Unsupported type: " + submissionResponse.getClass().getName());
+            throw new BadRequestException(ErrorCode.UNSUPPORTED_SUBMISSION_RESPONSE_TYPE,
+                    "지원하지 않는 Submission 타입 입니다 : " + submissionResponse.getClass().getName());
         }
     }
 
@@ -103,7 +105,7 @@ public class ExcelReportService {
             resultExcelExportService.exportToExcel(sheets, "응답", headers, body);
             sheets.write(outputStream);
         } catch (IOException e) {
-            throw new FormssafeException(ErrorCode.SYSTEM_ERROR, "Error while creating excel sheets.", e);
+            throw new BusinessException(ErrorCode.EXCEL_FILE_CREATE_ERROR, "엑셀 파일 생성 중 에러가 발생했습니다 : ", e);
         }
     }
 
