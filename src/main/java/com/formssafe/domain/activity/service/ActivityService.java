@@ -64,7 +64,7 @@ public class ActivityService {
         User user = userRepository.getReferenceById(loginUser.id());
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NO_SUBMISSION_PARTICIPATED,
-                        "No Submission form for formId " + formId));
+                        "해당 form에 대한 설문 응답이 존재하지 않습니다 : " + formId));
 
         List<SubmissionDetailResponseDto> submissionDetailDtos = getSubmissionDetail(submission);
         return ParticipateSubmissionDto.from(formId, submissionDetailDtos, submission.isTemp());

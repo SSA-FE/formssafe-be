@@ -3,7 +3,6 @@ package com.formssafe.domain.activity.controller;
 import com.formssafe.domain.activity.dto.ActivityParam.SearchDto;
 import com.formssafe.domain.activity.dto.ActivityResponse.FormListResponseDto;
 import com.formssafe.domain.activity.dto.ActivityResponse.ParticipateSubmissionDto;
-import com.formssafe.domain.activity.dto.SelfSubmissionResponse;
 import com.formssafe.domain.activity.service.ActivityService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.global.error.response.ErrorResponse;
@@ -36,11 +35,11 @@ public class ActivityController {
     @ApiResponse(responseCode = "200", description = "나의 응답 조회 성공(미응답시 빈 Response)",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = SelfSubmissionResponse.class)))
-    @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
+                    schema = @Schema(implementation = ParticipateSubmissionDto.class)))
+    @ApiResponse(responseCode = "400", description = "form에 대한 설문 응답이 존재하지 않음",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class),
-                    examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
+                    examples = @ExampleObject(value = "{\"error\": \"설문 응답이 존재하지 않습니다.\"}")))
     @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class),
