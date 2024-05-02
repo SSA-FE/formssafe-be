@@ -1,12 +1,29 @@
 package com.formssafe.global.error.type;
 
-public class FormssafeException extends RuntimeException {
+import com.formssafe.global.error.ErrorCode;
+import lombok.Getter;
 
-    public FormssafeException(String message) {
-        super(message);
+@Getter
+public class FormssafeException extends RuntimeException {
+    private final ErrorCode errorCode;
+    private final String message;
+
+    public FormssafeException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+        this.message = errorCode.getMessage();
     }
 
-    public FormssafeException(String message, Throwable cause) {
-        super(message, cause);
+    public FormssafeException(ErrorCode errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
+        this.message = message;
+    }
+
+    public FormssafeException(ErrorCode errorCode, String message, Throwable cause) {
+        super(message);
+        this.errorCode = errorCode;
+        this.message = message;
+        this.initCause(cause);
     }
 }
