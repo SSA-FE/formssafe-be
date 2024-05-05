@@ -46,6 +46,7 @@ public class SubmissionService {
     private final DescriptiveQuestionService descriptiveQuestionService;
     private final ObjectiveQuestionService objectiveQuestionService;
     private final FormService formService;
+    private final SubmissionValidateService submissionValidateService;
     private final DescriptiveSubmissionRepository descriptiveSubmissionRepository;
     private final ObjectiveSubmissionRepository objectiveSubmissionRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -177,7 +178,11 @@ public class SubmissionService {
                 if (!descriptiveQuestion.getQuestionType().displayName().equals(dtos.type())) {
                     throw new BadRequestException(ErrorCode.SUBMISSION_TYPE_MISMATCH, "연관된 질문 타입이 올바르지 않습니다.");
                 }
-                descriptiveSubmissions.add(dtos.toDescriptiveSubmission(submission, descriptiveQuestion));
+                DescriptiveSubmission descriptiveSubmission = dtos.toDescriptiveSubmission(submission,
+                        descriptiveQuestion);
+                submissionValidateService.validDescriptiveSubmission(descriptiveSubmission,
+                        descriptiveQuestion.getQuestionType());
+                descriptiveSubmissions.add(descriptiveSubmission);
                 if (descriptiveQuestion.isRequired()) {
                     requiredCnt++;
                 }

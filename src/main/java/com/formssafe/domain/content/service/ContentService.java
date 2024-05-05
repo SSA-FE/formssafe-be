@@ -28,6 +28,7 @@ public class ContentService {
     private final ObjectiveQuestionRepository objectiveQuestionRepository;
     private final DescriptiveQuestionRepository descriptiveQuestionRepository;
     private final DecorationRepository decorationRepository;
+    private final ContentValidateService contentValidateService;
 
     @Transactional
     public void createContents(List<ContentCreateDto> contentCreateDtos, Form form) {
@@ -38,14 +39,21 @@ public class ContentService {
         int position = 1;
         for (ContentCreateDto q : contentCreateDtos) {
             if (DecorationType.exists(q.type())) {
-                decorations.add(q.toDecoration(form, position));
+                Decoration decoration = q.toDecoration(form, position);
+                contentValidateService.validDecoration(decoration);
+                decorations.add(decoration);
             } else if (ObjectiveQuestionType.exists(q.type())) {
                 if (q.options() == null || q.options().isEmpty()) {
                     throw new BadRequestException(ErrorCode.OBJECTIVE_QUESTION_REQUIRED_AT_LEAST_ONE_OPTION,
                             "객관식 질문에는 보기가 1개 이상 필요합니다.");
                 }
-                objectiveQuestions.add(q.toObjectiveQuestion(form, position));
+                ObjectiveQuestion objectiveQuestion = q.toObjectiveQuestion(form, position);
+                contentValidateService.validObjectiveQuestion(objectiveQuestion);
+                objectiveQuestions.add(objectiveQuestion);
             } else if (DescriptiveQuestionType.exists(q.type())) {
+                DescriptiveQuestion descriptiveQuestion = q.toDescriptiveQuestion(form, position);
+                
+                contentValidateService.validDescriptiveQuestion(descriptiveQuestion);
                 descriptiveQuestions.add(q.toDescriptiveQuestion(form, position));
             } else {
                 throw new BadRequestException(ErrorCode.INVALID_OPTION, "유효하지 않은 옵션입니다.: " + q.type());

@@ -28,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final OauthMemberClientComposite oauthMemberClientComposite;
     private final FormService formService;
+    private final UserValidateService userValidateService;
 
     public User getUserById(Long id) {
         User user = userRepository.findById(id)
@@ -56,6 +57,8 @@ public class UserService {
     @Transactional
     public void updateNickname(NicknameUpdateDto request, LoginUserDto loginUser) {
         String nickname = request.nickname();
+        userValidateService.validUserNickname(nickname);
+
         User user = getUserById(loginUser.id());
 
         if (user.getNickname().equals(nickname) || userRepository.existsByNickname(nickname)) {
