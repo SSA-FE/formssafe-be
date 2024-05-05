@@ -1,6 +1,6 @@
 package com.formssafe.domain.form.repository;
 
-import static com.formssafe.global.constants.FormConstants.PAGE_SIZE;
+import static com.formssafe.global.constants.FormConstraints.PAGE_SIZE;
 import static com.formssafe.util.Fixture.createForm;
 import static org.assertj.core.api.Assertions.assertThat;
 

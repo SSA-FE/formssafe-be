@@ -21,9 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class TagService {
     private final TagRepository tagRepository;
     private final FormTagRepository formTagRepository;
+    private final TagValidateService tagValidateService;
 
     @Transactional
     public void createOrUpdateTags(List<String> tags, Form form) {
+        tagValidateService.isValidTotalTagSize(tags.size());
+        for (String tagName : tags) {
+            tagValidateService.isValidTagNameLength(tagName);
+        }
+
         List<Tag> tagList = new ArrayList<>();
         for (String tagName : tags) {
             tagRepository.updateCount(tagName);
