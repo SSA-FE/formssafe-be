@@ -33,6 +33,7 @@ public enum ErrorCode {
     INVALID_USER(FORBIDDEN, "USER001", "권한이 없습니다."),
     USER_ALREADY_JOIN(BAD_REQUEST, "USER002", "이미 회원가입 하셨습니다."),
     USER_NICKNAME_DUPLICATE(BAD_REQUEST, "USER003", "중복된 닉네임이 존재합니다."),
+    INVALID_USER_NICKNAME(BAD_REQUEST, "USER004", "사용자 닉네임은 1자 이상 20자를 만족해야 합니다."),
 
     /**
      * 설문
@@ -89,6 +90,8 @@ public enum ErrorCode {
     REQUIRED_QUESTIONS_UNANSWERED(BAD_REQUEST, "SUBMISSION006", "답변되지 않은 필수문항이 존재합니다."),
     FORM_STATUS_NOT_IN_PROGRESS(BAD_REQUEST, "SUBMISSION007", "참여하고자 하는 설문이 진행중이지 않습니다."),
     CANNOT_SUBMIT_FORM_YOU_CREATED(BAD_REQUEST, "SUBMISSION008", "자신이 작성한 설문에는 답변할 수 없습니다."),
+    SHORT_QUESTION_SUBMISSION_CONTENT_OVER_LIMIT(BAD_REQUEST, "SUBMISSION009", "short형 질문의 응답은 500자 이내여야 합니다."),
+    LONG_QUESTION_SUBMISSION_CONTENT_OVER_LIMIT(BAD_REQUEST, "SUBMISSION010", "Long형 질문의 응답은 5000자 이내여야 합니다."),
 
     /**
      * Result
@@ -104,8 +107,7 @@ public enum ErrorCode {
     QUESTION_DTO_CONVERT_ERROR(BAD_REQUEST, "CONTENT002", "Question 엔티티를 DTO로 변환할 수 없습니다."),
     UNEXPECTED_CONTENT_TYPE(BAD_REQUEST, "CONTENT003", "올바르지 않은 Content type입니다."),
     INVALID_CONTENT_TITLE_LENGTH(BAD_REQUEST, "CONTENT004", "설문 문항 제목은 1자 이상 100자 이하여야 합니다."),
-    INVALID_CONTENT_DESCRIPTION_LENGTH(BAD_REQUEST, "CONTENT005", "설문 문항 설명은 1000자 이하여야 합니다."),
-    ;
+    INVALID_CONTENT_DESCRIPTION_LENGTH(BAD_REQUEST, "CONTENT005", "설문 문항 설명은 1000자 이하여야 합니다.");
 
 
     private final HttpStatus httpStatus;
