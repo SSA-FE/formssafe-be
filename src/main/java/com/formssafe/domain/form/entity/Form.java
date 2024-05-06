@@ -10,7 +10,7 @@ import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.submission.entity.Submission;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.global.constants.FormConstants;
+import com.formssafe.global.constants.FormConstraints;
 import com.formssafe.global.entity.BaseTimeEntity;
 import com.formssafe.global.util.DateTimeUtil;
 import com.formssafe.global.util.JsonConverter;
@@ -82,7 +82,7 @@ public class Form extends BaseTimeEntity {
 
     private boolean isDeleted;
 
-    @BatchSize(size = FormConstants.PAGE_SIZE)
+    @BatchSize(size = FormConstraints.PAGE_SIZE)
     @OneToMany(mappedBy = "form")
     private List<FormTag> formTagList = new ArrayList<>();
 

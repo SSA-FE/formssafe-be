@@ -20,9 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class RewardService {
     private final RewardRepository rewardRepository;
     private final RewardCategoryRepository rewardCategoryRepository;
+    private final RewardValidateService rewardValidateService;
 
     @Transactional
     public void createReward(RewardCreateDto request, Form form) {
+        rewardValidateService.isValidRewardNameLength(request.name());
+        rewardValidateService.isValidRewardCount(request.count());
+
         RewardCategory rewardCategory = getRewardCategoryFromRewardCategoryName(request.category());
 
         Reward reward = Reward.builder()

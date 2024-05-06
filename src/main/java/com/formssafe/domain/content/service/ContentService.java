@@ -28,9 +28,17 @@ public class ContentService {
     private final ObjectiveQuestionRepository objectiveQuestionRepository;
     private final DescriptiveQuestionRepository descriptiveQuestionRepository;
     private final DecorationRepository decorationRepository;
+    private final ContentValidateService contentValidateService;
 
     @Transactional
     public void createContents(List<ContentCreateDto> contentCreateDtos, Form form) {
+        for (ContentCreateDto contentCreateDto : contentCreateDtos) {
+            if (!DecorationType.exists(contentCreateDto.type())) {
+                contentValidateService.validContentTitleLength(contentCreateDto.title());
+            }
+            contentValidateService.validContentDescriptionLength(contentCreateDto.description());
+        }
+
         List<ObjectiveQuestion> objectiveQuestions = new ArrayList<>();
         List<DescriptiveQuestion> descriptiveQuestions = new ArrayList<>();
         List<Decoration> decorations = new ArrayList<>();
