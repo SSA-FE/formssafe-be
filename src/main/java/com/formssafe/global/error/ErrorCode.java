@@ -45,18 +45,27 @@ public enum ErrorCode {
     NOT_PROGRESS_FORM(BAD_REQUEST, "FORM004", "현재 진행 중인 설문이 아닙니다."),
     INVALID_AUTO_END_DATE(BAD_REQUEST, "FORM005", "자동 마감 시각은 현재 시각 5분 후부터 설정할 수 있습니다."),
     INVALID_PRIVACY_DISPOSAL_DATE(BAD_REQUEST, "FORM006", "개인 정보 폐기 시각은 마감 시각과 같거나 후여야 합니다."),
-    EMPTY_QUESTION(BAD_REQUEST, "FORM007", "설문에는 하나 이상의 설문 문항이 포함되어야 합니다."),
+    INVALID_QUESTION_SIZE(BAD_REQUEST, "FORM007", "설문 질문 문항은 1개 이상 100개 이하여야 합니다."),
     INVALID_FORM_STATUS(BAD_REQUEST, "FORM008", "유효하지 않은 설문 상태입니다."),
+    INVALID_FORM_TITLE_LENGTH(BAD_REQUEST, "FORM009", "설문 제목은 1자 이상 100자 이하여야 합니다."),
+    INVALID_TOTAL_IMAGE_SIZE(BAD_REQUEST, "FORM010", "이미지 파일은 5개 이하로 첨부할 수 있습니다."),
+    INVALID_FORM_DESCRIPTION_LENGTH(BAD_REQUEST, "FORM011", "설문 설명은 2000자 이하로 작성해야 합니다."),
+    INVALID_TEMP_FORM_EXPECT_TIME(BAD_REQUEST, "FORM012", "임시 설문의 예상 소요 시간은 1440분 이하여야 합니다."),
+    INVALID_FORM_EXPECT_TIME(BAD_REQUEST, "FORM013", "설문의 예상 소요 시간은 1분 이상 1440분 이하여야 합니다."),
 
     /**
      * 경품 카테고리
      */
     REWARD_CATEGORY_NOT_FOUND(BAD_REQUEST, "REWARD_CATEGORY000", "해당 경품 카테고리가 존재하지 않습니다."),
+    INVALID_REWARD_NAME_LENGTH(BAD_REQUEST, "REWARD_CATEGORY001", "경품 이름은 1자 이상 200자 이하여야 합니다."),
+    INVALID_REWARD_COUNT(BAD_REQUEST, "REWARD_CATEGORY002", "경품 수량은 1개 이상 1,000,000개 이하여야 합니다."),
 
     /**
      * 태그
      */
     TAG_NOT_FOUND(BAD_REQUEST, "TAG000", "해당 태그가 존재하지 않습니다."),
+    INVALID_TOTAL_TAG_SIZE(BAD_REQUEST, "TAG001", "태그는 5개 이하로 등록할 수 있습니다."),
+    INVALID_TAG_NAME_LENGTH(BAD_REQUEST, "TAG002", "태그 이름은 1자 이상 10자 이하여야 합니다."),
 
     /**
      * 알림
@@ -83,6 +92,7 @@ public enum ErrorCode {
     CANNOT_SUBMIT_FORM_YOU_CREATED(BAD_REQUEST, "SUBMISSION008", "자신이 작성한 설문에는 답변할 수 없습니다."),
     SHORT_QUESTION_SUBMISSION_CONTENT_OVER_LIMIT(BAD_REQUEST, "SUBMISSION009", "short형 질문의 응답은 500자 이내여야 합니다."),
     LONG_QUESTION_SUBMISSION_CONTENT_OVER_LIMIT(BAD_REQUEST, "SUBMISSION010", "Long형 질문의 응답은 5000자 이내여야 합니다."),
+
     /**
      * Result
      */
@@ -96,8 +106,10 @@ public enum ErrorCode {
     OBJECTIVE_QUESTION_REQUIRED_AT_LEAST_ONE_OPTION(BAD_REQUEST, "CONTENT001", "객관식 질문에는 적어도 한개 이상의 보기가 필요합니다."),
     QUESTION_DTO_CONVERT_ERROR(BAD_REQUEST, "CONTENT002", "Question 엔티티를 DTO로 변환할 수 없습니다."),
     UNEXPECTED_CONTENT_TYPE(BAD_REQUEST, "CONTENT003", "올바르지 않은 Content type입니다."),
-    CONTENT_DETAIL_OVER_LIMIT(BAD_REQUEST, "CONTENT004", "설문 문항의 설명 글자수는 1000자 이하여야 합니다."),
-    CONTENT_TITLE_OVER_LIMIT(BAD_REQUEST, "CONTENT005", "설문 문항의 제목 글자수는 1자 이상 200자 이하여야 합니다.");
+    INVALID_CONTENT_TITLE_LENGTH(BAD_REQUEST, "CONTENT004", "설문 문항 제목은 1자 이상 100자 이하여야 합니다."),
+    INVALID_CONTENT_DESCRIPTION_LENGTH(BAD_REQUEST, "CONTENT005", "설문 문항 설명은 1000자 이하여야 합니다.");
+
+
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

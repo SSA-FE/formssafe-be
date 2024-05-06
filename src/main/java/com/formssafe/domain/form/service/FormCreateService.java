@@ -62,7 +62,11 @@ public class FormCreateService {
     }
 
     private void createTempForm(FormCreateDto request, User user, LocalDateTime now, int questionCnt) {
-        formValidateService.validAutoEndDate(now, request.endDate());
+        formValidateService.validTitle(request.title());
+        formValidateService.validDescription(request.description());
+        formValidateService.validImageSize(request.image());
+        formValidateService.validTempFormExpectTime(request.expectTime());
+        formValidateService.validExpectEndDate(now, request.endDate());
         formValidateService.validPrivacyDisposalDate(request.privacyDisposalDate(), request.endDate());
 
         Form form = Form.createTempForm(request, user, request.endDate(), questionCnt);
@@ -80,7 +84,11 @@ public class FormCreateService {
     }
 
     private void createForm(FormCreateDto request, User user, LocalDateTime startDate, int questionCnt) {
-        formValidateService.validAutoEndDate(startDate, request.endDate());
+        formValidateService.validTitle(request.title());
+        formValidateService.validDescription(request.description());
+        formValidateService.validImageSize(request.image());
+        formValidateService.validFormExpectTime(request.expectTime());
+        formValidateService.validExpectEndDate(startDate, request.endDate());
         formValidateService.validPrivacyDisposalDate(request.privacyDisposalDate(), request.endDate());
         formValidateService.validQuestionCnt(questionCnt);
 

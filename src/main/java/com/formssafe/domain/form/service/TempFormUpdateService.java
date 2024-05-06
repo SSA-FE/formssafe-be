@@ -57,7 +57,11 @@ public class TempFormUpdateService {
     }
 
     private void updateToTempForm(FormUpdateDto request, Form form, LocalDateTime now, int questionCnt) {
-        formValidateService.validAutoEndDate(now, request.endDate());
+        formValidateService.validTitle(request.title());
+        formValidateService.validDescription(request.description());
+        formValidateService.validImageSize(request.image());
+        formValidateService.validTempFormExpectTime(request.expectTime());
+        formValidateService.validExpectEndDate(now, request.endDate());
         formValidateService.validPrivacyDisposalDate(request.privacyDisposalDate(), request.endDate());
 
         clearFormRelatedData(form);
@@ -82,7 +86,11 @@ public class TempFormUpdateService {
     }
 
     private void updateToForm(FormUpdateDto request, Form form, LocalDateTime startDate, int questionCnt) {
-        formValidateService.validAutoEndDate(startDate, request.endDate());
+        formValidateService.validTitle(request.title());
+        formValidateService.validDescription(request.description());
+        formValidateService.validImageSize(request.image());
+        formValidateService.validFormExpectTime(request.expectTime());
+        formValidateService.validExpectEndDate(startDate, request.endDate());
         formValidateService.validPrivacyDisposalDate(request.privacyDisposalDate(), request.endDate());
         formValidateService.validQuestionCnt(questionCnt);
 

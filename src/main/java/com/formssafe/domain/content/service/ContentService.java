@@ -32,6 +32,13 @@ public class ContentService {
 
     @Transactional
     public void createContents(List<ContentCreateDto> contentCreateDtos, Form form) {
+        for (ContentCreateDto contentCreateDto : contentCreateDtos) {
+            if (!DecorationType.exists(contentCreateDto.type())) {
+                contentValidateService.validContentTitleLength(contentCreateDto.title());
+            }
+            contentValidateService.validContentDescriptionLength(contentCreateDto.description());
+        }
+
         List<ObjectiveQuestion> objectiveQuestions = new ArrayList<>();
         List<DescriptiveQuestion> descriptiveQuestions = new ArrayList<>();
         List<Decoration> decorations = new ArrayList<>();
@@ -39,21 +46,14 @@ public class ContentService {
         int position = 1;
         for (ContentCreateDto q : contentCreateDtos) {
             if (DecorationType.exists(q.type())) {
-                Decoration decoration = q.toDecoration(form, position);
-                contentValidateService.validDecoration(decoration);
-                decorations.add(decoration);
+                decorations.add(q.toDecoration(form, position));
             } else if (ObjectiveQuestionType.exists(q.type())) {
                 if (q.options() == null || q.options().isEmpty()) {
                     throw new BadRequestException(ErrorCode.OBJECTIVE_QUESTION_REQUIRED_AT_LEAST_ONE_OPTION,
                             "객관식 질문에는 보기가 1개 이상 필요합니다.");
                 }
-                ObjectiveQuestion objectiveQuestion = q.toObjectiveQuestion(form, position);
-                contentValidateService.validObjectiveQuestion(objectiveQuestion);
-                objectiveQuestions.add(objectiveQuestion);
+                objectiveQuestions.add(q.toObjectiveQuestion(form, position));
             } else if (DescriptiveQuestionType.exists(q.type())) {
-                DescriptiveQuestion descriptiveQuestion = q.toDescriptiveQuestion(form, position);
-                
-                contentValidateService.validDescriptiveQuestion(descriptiveQuestion);
                 descriptiveQuestions.add(q.toDescriptiveQuestion(form, position));
             } else {
                 throw new BadRequestException(ErrorCode.INVALID_OPTION, "유효하지 않은 옵션입니다.: " + q.type());
