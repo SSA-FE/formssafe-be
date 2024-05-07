@@ -11,5 +11,4 @@ public @interface WithMockSessionAuthentication {
     long id() default 1L;
 
     String role() default "ROLE_USER";
-
 }

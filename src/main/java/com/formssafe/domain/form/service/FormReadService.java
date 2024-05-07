@@ -44,11 +44,4 @@ public class FormReadService {
                 .sorted(Comparator.comparingInt(Content::getPosition))
                 .toList();
     }
-
-    public List<Content> getReward(Long formId) {
-        return formRepository.findContentsById(formId).stream()
-                .map(contentConverter::convert)
-                .sorted(Comparator.comparingInt(Content::getPosition))
-                .toList();
-    }
 }

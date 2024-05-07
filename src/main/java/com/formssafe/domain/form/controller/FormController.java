@@ -2,9 +2,7 @@ package com.formssafe.domain.form.controller;
 
 import com.formssafe.domain.form.dto.FormRequest;
 import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
-import com.formssafe.domain.form.service.FormCreateService;
 import com.formssafe.domain.form.service.FormService;
-import com.formssafe.domain.form.service.TempFormUpdateService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.global.error.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,8 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class FormController {
     private final FormService formService;
-    private final FormCreateService formCreateService;
-    private final TempFormUpdateService tempFormUpdateService;
 
     @Operation(summary = "설문 상세 조회", description = "해당 id의 설문을 상세 조회한다.")
     @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
@@ -53,7 +49,7 @@ public class FormController {
     @ResponseStatus(HttpStatus.OK)
     FormWithQuestionDto getForm(@PathVariable Long id,
                                 @AuthenticationPrincipal LoginUserDto loginUser) {
-        return formService.getForm(id, loginUser);
+        return formService.getTempForm(id, loginUser);
     }
 
     @Operation(summary = "설문 등록", description = "새로운 설문을 등록한다.")
@@ -65,7 +61,7 @@ public class FormController {
     @ResponseStatus(HttpStatus.OK)
     void createForm(@Valid @RequestBody FormRequest.FormCreateDto request,
                     @AuthenticationPrincipal LoginUserDto loginUser) {
-        formCreateService.execute(request, loginUser);
+        formService.createForm(request, loginUser);
     }
 
     @Operation(summary = "설문 수동 마감", description = "해당 id의 설문을 수동으로 마감한다.")
@@ -98,7 +94,7 @@ public class FormController {
     void updateForm(@PathVariable Long id,
                     @Valid @RequestBody FormRequest.FormUpdateDto request,
                     @AuthenticationPrincipal LoginUserDto loginUser) {
-        tempFormUpdateService.execute(id, request, loginUser);
+        formService.updateTempForm(id, request, loginUser);
     }
 
     @Operation(summary = "설문 삭제", description = "해당 id의 설문을 삭제한다.")

@@ -3,6 +3,8 @@ package com.formssafe.domain.form.service;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
+import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
+import com.formssafe.domain.form.dto.FormRequest.FormUpdateDto;
 import com.formssafe.domain.form.dto.FormResponse.FormResultDto;
 import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
 import com.formssafe.domain.form.entity.Form;
@@ -28,21 +30,18 @@ public class FormService {
     private final FormValidateService formValidateService;
     private final RewardRecipientsSelectService rewardRecipientsSelectService;
     private final FormFinishService formFinishService;
+    private final FormCreateService formCreateService;
+    private final TempFormUpdateService tempFormUpdateService;
+    private final FormResponseMapper formResponseMapper;
     private final FormRepository formRepository;
 
-    public FormWithQuestionDto getForm(Long formId, LoginUserDto loginUser) {
+    public FormWithQuestionDto getTempForm(Long formId, LoginUserDto loginUser) {
         Form form = formReadService.findFormWithUserAndTag(formId);
         formValidateService.validAuthor(form, loginUser.id());
         formValidateService.validTempForm(form);
 
         List<Content> contents = formReadService.getContentList(formId);
-        List<FormTag> formTags = form.getFormTagList();
-        Reward reward = form.getReward();
-
-        return FormWithQuestionDto.from(form,
-                FormResponseMapper.toContentResponseDto(contents),
-                FormResponseMapper.toTagListDto(formTags),
-                FormResponseMapper.toRewardDto(reward));
+        return formResponseMapper.toFormWithQuestionDto(form, contents);
     }
 
     public FormResultDto getFormResult(Long formId, LoginUserDto loginUser) {
@@ -59,13 +58,13 @@ public class FormService {
         }
 
         return FormResultDto.from(form,
-                FormResponseMapper.toContentResponseDto(contents),
-                FormResponseMapper.toTagListDto(formTags),
-                FormResponseMapper.toRewardDto(reward),
-                FormResponseMapper.toRewardRecipientsListDto(rewardRecipients));
+                formResponseMapper.toContentResponseDto(contents),
+                formResponseMapper.toTagListDto(formTags),
+                formResponseMapper.toRewardDto(reward),
+                formResponseMapper.toRewardRecipientsListDto(rewardRecipients));
     }
 
-    public Form getForm(Long id) {
+    public Form getTempForm(Long id) {
         return formReadService.findForm(id);
     }
 
@@ -84,6 +83,21 @@ public class FormService {
         return requiredQuestionCnt;
     }
 
+    @Transactional
+    public void createForm(FormCreateDto request, LoginUserDto loginUser) {
+        log.debug("Create Form: contents: {}, loginUser: {}", request, loginUser.id());
+
+        formCreateService.execute(request, loginUser);
+    }
+
+    @Transactional
+    public void updateTempForm(Long formId, FormUpdateDto request, LoginUserDto loginUser) {
+        log.debug("Update Temp Form: id: {}, contents: {}, loginUser: {}", formId, request, loginUser.id());
+
+        tempFormUpdateService.execute(formId, request, loginUser);
+    }
+
+    @Transactional
     public void deleteFormByUser(User user) {
         formRepository.deleteFormByUserId(user.getId());
     }

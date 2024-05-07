@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ViewService {
     private final FormReadService formReadService;
     private final FormValidateService formValidateService;
+    private final FormResponseMapper formResponseMapper;
 
     public FormListResponseDto getFormList(SearchDto searchDto) {
         log.info(searchDto.toString());
@@ -43,8 +44,8 @@ public class ViewService {
         List<Content> contentList = formReadService.getContentList(formId);
 
         return FormWithQuestionDto.from(form,
-                FormResponseMapper.toContentResponseDto(contentList),
-                FormResponseMapper.toTagListDto(form.getFormTagList()),
-                FormResponseMapper.toRewardDto(form.getReward()));
+                formResponseMapper.toContentResponseDto(contentList),
+                formResponseMapper.toTagListDto(form.getFormTagList()),
+                formResponseMapper.toRewardDto(form.getReward()));
     }
 }
