@@ -1,11 +1,7 @@
 package com.formssafe.util;
 
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
-import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
-import com.formssafe.domain.content.question.entity.DescriptiveQuestionType;
-import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
-import com.formssafe.domain.content.question.entity.ObjectiveQuestionOption;
-import com.formssafe.domain.content.question.entity.ObjectiveQuestionType;
+import com.formssafe.domain.content.question.entity.*;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.notification.entity.Notification;
@@ -19,6 +15,7 @@ import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.user.entity.Authority;
 import com.formssafe.domain.user.entity.OauthId;
 import com.formssafe.domain.user.entity.User;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +55,20 @@ public final class Fixture {
                 .build();
     }
 
+    public static User createUser(String nickname, String email) {
+        return User.builder()
+                .oauthId(new OauthId("123", OauthServerType.GOOGLE))
+                .nickname(nickname)
+                .email(email)
+                .imageUrl(
+                        "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1")
+                .authority(Authority.ROLE_USER)
+                .refreshToken("refreshToken1")
+                .isActive(true)
+                .isDeleted(false)
+                .build();
+    }
+
     public static User createUser(String nickname,
                                   String oauthId,
                                   String email) {
@@ -87,6 +98,20 @@ public final class Fixture {
                 .refreshToken("refreshToken1")
                 .isActive(true)
                 .isDeleted(true)
+                .build();
+    }
+
+    public static User createNotActiveUser(String nickname, String email) {
+        return User.builder()
+                .oauthId(new OauthId("123", OauthServerType.GOOGLE))
+                .nickname(nickname)
+                .email(email)
+                .imageUrl(
+                        "https://www.wfla.com/wp-content/uploads/sites/71/2023/05/GettyImages-1389862392.jpg?w=1280&h=720&crop=1")
+                .authority(Authority.ROLE_USER)
+                .refreshToken("refreshToken1")
+                .isActive(false)
+                .isDeleted(false)
                 .build();
     }
 
