@@ -28,8 +28,14 @@ public class NotificationReader {
         return notificationRepository.countByReceiverIdAndIsReadFalse(userId);
     }
 
-    public List<Notification> findUnreadNotifications(Long userId) {
-        return notificationRepository.findTop5ByReceiverIdAndIsReadFalseOrderByCreateDateDesc(userId);
+    public List<Notification> findUnreadNotifications(Long userId,
+                                                      NotificationSearchDto searchDto) {
+        Long top = searchDto.top();
+        if (top == null) {
+            top = Long.MAX_VALUE;
+        }
+
+        return notificationRepository.findTop10ByReceiverIdAndIsReadFalseAndIdBeforeOrderByIdDesc(userId, top);
     }
 
     public List<Notification> findNotifications(Long userId,
