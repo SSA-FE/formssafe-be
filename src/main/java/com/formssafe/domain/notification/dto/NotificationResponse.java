@@ -1,6 +1,7 @@
 package com.formssafe.domain.notification.dto;
 
 import com.formssafe.domain.notification.entity.Notification;
+import java.util.List;
 
 public final class NotificationResponse {
 
@@ -25,5 +26,13 @@ public final class NotificationResponse {
                     notification.isRead(),
                     notification.getCreateDate().toString());
         }
+    }
+
+    public record NotificationCursor(Long top) {
+    }
+
+    public record NotificationListResponseDto(List<NotificationResponseDto> notifications,
+                                              NotificationCursor cursor) {
+
     }
 }

@@ -11,9 +11,9 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     int countByReceiverIdAndIsReadFalse(Long userId);
 
-    List<Notification> findTop5ByReceiverIdAndIsReadFalseOrderByCreateDateDesc(@Param("userId") Long userId);
-
     List<Notification> findTop10ByReceiverIdAndIdBeforeOrderByIdDesc(Long userId, Long notificationId);
+
+    List<Notification> findTop10ByReceiverIdAndIsReadFalseAndIdBeforeOrderByIdDesc(Long userId, Long notificationId);
 
     @Modifying
     @Query("update Notification n set n.isRead = true where n.receiver.id = :userId")
