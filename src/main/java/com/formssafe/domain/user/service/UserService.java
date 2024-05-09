@@ -31,10 +31,8 @@ public class UserService {
     private final UserValidateService userValidateService;
 
     public User getUserById(Long id) {
-        User user = userRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 userId 입니다 : " + id));
-
-        return user;
     }
 
     @Transactional
@@ -61,11 +59,6 @@ public class UserService {
         verifyNickname(nickname);
 
         User user = getUserById(loginUser.id());
-
-        if (user.getNickname().equals(nickname)) {
-            throw new BadRequestException(ErrorCode.USER_NICKNAME_DUPLICATE, "중복된 닉네임이 존재합니다.");
-        }
-
         user.updateNickname(request.nickname());
     }
 
