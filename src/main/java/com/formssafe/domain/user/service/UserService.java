@@ -43,6 +43,7 @@ public class UserService {
         if (user.isActive()) {
             throw new BadRequestException(ErrorCode.USER_ALREADY_JOIN, "이미 회원가입하셨습니다.");
         }
+        verifyNickname(request.nickname());
 
         user.updateNickname(request.nickname());
         user.activate();
@@ -57,15 +58,23 @@ public class UserService {
     @Transactional
     public void updateNickname(NicknameUpdateDto request, LoginUserDto loginUser) {
         String nickname = request.nickname();
-        userValidateService.validUserNickname(nickname);
+        verifyNickname(nickname);
 
         User user = getUserById(loginUser.id());
 
-        if (user.getNickname().equals(nickname) || userRepository.existsByNickname(nickname)) {
+        if (user.getNickname().equals(nickname)) {
             throw new BadRequestException(ErrorCode.USER_NICKNAME_DUPLICATE, "중복된 닉네임이 존재합니다.");
         }
 
         user.updateNickname(request.nickname());
+    }
+
+    private void verifyNickname(String nickname) {
+        userValidateService.validUserNickname(nickname);
+
+        if (userRepository.existsByNickname(nickname)) {
+            throw new BadRequestException(ErrorCode.USER_NICKNAME_DUPLICATE, "중복된 닉네임이 존재합니다.");
+        }
     }
 
     @Transactional
