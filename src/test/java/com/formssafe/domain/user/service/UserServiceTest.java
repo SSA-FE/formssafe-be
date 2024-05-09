@@ -14,6 +14,8 @@ import com.formssafe.util.EntityManagerUtil;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -81,15 +83,17 @@ class UserServiceTest extends IntegrationTestConfig {
                     .isEqualTo(ErrorCode.USER_ALREADY_JOIN);
         }
 
-        @Test
-        void 사용자가_입력한_닉네임이_유효하지_않다면_예외가_발생한다() {
+        @ParameterizedTest
+        @ValueSource(ints = {0, 21})
+        void 사용자가_입력한_닉네임이_유효하지_않다면_예외가_발생한다(int nicknameLength) {
             //given
             User testUser = createNotActiveUser("testUser", "userTest@example.com");
             em.persist(testUser);
             EntityManagerUtil.flushAndClearContext(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
-            JoinDto joinDto = new JoinDto("testtesttesttesttestt");
+            String nickname = "a".repeat(nicknameLength);
+            JoinDto joinDto = new JoinDto(nickname);
 
             //when then
             assertThatThrownBy(() -> userService.join(joinDto, loginUserDto))
@@ -213,15 +217,18 @@ class UserServiceTest extends IntegrationTestConfig {
             });
         }
 
-        @Test
-        void 사용자가_입력한_닉네임이_유효하지_않다면_예외가_발생한다() {
+        @ParameterizedTest
+        @ValueSource(ints = {0, 21})
+        void 사용자가_입력한_닉네임이_유효하지_않다면_예외가_발생한다(int nicknameLength) {
             //given
             User testUser = createUser("testUser", "testUser@example.com");
             em.persist(testUser);
             EntityManagerUtil.flushAndClearContext(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
-            NicknameUpdateDto nicknameUpdateDto = new NicknameUpdateDto("");
+
+            String nickname = "a".repeat(nicknameLength);
+            NicknameUpdateDto nicknameUpdateDto = new NicknameUpdateDto(nickname);
 
             //when then
             assertThatThrownBy(() -> userService.updateNickname(nicknameUpdateDto, loginUserDto))
