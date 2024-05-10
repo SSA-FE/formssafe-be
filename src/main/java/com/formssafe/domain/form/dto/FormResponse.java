@@ -230,5 +230,13 @@ public final class FormResponse {
             return formCursorDto;
         }
     }
+
+    @Schema(description = "설문 id 정보 dto")
+    public record FormIdDto(@Schema(description = "설문 id") Long formId) {
+
+        public static FormIdDto from(Long formId) {
+            return new FormIdDto(formId);
+        }
+    }
 }
 

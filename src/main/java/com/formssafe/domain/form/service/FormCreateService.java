@@ -4,6 +4,7 @@ import com.formssafe.domain.content.decoration.entity.DecorationType;
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.content.service.ContentService;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
+import com.formssafe.domain.form.dto.FormResponse.FormIdDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.notification.dto.NotificationEventDto.RewardCategoryRegistNotificationEventDto;
@@ -38,9 +39,10 @@ public class FormCreateService {
     private final RewardService rewardService;
     private final SubscribeService subscribeService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final FormResponseMapper formResponseMapper;
 
     @Transactional
-    public void execute(FormCreateDto request, LoginUserDto loginUser) {
+    public FormIdDto execute(FormCreateDto request, LoginUserDto loginUser) {
         log.debug("FormCreateService.execute: \nrequest {}\n loginUser {}", request, loginUser);
 
         User user = userRepository.getReferenceById(loginUser.id());
@@ -48,11 +50,14 @@ public class FormCreateService {
         int questionCnt = getQuestionCnt(request.contents());
         log.debug("now: {}, endDate: {}, questionCnt: {}", now, request.endDate(), questionCnt);
 
+        Long formId = null;
         if (request.isTemp()) {
-            createTempForm(request, user, now, questionCnt);
+            formId = createTempForm(request, user, now, questionCnt);
         } else {
-            createForm(request, user, now, questionCnt);
+            formId = createForm(request, user, now, questionCnt);
         }
+
+        return formResponseMapper.toFormIdDto(formId);
     }
 
     private int getQuestionCnt(List<ContentCreateDto> questions) {
@@ -61,7 +66,7 @@ public class FormCreateService {
                 .count();
     }
 
-    private void createTempForm(FormCreateDto request, User user, LocalDateTime now, int questionCnt) {
+    private Long createTempForm(FormCreateDto request, User user, LocalDateTime now, int questionCnt) {
         formValidateService.validTitle(request.title());
         formValidateService.validDescription(request.description());
         formValidateService.validImageSize(request.image());
@@ -73,6 +78,8 @@ public class FormCreateService {
         formRepository.save(form);
 
         createFormRelatedData(request, form);
+
+        return form.getId();
     }
 
     private void createFormRelatedData(FormCreateDto request, Form form) {
@@ -83,7 +90,7 @@ public class FormCreateService {
         }
     }
 
-    private void createForm(FormCreateDto request, User user, LocalDateTime startDate, int questionCnt) {
+    private Long createForm(FormCreateDto request, User user, LocalDateTime startDate, int questionCnt) {
         formValidateService.validTitle(request.title());
         formValidateService.validDescription(request.description());
         formValidateService.validImageSize(request.image());
@@ -100,6 +107,8 @@ public class FormCreateService {
         if (form.getReward() != null) {
             publishRewardCategoryEvent(request.reward().category(), form, user);
         }
+
+        return form.getId();
     }
 
     private void publishRewardCategoryEvent(String rewardCategoryName, Form form, User user) {
