@@ -350,6 +350,15 @@ public final class Fixture {
         return new ContentCreateDto(type, title, description, options, false, isPrivacy);
     }
 
+    public static ContentCreateDto createContentCreate(String type,
+                                                       String title,
+                                                       String description,
+                                                       int position,
+                                                       List<String> options,
+                                                       boolean isPrivacy) {
+        return new ContentCreateDto(type, title, description, options, false, isPrivacy);
+    }
+
     public static List<Submission> createSubmissions(List<User> users,
                                                      Form form) {
         List<Submission> submissions = new ArrayList<>();
