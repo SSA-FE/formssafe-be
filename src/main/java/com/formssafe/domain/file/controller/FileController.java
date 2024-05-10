@@ -14,11 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "files", description = "s3 presigned-url 받아오기")
 @RestController
@@ -36,6 +32,6 @@ public class FileController {
     @GetMapping("/upload/{fileName}")
     @ResponseStatus(HttpStatus.OK)
     FileResponseDto createPresignedUrl(@PathVariable String fileName, @AuthenticationPrincipal LoginUserDto loginUser) {
-        return fileService.createPresignedUrl("image", fileName, loginUser);
+        return fileService.createPresignedUrl("image", fileName);
     }
 }
