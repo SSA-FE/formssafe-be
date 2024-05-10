@@ -10,6 +10,7 @@ import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.submission.entity.Submission;
+import com.formssafe.domain.subscribe.entity.Subscribe;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.user.entity.Authority;
@@ -384,6 +385,14 @@ public final class Fixture {
                 .notificationType(type)
                 .content(content)
                 .isRead(isRead)
+                .build();
+    }
+
+    public static Subscribe createSubscribe(User user,
+                                            RewardCategory rewardCategory) {
+        return Subscribe.builder()
+                .user(user)
+                .rewardCategory(rewardCategory)
                 .build();
     }
 }
