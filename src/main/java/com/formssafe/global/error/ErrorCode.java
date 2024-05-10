@@ -1,12 +1,9 @@
 package com.formssafe.global.error;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Getter
 public enum ErrorCode {
@@ -107,7 +104,9 @@ public enum ErrorCode {
     QUESTION_DTO_CONVERT_ERROR(BAD_REQUEST, "CONTENT002", "Question 엔티티를 DTO로 변환할 수 없습니다."),
     UNEXPECTED_CONTENT_TYPE(BAD_REQUEST, "CONTENT003", "올바르지 않은 Content type입니다."),
     INVALID_CONTENT_TITLE_LENGTH(BAD_REQUEST, "CONTENT004", "설문 문항 제목은 1자 이상 100자 이하여야 합니다."),
-    INVALID_CONTENT_DESCRIPTION_LENGTH(BAD_REQUEST, "CONTENT005", "설문 문항 설명은 1000자 이하여야 합니다.");
+    INVALID_CONTENT_DESCRIPTION_LENGTH(BAD_REQUEST, "CONTENT005", "설문 문항 설명은 1000자 이하여야 합니다."),
+    OBJECTIVE_QUESTION_NOT_EXIST(BAD_REQUEST, "CONTENT006", "객관식 설문 문항이 존재하지 않습니다."),
+    DESCRIPTIVE_QUESTION_NOT_EXIST(BAD_REQUEST, "CONTENT007", "주관식 설문 문항이 존재하지 않습니다.");
 
 
     private final HttpStatus httpStatus;
