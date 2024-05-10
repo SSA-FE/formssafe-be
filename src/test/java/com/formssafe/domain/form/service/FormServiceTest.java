@@ -60,7 +60,7 @@ class FormServiceTest extends IntegrationTestConfig {
 
         rewardCategory = createRewardCategory("test_category");
         em.persist(rewardCategory);
-        EntityManagerUtil.flushAndClearContext(em);
+        EntityManagerUtil.flushAndClear(em);
     }
 
     @Nested
@@ -71,7 +71,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createForm(testUser, "설문1", "설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when
@@ -90,7 +90,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createForm(testUser, "설문1", "설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
             //when then
@@ -108,7 +108,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createTemporaryForm(testUser, "설문1", "설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when then
@@ -127,7 +127,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createDeletedForm(testUser, "설문1", "설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when then
@@ -141,7 +141,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createTemporaryForm(testUser, "설문1", "설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
             //when then
@@ -155,7 +155,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createForm(testUser, "설문1", "설문설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when then
@@ -173,7 +173,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createForm(testUser, "설문1", "설문설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when
@@ -204,7 +204,7 @@ class FormServiceTest extends IntegrationTestConfig {
             deletedUsers.forEach(em::persist);
             submissions.forEach(em::persist);
             submissionsByDeletedUser.forEach(em::persist);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when
@@ -235,7 +235,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createForm(testUser, "설문1", "설문설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUser = new LoginUserDto(10L);
             //when then
@@ -249,7 +249,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createForm(testUser, "설문1", "설문설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
             //when then
@@ -264,7 +264,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createFormWithStatus(testUser, "설문1", "설문설명1", status);
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when then
@@ -282,7 +282,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createForm(testUser, "설문1", "설문설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when
@@ -297,7 +297,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createDeletedForm(testUser, "설문1", "설문설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when then
@@ -311,7 +311,7 @@ class FormServiceTest extends IntegrationTestConfig {
             //given
             Form form = createForm(testUser, "설문1", "설문설명1");
             em.persist(form);
-            EntityManagerUtil.flushAndClearContext(em);
+            EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
             //when then

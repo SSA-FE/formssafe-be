@@ -1,7 +1,7 @@
 package com.formssafe.domain.notification.service;
 
 import com.formssafe.domain.notification.dto.NotificationParam.NotificationSearchDto;
-import com.formssafe.domain.notification.dto.NotificationResponse.NotificationResponseDto;
+import com.formssafe.domain.notification.dto.NotificationResponse.NotificationListResponseDto;
 import com.formssafe.domain.notification.dto.NotificationResponse.UnreadNotificationCountResponseDto;
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.implement.NotificationMapper;
@@ -29,17 +29,18 @@ public class NotificationService {
         return NotificationMapper.createUnreadNotificationCountResponseDto(unreadCount);
     }
 
-    public List<NotificationResponseDto> getUnreadNotifications(LoginUserDto loginUserDto) {
-        List<Notification> notifications = notificationReader.findUnreadNotifications(loginUserDto.id());
+    public NotificationListResponseDto getUnreadNotifications(NotificationSearchDto searchDto,
+                                                              LoginUserDto loginUserDto) {
+        List<Notification> notifications = notificationReader.findUnreadNotifications(loginUserDto.id(), searchDto);
 
-        return NotificationMapper.createNotificationResponseDtoList(notifications);
+        return NotificationMapper.createNotificationListResponseDto(notifications);
     }
 
-    public List<NotificationResponseDto> getNotifications(NotificationSearchDto searchDto,
-                                                          LoginUserDto loginUserDto) {
+    public NotificationListResponseDto getNotifications(NotificationSearchDto searchDto,
+                                                        LoginUserDto loginUserDto) {
         List<Notification> notifications = notificationReader.findNotifications(loginUserDto.id(), searchDto);
 
-        return NotificationMapper.createNotificationResponseDtoList(notifications);
+        return NotificationMapper.createNotificationListResponseDto(notifications);
     }
 
     @Transactional
