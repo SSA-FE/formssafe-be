@@ -29,6 +29,7 @@ public class FormService {
     private final RewardRecipientsSelectService rewardRecipientsSelectService;
     private final FormFinishService formFinishService;
     private final FormRepository formRepository;
+    private final FormResponseMapper formResponseMapper;
 
     public FormWithQuestionDto getForm(Long formId, LoginUserDto loginUser) {
         Form form = formReadService.findFormWithUserAndTag(formId);
@@ -40,9 +41,9 @@ public class FormService {
         Reward reward = form.getReward();
 
         return FormWithQuestionDto.from(form,
-                FormResponseMapper.toContentResponseDto(contents),
-                FormResponseMapper.toTagListDto(formTags),
-                FormResponseMapper.toRewardDto(reward));
+                formResponseMapper.toContentResponseDto(contents),
+                formResponseMapper.toTagListDto(formTags),
+                formResponseMapper.toRewardDto(reward));
     }
 
     public FormResultDto getFormResult(Long formId, LoginUserDto loginUser) {
@@ -59,10 +60,10 @@ public class FormService {
         }
 
         return FormResultDto.from(form,
-                FormResponseMapper.toContentResponseDto(contents),
-                FormResponseMapper.toTagListDto(formTags),
-                FormResponseMapper.toRewardDto(reward),
-                FormResponseMapper.toRewardRecipientsListDto(rewardRecipients));
+                formResponseMapper.toContentResponseDto(contents),
+                formResponseMapper.toTagListDto(formTags),
+                formResponseMapper.toRewardDto(reward),
+                formResponseMapper.toRewardRecipientsListDto(rewardRecipients));
     }
 
     public Form getForm(Long id) {
