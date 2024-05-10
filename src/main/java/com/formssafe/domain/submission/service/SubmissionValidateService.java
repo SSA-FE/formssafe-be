@@ -15,14 +15,14 @@ public class SubmissionValidateService {
     public void validDescriptiveSubmission(DescriptiveSubmission descriptiveSubmission,
                                            DescriptiveQuestionType descriptiveQuestionType) {
         if (descriptiveQuestionType.displayName().equals("short")) {
-            if (descriptiveSubmission.getContent().length() > 500) {
+            if (descriptiveSubmission.getContent().length() > 500 || descriptiveSubmission.getContent().isEmpty()) {
                 throw new BadRequestException(ErrorCode.SHORT_QUESTION_SUBMISSION_CONTENT_OVER_LIMIT,
-                        "short형 질문의 응답은 500자 이내여야 합니다. : " + descriptiveSubmission.getContent());
+                        "short형 질문의 응답은 1자 이상 500자 이내여야 합니다. : " + descriptiveSubmission.getContent());
             }
         } else if (descriptiveQuestionType.displayName().equals("long")) {
-            if (descriptiveSubmission.getContent().length() > 5000) {
+            if (descriptiveSubmission.getContent().length() > 5000 || descriptiveSubmission.getContent().isEmpty()) {
                 throw new BadRequestException(ErrorCode.LONG_QUESTION_SUBMISSION_CONTENT_OVER_LIMIT,
-                        "long형 질문의 응답은 5000자 이내여야 합니다. : " + descriptiveSubmission.getContent());
+                        "long형 질문의 응답은 1자 이상 5000자 이내여야 합니다. : " + descriptiveSubmission.getContent());
             }
         }
     }
