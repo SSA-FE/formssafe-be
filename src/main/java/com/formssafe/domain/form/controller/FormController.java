@@ -1,6 +1,7 @@
 package com.formssafe.domain.form.controller;
 
 import com.formssafe.domain.form.dto.FormRequest;
+import com.formssafe.domain.form.dto.FormResponse.FormIdDto;
 import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
 import com.formssafe.domain.form.service.FormService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
@@ -59,9 +60,9 @@ public class FormController {
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    void createForm(@Valid @RequestBody FormRequest.FormCreateDto request,
-                    @AuthenticationPrincipal LoginUserDto loginUser) {
-        formService.createForm(request, loginUser);
+    FormIdDto createForm(@Valid @RequestBody FormRequest.FormCreateDto request,
+                         @AuthenticationPrincipal LoginUserDto loginUser) {
+        return formService.createForm(request, loginUser);
     }
 
     @Operation(summary = "설문 수동 마감", description = "해당 id의 설문을 수동으로 마감한다.")

@@ -7,20 +7,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
+import com.formssafe.domain.form.dto.FormResponse.FormIdDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
-import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.dto.RewardRequest.RewardCreateDto;
 import com.formssafe.domain.reward.entity.RewardCategory;
-import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.tag.repository.TagRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
+import com.formssafe.util.EntityManagerUtil;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,30 +33,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class FormCreateServiceTest extends IntegrationTestConfig {
     private final FormCreateService formCreateService;
-    private final UserRepository userRepository;
-    private final FormRepository formRepository;
-    private final RewardCategoryRepository rewardCategoryRepository;
     private final TagRepository tagRepository;
     private final EntityManager em;
 
     private User testUser;
+    private RewardCategory rewardCategory;
 
     @Autowired
-    public FormCreateServiceTest(FormCreateService formCreateService, UserRepository userRepository,
-                                 FormRepository formRepository, RewardCategoryRepository rewardCategoryRepository,
-                                 TagRepository tagRepository, EntityManager em) {
+    public FormCreateServiceTest(FormCreateService formCreateService,
+                                 TagRepository tagRepository,
+                                 EntityManager em) {
         this.formCreateService = formCreateService;
-        this.userRepository = userRepository;
-        this.formRepository = formRepository;
-        this.rewardCategoryRepository = rewardCategoryRepository;
         this.tagRepository = tagRepository;
         this.em = em;
     }
 
     @BeforeEach
     void setUp() {
-        rewardCategoryRepository.save(RewardCategory.builder().rewardCategoryName("커피").build());
-        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
+        rewardCategory = RewardCategory.builder()
+                .rewardCategoryName("test")
+                .build();
+        em.persist(rewardCategory);
+        testUser = em.find(User.class, 1L);
     }
 
     @Test
@@ -71,21 +68,14 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
                 List.of("tag1", "tag13"),
-                new RewardCreateDto("경품1", "커피", 4),
+                new RewardCreateDto("경품1", rewardCategory.getRewardCategoryName(), 4),
                 false);
         LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
-        em.flush();
-        em.clear();
         //when
-        formCreateService.execute(formCreateDto, loginUserDto);
+        FormIdDto result = formCreateService.execute(formCreateDto, loginUserDto);
+        EntityManagerUtil.flushAndClear(em);
         //then
-        em.flush();
-        em.clear();
-
-        List<Form> result = formRepository.findAll();
-        assertThat(result).hasSize(1);
-
-        Form resultForm = result.get(0);
+        Form resultForm = em.find(Form.class, result.formId());
         assertThat(resultForm.getUser().getId()).isEqualTo(testUser.getId());
         assertThat(resultForm.getStatus()).isEqualTo(FormStatus.PROGRESS);
         assertThat(resultForm.getDecorationList().get(0).getPosition()).isEqualTo(1);
@@ -109,21 +99,14 @@ class FormCreateServiceTest extends IntegrationTestConfig {
                         createContentCreate("short", "주관식 질문", null, null, false),
                         createContentCreate("checkbox", "객관식 질문", null, List.of("1", "2", "3"), false)),
                 List.of("tag1", "tag13"),
-                new RewardCreateDto("경품1", "커피", 4),
+                new RewardCreateDto("경품1", rewardCategory.getRewardCategoryName(), 4),
                 true);
         LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
-        em.flush();
-        em.clear();
         //when
-        formCreateService.execute(formCreateDto, loginUserDto);
+        FormIdDto result = formCreateService.execute(formCreateDto, loginUserDto);
+        EntityManagerUtil.flushAndClear(em);
         //then
-        em.flush();
-        em.clear();
-
-        List<Form> result = formRepository.findAll();
-        assertThat(result).hasSize(1);
-
-        Form resultForm = result.get(0);
+        Form resultForm = em.find(Form.class, result.formId());
         assertThat(resultForm.getUser().getId()).isEqualTo(testUser.getId());
         assertThat(resultForm.getStatus()).isEqualTo(FormStatus.NOT_STARTED);
         assertThat(resultForm.getStartDate()).isNull();

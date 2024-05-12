@@ -4,6 +4,7 @@ import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.content.entity.Content;
 import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
 import com.formssafe.domain.form.entity.Form;
+import com.formssafe.domain.form.dto.FormResponse.FormIdDto;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardDto;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
@@ -16,9 +17,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FormResponseMapper {
-
-    private FormResponseMapper() {
-    }
 
     public List<TagListDto> toTagListDto(List<FormTag> formTags) {
         return formTags.stream()
@@ -58,5 +56,9 @@ public class FormResponseMapper {
                 toContentResponseDto(contents),
                 toTagListDto(form.getFormTagList()),
                 toRewardDto(form.getReward()));
+    }
+
+    public FormIdDto toFormIdDto(Long formId) {
+        return new FormIdDto(formId);
     }
 }

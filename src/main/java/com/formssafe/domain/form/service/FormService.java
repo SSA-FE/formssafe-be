@@ -5,6 +5,7 @@ import com.formssafe.domain.content.question.entity.DescriptiveQuestion;
 import com.formssafe.domain.content.question.entity.ObjectiveQuestion;
 import com.formssafe.domain.form.dto.FormRequest.FormCreateDto;
 import com.formssafe.domain.form.dto.FormRequest.FormUpdateDto;
+import com.formssafe.domain.form.dto.FormResponse.FormIdDto;
 import com.formssafe.domain.form.dto.FormResponse.FormResultDto;
 import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
 import com.formssafe.domain.form.entity.Form;
@@ -84,10 +85,10 @@ public class FormService {
     }
 
     @Transactional
-    public void createForm(FormCreateDto request, LoginUserDto loginUser) {
+    public FormIdDto createForm(FormCreateDto request, LoginUserDto loginUser) {
         log.debug("Create Form: contents: {}, loginUser: {}", request, loginUser.id());
 
-        formCreateService.execute(request, loginUser);
+        return formCreateService.execute(request, loginUser);
     }
 
     @Transactional
