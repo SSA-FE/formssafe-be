@@ -1,5 +1,7 @@
 package com.formssafe.util;
 
+import com.formssafe.domain.content.decoration.entity.Decoration;
+import com.formssafe.domain.content.decoration.entity.DecorationType;
 import com.formssafe.domain.content.dto.ContentRequest.ContentCreateDto;
 import com.formssafe.domain.content.question.entity.*;
 import com.formssafe.domain.form.entity.Form;
@@ -278,6 +280,27 @@ public final class Fixture {
                 .build();
     }
 
+    public static Form createFormWithQuestionCnt(User author,
+                                                 String title,
+                                                 String detail,
+                                                 int questionCnt) {
+        return Form.builder()
+                .user(author)
+                .title(title)
+                .detail(detail)
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(2))
+                .expectTime(10)
+                .isEmailVisible(false)
+                .questionCnt(questionCnt)
+                .privacyDisposalDate(null)
+                .status(FormStatus.PROGRESS)
+                .isTemp(false)
+                .isDeleted(false)
+                .build();
+    }
+
+
     public static Tag createTag(String tagName) {
         return Tag.builder()
                 .tagName(tagName)
@@ -326,6 +349,22 @@ public final class Fixture {
                 .build();
     }
 
+    public static DescriptiveQuestion createDescriptiveQuestion(Form form,
+                                                                DescriptiveQuestionType type,
+                                                                String title,
+                                                                int position,
+                                                                boolean isRequired) {
+        return DescriptiveQuestion.builder()
+                .form(form)
+                .questionType(type)
+                .title(title)
+                .detail("주관식 질문 설명")
+                .position(position)
+                .isRequired(isRequired)
+                .isPrivacy(false)
+                .build();
+    }
+
     public static ObjectiveQuestion createObjectiveQuestion(Form form,
                                                             ObjectiveQuestionType type,
                                                             String title,
@@ -340,6 +379,36 @@ public final class Fixture {
                 .questionOption(options)
                 .isRequired(false)
                 .isPrivacy(false)
+                .build();
+    }
+
+    public static ObjectiveQuestion createObjectiveQuestion(Form form,
+                                                            ObjectiveQuestionType type,
+                                                            String title,
+                                                            int position,
+                                                            List<ObjectiveQuestionOption> options,
+                                                            boolean isRequired) {
+        return ObjectiveQuestion.builder()
+                .form(form)
+                .questionType(type)
+                .title(title)
+                .detail("객관식 질문 설명")
+                .position(position)
+                .questionOption(options)
+                .isRequired(isRequired)
+                .isPrivacy(false)
+                .build();
+    }
+
+    public static Decoration createDecoration(Form form,
+                                              DecorationType type,
+                                              String detail,
+                                              int position) {
+        return Decoration.builder()
+                .form(form)
+                .type(type)
+                .detail(detail)
+                .position(position)
                 .build();
     }
 
@@ -393,6 +462,14 @@ public final class Fixture {
         return Subscribe.builder()
                 .user(user)
                 .rewardCategory(rewardCategory)
+                .build();
+    }
+
+    public static Submission createSubmission(User user,
+                                              Form form) {
+        return Submission.builder()
+                .user(user)
+                .form(form)
                 .build();
     }
 }
