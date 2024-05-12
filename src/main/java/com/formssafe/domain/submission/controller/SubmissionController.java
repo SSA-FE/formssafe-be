@@ -16,14 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/forms")
@@ -78,9 +71,9 @@ public class SubmissionController {
                     schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
     @GetMapping("/{formId}/submission")
-    public ResponseEntity<SubmissionResponseDto> getSumbission(@PathVariable long formId,
-                                                               @AuthenticationPrincipal LoginUserDto loginUser) {
-        SubmissionResponseDto submissionResponseDto = submissionService.getSubmission(formId, loginUser);
+    public ResponseEntity<SubmissionResponseDto> getTempSumbission(@PathVariable long formId,
+                                                                   @AuthenticationPrincipal LoginUserDto loginUser) {
+        SubmissionResponseDto submissionResponseDto = submissionService.getTempSubmission(formId, loginUser);
         if (submissionResponseDto == null) {
             return ResponseEntity.noContent().build();
         }

@@ -27,14 +27,15 @@ import com.formssafe.domain.user.service.UserService;
 import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
 import com.formssafe.global.util.DateTimeUtil;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -105,7 +106,7 @@ public class SubmissionService {
         }
     }
 
-    public SubmissionResponseDto getSubmission(long formId, LoginUserDto loginUser) {
+    public SubmissionResponseDto getTempSubmission(long formId, LoginUserDto loginUser) {
         User user = userService.getUserById(loginUser.id());
 
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
@@ -117,6 +118,10 @@ public class SubmissionService {
 
         List<SubmissionDetailResponseDto> submissionDetailResponseDtos = getSubmissionDetailDto(submission);
         return SubmissionResponseDto.from(formId, submissionDetailResponseDtos, submission.isTemp());
+    }
+
+    public Submission getSubmission(long formId, LoginUserDto loginUser) {
+        return submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id()).orElse(null);
     }
 
     public List<SubmissionDetailResponseDto> getSubmissionDetailDto(Submission submission) {
@@ -200,6 +205,10 @@ public class SubmissionService {
         }
         descriptiveSubmissionRepository.saveAll(descriptiveSubmissions);
         objectiveSubmissionRepository.saveAll(objectiveSubmissions);
+
+        //TODO : 확인 필요
+        submission.getDescriptiveSubmissionList().addAll(descriptiveSubmissions);
+        submission.getObjectiveSubmissionList().addAll(objectiveSubmissions);
     }
 
     private void validate(User user, Form form) {
