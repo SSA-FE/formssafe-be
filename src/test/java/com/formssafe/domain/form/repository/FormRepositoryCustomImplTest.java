@@ -8,11 +8,9 @@ import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
-import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,16 +24,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 class FormRepositoryCustomImplTest extends IntegrationTestConfig {
+    private final FormRepository formRepository;
+    private final EntityManager em;
 
     @Autowired
-    private FormRepository formRepository;
-    @Autowired
-    private RewardCategoryRepository rewardCategoryRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private EntityManager em;
+    public FormRepositoryCustomImplTest(FormRepository formRepository,
+                                        EntityManager em) {
+        this.formRepository = formRepository;
+        this.em = em;
+    }
 
     private User testUser;
 
@@ -55,8 +54,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
 
     @BeforeEach
     void setUp() {
-        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
-        rewardCategoryRepository.findAll();
+        testUser = em.find(User.class, 1L);
     }
 
     @ValueSource(strings = {"1", "2", "3"})

@@ -255,7 +255,7 @@ public final class Fixture {
     public static Tag createTag(String tagName) {
         return Tag.builder()
                 .tagName(tagName)
-                .count(0)
+                .count(1)
                 .build();
     }
 
