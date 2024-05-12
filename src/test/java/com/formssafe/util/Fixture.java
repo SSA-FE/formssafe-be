@@ -11,6 +11,8 @@ import com.formssafe.domain.notification.entity.NotificationType;
 import com.formssafe.domain.oauth.OauthServerType;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
+import com.formssafe.domain.submission.entity.DescriptiveSubmission;
+import com.formssafe.domain.submission.entity.ObjectiveSubmission;
 import com.formssafe.domain.submission.entity.Submission;
 import com.formssafe.domain.subscribe.entity.Subscribe;
 import com.formssafe.domain.tag.entity.FormTag;
@@ -470,6 +472,31 @@ public final class Fixture {
         return Submission.builder()
                 .user(user)
                 .form(form)
+                .isTemp(false)
+                .build();
+    }
+
+    public static Submission createTempSubmission(User user, Form form) {
+        return Submission.builder()
+                .user(user)
+                .form(form)
+                .isTemp(true)
+                .build();
+    }
+
+    public static ObjectiveSubmission createObjectiveSubmission(Submission submission, String content, ObjectiveQuestion objectiveQuestion) {
+        return ObjectiveSubmission.builder()
+                .submission(submission)
+                .content(content)
+                .objectiveQuestion(objectiveQuestion)
+                .build();
+    }
+
+    public static DescriptiveSubmission createDescriptiveSubmission(Submission submission, String content, DescriptiveQuestion descriptiveQuestion) {
+        return DescriptiveSubmission.builder()
+                .submission(submission)
+                .content(content)
+                .descriptiveQuestion(descriptiveQuestion)
                 .build();
     }
 }
