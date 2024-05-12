@@ -67,6 +67,8 @@ class SubmissionServiceTest extends IntegrationTestConfig {
     void before() {
         testUser = em.find(User.class, 1L);
         submissionUser = createUser("submissionUser", "submissionUser@example.com");
+        em.persist(submissionUser);
+
         testForm = createFormWithQuestionCnt(testUser, "설문 제목", "설문 설명", 5);
         em.persist(testForm);
 
@@ -77,7 +79,6 @@ class SubmissionServiceTest extends IntegrationTestConfig {
         objectiveQuestion2 = createObjectiveQuestion(testForm, ObjectiveQuestionType.DROPDOWN, "객관식 질문2", 5, List.of(new ObjectiveQuestionOption(1, "보기1")), false);
         objectiveQuestion3 = createObjectiveQuestion(testForm, ObjectiveQuestionType.CHECKBOX, "객관식 질문3", 6, List.of(new ObjectiveQuestionOption(1, "보기1"), new ObjectiveQuestionOption(2, "보기2"), new ObjectiveQuestionOption(3, "보기3")), false);
 
-        em.persist(submissionUser);
         em.persist(descriptiveQuestion1);
         em.persist(descriptiveQuestion2);
         em.persist(decoration);
