@@ -22,6 +22,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SuppressWarnings("NonAsciiCharacters")
 @DisplayName("[경품 비즈니스 레이어 테스트]")
 class RewardServiceTest extends IntegrationTestConfig {
     private final RewardService rewardService;

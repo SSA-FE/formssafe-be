@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -24,7 +25,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayName("[설문 레포지토리 테스트]")
 class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     private final FormRepository formRepository;
     private final EntityManager em;
