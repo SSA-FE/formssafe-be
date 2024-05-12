@@ -3,10 +3,12 @@ package com.formssafe.domain.form.service;
 import static com.formssafe.util.Fixture.createDeletedForm;
 import static com.formssafe.util.Fixture.createDeletedUser;
 import static com.formssafe.util.Fixture.createForm;
+import static com.formssafe.util.Fixture.createFormTag;
 import static com.formssafe.util.Fixture.createFormWithStatus;
 import static com.formssafe.util.Fixture.createReward;
 import static com.formssafe.util.Fixture.createRewardCategory;
 import static com.formssafe.util.Fixture.createSubmissions;
+import static com.formssafe.util.Fixture.createTag;
 import static com.formssafe.util.Fixture.createTemporaryForm;
 import static com.formssafe.util.Fixture.createUsers;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,9 +22,12 @@ import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardCategory;
 import com.formssafe.domain.submission.entity.Submission;
+import com.formssafe.domain.tag.entity.FormTag;
+import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.global.error.ErrorCode;
+import com.formssafe.util.AssertionUtil;
 import com.formssafe.util.EntityManagerUtil;
 import jakarta.persistence.EntityManager;
 import java.util.List;
@@ -57,7 +62,6 @@ class FormServiceTest extends IntegrationTestConfig {
 
         rewardCategory = createRewardCategory("test_category");
         em.persist(rewardCategory);
-        EntityManagerUtil.flushAndClear(em);
     }
 
     @Nested
@@ -278,15 +282,25 @@ class FormServiceTest extends IntegrationTestConfig {
         void 작성한_설문을_삭제한다() {
             //given
             Form form = createForm(testUser, "설문1", "설문설명1");
+            Tag tag = createTag("tag1");
+            FormTag formTag = createFormTag(form, tag);
             em.persist(form);
+            em.persist(tag);
+            em.persist(formTag);
             EntityManagerUtil.flushAndClear(em);
 
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
             //when
             formService.deleteForm(form.getId(), loginUserDto);
             //then
+            EntityManagerUtil.flushAndClear(em);
+
             Form result = em.find(Form.class, form.getId());
-            assertThat(result.isDeleted()).isTrue();
+            AssertionUtil.assertWithSoftAssertions(s -> {
+                s.assertThat(result.isDeleted()).isTrue();
+                Tag resultTag = result.getFormTagList().get(0).getTag();
+                s.assertThat(resultTag.getCount()).isZero();
+            });
         }
 
         @Test

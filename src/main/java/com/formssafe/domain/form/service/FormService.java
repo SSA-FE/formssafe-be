@@ -14,6 +14,7 @@ import com.formssafe.domain.reward.entity.Reward;
 import com.formssafe.domain.reward.entity.RewardRecipient;
 import com.formssafe.domain.reward.service.RewardRecipientsSelectService;
 import com.formssafe.domain.tag.entity.FormTag;
+import com.formssafe.domain.tag.service.TagService;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import java.util.List;
@@ -35,6 +36,7 @@ public class FormService {
     private final TempFormUpdateService tempFormUpdateService;
     private final FormResponseMapper formResponseMapper;
     private final FormRepository formRepository;
+    private final TagService tagService;
 
     public FormWithQuestionDto getTempForm(Long formId, LoginUserDto loginUser) {
         Form form = formReadService.findFormWithUserAndTag(formId);
@@ -111,6 +113,7 @@ public class FormService {
         formValidateService.validAuthor(form, loginUser.id());
 
         form.delete();
+        tagService.decreaseTagCount(form);
     }
 
     @Transactional

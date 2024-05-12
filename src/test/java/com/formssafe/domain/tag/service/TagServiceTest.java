@@ -1,17 +1,17 @@
 package com.formssafe.domain.tag.service;
 
 import static com.formssafe.util.Fixture.createForm;
+import static com.formssafe.util.Fixture.createRewardCategory;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.reward.entity.RewardCategory;
-import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
 import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
+import com.formssafe.util.EntityManagerUtil;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,36 +20,36 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DisplayName("[태그 생성/업데이트/삭제]")
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayName("[태그 비즈니스 레이어 테스트]")
 class TagServiceTest extends IntegrationTestConfig {
-    private final UserRepository userRepository;
-    private final FormRepository formRepository;
-    private final RewardCategoryRepository rewardCategoryRepository;
     private final TagService tagService;
+    private final EntityManager em;
+
     private User testUser;
+    private RewardCategory rewardCategory;
 
     @Autowired
-    public TagServiceTest(UserRepository userRepository,
-                          FormRepository formRepository,
-                          RewardCategoryRepository rewardCategoryRepository,
-                          TagService tagService) {
-        this.userRepository = userRepository;
-        this.formRepository = formRepository;
-        this.rewardCategoryRepository = rewardCategoryRepository;
+    public TagServiceTest(TagService tagService,
+                          EntityManager em) {
         this.tagService = tagService;
+        this.em = em;
     }
 
     @BeforeEach
     void setUp() {
-        rewardCategoryRepository.save(RewardCategory.builder().rewardCategoryName("커피").build());
-        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
+        testUser = em.find(User.class, 1L);
+
+        rewardCategory = createRewardCategory("test_category");
+        em.persist(rewardCategory);
     }
 
-    @DisplayName("태그 개수가 5개 이하가 아니라면 예외가 발생한다")
     @Test
-    void fail_InvalidTagSize() {
+    void 태그_개수가_5개_이하가_아니라면_예외가_발생한다() {
         //given
-        Form form = formRepository.save(createForm(testUser, "설문", "설명"));
+        Form form = createForm(testUser, "설문1", "설명1");
+        em.persist(form);
+        EntityManagerUtil.flushAndClear(em);
 
         List<String> tags = List.of("tag1", "tag2", "tag3", "tag4", "tag5", "tag6");
         //when then
@@ -59,12 +59,13 @@ class TagServiceTest extends IntegrationTestConfig {
                 .isEqualTo(ErrorCode.INVALID_TOTAL_TAG_SIZE);
     }
 
-    @DisplayName("태그 이름이 1자 이상 20자 이하가 아니라면 예외가 발생한다")
     @ParameterizedTest
     @ValueSource(ints = {0, 21})
-    void fail_InvalidTagNameLength(int tagNameLength) {
+    void 태그_이름이_1자_이상_20자_이하가_아니라면_예외가_발생한다(int tagNameLength) {
         //given
-        Form form = formRepository.save(createForm(testUser, "설문", "설명"));
+        Form form = createForm(testUser, "설문1", "설명1");
+        em.persist(form);
+        EntityManagerUtil.flushAndClear(em);
 
         List<String> tags = List.of("t".repeat(tagNameLength));
         //when then
