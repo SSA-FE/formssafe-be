@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.formssafe.config.ControllerTestConfig;
 import com.formssafe.domain.notification.dto.NotificationResponse.NotificationListResponseDto;
 import com.formssafe.domain.notification.entity.Notification;
 import com.formssafe.domain.notification.entity.NotificationType;
@@ -19,28 +20,19 @@ import jakarta.persistence.TypedQuery;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("[알림 컨트롤러 테스트]")
-class NotificationControllerTest {
+class NotificationControllerTest extends ControllerTestConfig {
     private final MockMvc mockMvc;
     private final EntityManager em;
     private final ObjectMapper mapper;

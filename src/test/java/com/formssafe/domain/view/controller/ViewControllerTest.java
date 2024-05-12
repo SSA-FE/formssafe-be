@@ -1,59 +1,57 @@
 package com.formssafe.domain.view.controller;
 
+import static com.formssafe.util.Fixture.createForm;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import com.formssafe.config.ControllerTestConfig;
 import com.formssafe.domain.form.entity.Form;
-import com.formssafe.domain.form.repository.FormRepository;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
-import com.formssafe.util.Fixture;
+import com.formssafe.util.EntityManagerUtil;
 import com.formssafe.util.security.WithMockSessionAuthentication;
+import jakarta.persistence.EntityManager;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class ViewControllerTest {
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayName("[설문 탐색 컨트롤러 테스트]")
+class ViewControllerTest extends ControllerTestConfig {
     private final MockMvc mockMvc;
-    private final FormRepository formRepository;
-    private final UserRepository userRepository;
+    private final EntityManager em;
 
     private User testUser;
 
     @Autowired
-    public ViewControllerTest(MockMvc mockMvc, FormRepository formRepository, UserRepository userRepository) {
+    public ViewControllerTest(MockMvc mockMvc,
+                              EntityManager em) {
         this.mockMvc = mockMvc;
-        this.formRepository = formRepository;
-        this.userRepository = userRepository;
+        this.em = em;
     }
 
     @BeforeEach
     void setUp() {
-        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
+        testUser = em.find(User.class, 1L);
     }
 
     @Nested
-    @DisplayName("[설문 상세 조회]")
-    class getForm {
+    class 설문_상세_조회 {
 
         @Test
         @WithMockSessionAuthentication
-        @DisplayName("설문을 상세 조회한다")
-        void success() throws Exception {
+        void 설문을_상세_조회한다() throws Exception {
             // given
-            Form form = formRepository.save(Fixture.createForm(testUser, "제목1", "설명1"));
+            Form form = createForm(testUser, "제목1", "설명1");
+            em.persist(form);
+            EntityManagerUtil.flushAndClear(em);
 
             RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/view/forms/{id}", form.getId())
                     .contentType(MediaType.APPLICATION_JSON)
@@ -76,10 +74,11 @@ class ViewControllerTest {
 
         @Test
         @WithMockSessionAuthentication
-        @DisplayName("존재하지 않는 설문 조회 시 예외가 발생한다")
-        void fail_NonExistForm() throws Exception {
+        void 존재하지_않는_설문_조회_시_예외가_발생한다() throws Exception {
             // given
-            Form form = formRepository.save(Fixture.createForm(testUser, "제목1", "설명1"));
+            Form form = createForm(testUser, "제목1", "설명1");
+            em.persist(form);
+            EntityManagerUtil.flushAndClear(em);
 
             RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/view/forms/{id}", form.getId() + 1)
                     .contentType(MediaType.APPLICATION_JSON)
