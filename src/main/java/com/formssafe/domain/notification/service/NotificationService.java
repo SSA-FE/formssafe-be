@@ -8,8 +8,8 @@ import com.formssafe.domain.notification.implement.NotificationMapper;
 import com.formssafe.domain.notification.implement.NotificationReader;
 import com.formssafe.domain.notification.implement.NotificationUpdater;
 import com.formssafe.domain.notification.implement.NotificationValidator;
+import com.formssafe.domain.notification.page.PageImpl;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,14 +31,15 @@ public class NotificationService {
 
     public NotificationListResponseDto getUnreadNotifications(NotificationSearchDto searchDto,
                                                               LoginUserDto loginUserDto) {
-        List<Notification> notifications = notificationReader.findUnreadNotifications(loginUserDto.id(), searchDto);
+        PageImpl<Notification> unreadNotifications = notificationReader.findUnreadNotifications(loginUserDto.id(),
+                searchDto);
 
-        return NotificationMapper.createNotificationListResponseDto(notifications);
+        return NotificationMapper.createNotificationListResponseDto(unreadNotifications);
     }
 
     public NotificationListResponseDto getNotifications(NotificationSearchDto searchDto,
                                                         LoginUserDto loginUserDto) {
-        List<Notification> notifications = notificationReader.findNotifications(loginUserDto.id(), searchDto);
+        PageImpl<Notification> notifications = notificationReader.findNotifications(loginUserDto.id(), searchDto);
 
         return NotificationMapper.createNotificationListResponseDto(notifications);
     }

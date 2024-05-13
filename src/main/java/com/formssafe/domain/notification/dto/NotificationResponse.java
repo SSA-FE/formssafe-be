@@ -33,6 +33,5 @@ public final class NotificationResponse {
 
     public record NotificationListResponseDto(List<NotificationResponseDto> notifications,
                                               NotificationCursor cursor) {
-
     }
 }
