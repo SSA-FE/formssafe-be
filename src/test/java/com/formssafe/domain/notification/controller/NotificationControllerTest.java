@@ -133,6 +133,29 @@ class NotificationControllerTest {
             assertThat(notificationResponses.notifications()).extracting("content")
                     .containsExactly("내용11", "내용10", "내용9", "내용8", "내용4", "내용2", "내용1");
         }
+
+        @Test
+        @WithMockSessionAuthentication
+        void 사용자가_읽지_않은_알람_목록의_마지막_페이지를_요청할_수_있다() throws Exception {
+            //given
+            RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/notifications/unread")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .characterEncoding(StandardCharsets.UTF_8.displayName());
+            //when then
+            MockHttpServletResponse response = mockMvc.perform(requestBuilder)
+                    .andDo(print())
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(jsonPath("$.cursor.top")
+                            .value(-1))
+                    .andReturn()
+                    .getResponse();
+
+            String content = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
+            NotificationListResponseDto notificationResponses = mapper.readValue(content, new TypeReference<>() {
+            });
+            assertThat(notificationResponses.notifications()).isEmpty();
+        }
     }
 
     @Nested
@@ -195,6 +218,8 @@ class NotificationControllerTest {
             MockHttpServletResponse response = mockMvc.perform(requestBuilder)
                     .andDo(print())
                     .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(jsonPath("$.cursor.top")
+                            .value(-1))
                     .andReturn()
                     .getResponse();
 

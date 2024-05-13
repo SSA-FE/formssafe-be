@@ -2,6 +2,7 @@ package com.formssafe.domain.notification.implement;
 
 import com.formssafe.domain.notification.dto.NotificationParam.NotificationSearchDto;
 import com.formssafe.domain.notification.entity.Notification;
+import com.formssafe.domain.notification.page.PageImpl;
 import com.formssafe.domain.notification.repository.NotificationRepository;
 import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.DataNotFoundException;
@@ -28,23 +29,27 @@ public class NotificationReader {
         return notificationRepository.countByReceiverIdAndIsReadFalse(userId);
     }
 
-    public List<Notification> findUnreadNotifications(Long userId,
+    public PageImpl<Notification> findUnreadNotifications(Long userId,
                                                       NotificationSearchDto searchDto) {
         Long top = searchDto.top();
         if (top == null) {
             top = Long.MAX_VALUE;
         }
 
-        return notificationRepository.findTop10ByReceiverIdAndIsReadFalseAndIdBeforeOrderByIdDesc(userId, top);
+        List<Notification> notifications = notificationRepository.findTop11ByReceiverIdAndIsReadFalseAndIdBeforeOrderByIdDesc(
+                userId, top);
+        return new PageImpl<>(notifications);
     }
 
-    public List<Notification> findNotifications(Long userId,
+    public PageImpl<Notification> findNotifications(Long userId,
                                                 NotificationSearchDto searchDto) {
         Long top = searchDto.top();
         if (top == null) {
             top = Long.MAX_VALUE;
         }
 
-        return notificationRepository.findTop10ByReceiverIdAndIdBeforeOrderByIdDesc(userId, top);
+        List<Notification> notifications = notificationRepository.findTop11ByReceiverIdAndIdBeforeOrderByIdDesc(
+                userId, top);
+        return new PageImpl<>(notifications);
     }
 }
