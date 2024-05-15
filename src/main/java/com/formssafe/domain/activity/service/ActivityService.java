@@ -64,7 +64,7 @@ public class ActivityService {
 
     public ParticipateSubmissionDto getSelfResponse(Long formId, LoginUserDto loginUser) {
         User user = userRepository.getReferenceById(loginUser.id());
-        Form form = formService.getForm(formId);
+        Form form = formService.getTempForm(formId);
 
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElseThrow(() -> new DataNotFoundException(ErrorCode.NO_SUBMISSION_PARTICIPATED,

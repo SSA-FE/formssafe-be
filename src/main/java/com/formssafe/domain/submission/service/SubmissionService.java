@@ -55,7 +55,7 @@ public class SubmissionService {
     public void create(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
         User user = userService.getUserById(loginUser.id());
 
-        Form form = formService.getForm(formId);
+        Form form = formService.getTempForm(formId);
 
         if (getSubmissionByUserAndForm(user, form) != null) {
             throw new BadRequestException(ErrorCode.ONLY_ONE_SUBMISSION_ALLOWED,
@@ -79,7 +79,7 @@ public class SubmissionService {
     public void modify(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
         User user = userService.getUserById(loginUser.id());
 
-        Form form = formService.getForm(formId);
+        Form form = formService.getTempForm(formId);
 
         Submission submission = getSubmissionByUserAndForm(user, form);
 

@@ -71,7 +71,7 @@ public class TempFormUpdateService {
 
     private void clearFormRelatedData(Form form) {
         contentService.deleteContents(form);
-        tagService.decreaseCount(form);
+        tagService.deleteTags(form);
         if (form.getReward() != null) {
             rewardService.deleteReward(form);
         }

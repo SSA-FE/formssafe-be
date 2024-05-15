@@ -2,6 +2,8 @@ package com.formssafe.domain.form.service;
 
 import com.formssafe.domain.content.dto.ContentResponseDto;
 import com.formssafe.domain.content.entity.Content;
+import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
+import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.dto.FormResponse.FormIdDto;
 import com.formssafe.domain.reward.dto.RewardResponse.RewardDto;
 import com.formssafe.domain.reward.entity.Reward;
@@ -47,6 +49,13 @@ public class FormResponseMapper {
                 .map(RewardRecipient::getUser)
                 .map(UserListDto::from)
                 .toList();
+    }
+
+    public FormWithQuestionDto toFormWithQuestionDto(Form form, List<Content> contents) {
+        return FormWithQuestionDto.from(form,
+                toContentResponseDto(contents),
+                toTagListDto(form.getFormTagList()),
+                toRewardDto(form.getReward()));
     }
 
     public FormIdDto toFormIdDto(Long formId) {

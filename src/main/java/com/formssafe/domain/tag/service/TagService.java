@@ -48,8 +48,13 @@ public class TagService {
     }
 
     @Transactional
-    public void decreaseCount(Form form) {
+    public void deleteTags(Form form) {
         tagRepository.decreaseCountByForm(form);
         formTagRepository.deleteAllByForm(form);
+    }
+
+    @Transactional
+    public void decreaseTagCount(Form form) {
+        tagRepository.decreaseCountByForm(form);
     }
 }

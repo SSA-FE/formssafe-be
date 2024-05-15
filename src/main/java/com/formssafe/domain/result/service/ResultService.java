@@ -32,7 +32,7 @@ public class ResultService {
     public ResultResponseDto getTotalResult(LoginUserDto loginUser, Long formId) {
         User user = userService.getUserById(loginUser.id());
 
-        Form form = formService.getForm(formId);
+        Form form = formService.getTempForm(formId);
 
         if (user.getId() != form.getUser().getId()) {
             throw new BadRequestException(ErrorCode.INVALID_AUTHOR_TO_CHECK_RESULT, "자신이 작성한 설문만 설문 결과를 확인할 수 있습니다.");
