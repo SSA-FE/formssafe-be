@@ -1,12 +1,5 @@
 package com.formssafe.domain.form.repository;
 
-import static com.formssafe.domain.form.entity.QForm.form;
-import static com.formssafe.domain.reward.entity.QReward.reward;
-import static com.formssafe.domain.submission.entity.QSubmission.submission;
-import static com.formssafe.domain.tag.entity.QFormTag.formTag;
-import static com.formssafe.domain.tag.entity.QTag.tag;
-import static com.formssafe.domain.user.entity.QUser.user;
-
 import com.formssafe.domain.activity.dto.ActivityParam;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.entity.Form;
@@ -16,28 +9,41 @@ import com.formssafe.domain.user.entity.User;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.formssafe.domain.form.entity.QForm.form;
+import static com.formssafe.domain.reward.entity.QReward.reward;
+import static com.formssafe.domain.submission.entity.QSubmission.submission;
+import static com.formssafe.domain.tag.entity.QFormTag.formTag;
+import static com.formssafe.domain.tag.entity.QTag.tag;
+import static com.formssafe.domain.user.entity.QUser.user;
 
 @RequiredArgsConstructor
 @Slf4j
 public class FormRepositoryCustomImpl implements FormRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    private OrderSpecifier<?> getOrderSpecifier(SortType sortType) {
+    private List<OrderSpecifier<?>> getOrderSpecifier(SortType sortType) {
+        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
         log.info(sortType.name());
-        return switch (sortType) {
-            case START_DATE -> form.startDate.desc();
-            case END_DATE -> form.endDate.asc();
-            case RESPONSE_CNT -> form.responseCnt.desc();
+
+        switch (sortType) {
+            case START_DATE -> orderSpecifiers.add(form.startDate.desc());
+            case END_DATE -> orderSpecifiers.add(form.endDate.asc());
+            case RESPONSE_CNT -> orderSpecifiers.add(form.responseCnt.desc());
             default -> throw new IllegalArgumentException("Invalid sorting type: " + sortType);
-        };
+        }
+        orderSpecifiers.add(form.id.asc());
+        return orderSpecifiers;
     }
 
     @Override
     public List<Form> findFormWithFiltered(SearchDto searchDto) {
-        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
+        List<OrderSpecifier<?>> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
 
         return jpaQueryFactory.select(form)
                 .from(form)
@@ -45,7 +51,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .leftJoin(form.formTagList, formTag)
                 .leftJoin(formTag.tag, tag)
                 .leftJoin(form.reward, reward)
-                .orderBy(orderSpecifier)
+                .orderBy(orderSpecifier.toArray(OrderSpecifier[]::new))
                 .where(isNotDeleted(),
                         isUserNotDeleted(),
                         isNotTemp(),
@@ -62,7 +68,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
 
     @Override
     public List<Form> findFormByUserWithFiltered(ActivityParam.SearchDto searchDto, User author) {
-        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
+        List<OrderSpecifier<?>> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
 
         return jpaQueryFactory.select(form)
                 .from(form)
@@ -70,7 +76,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .leftJoin(form.formTagList, formTag)
                 .leftJoin(formTag.tag, tag)
                 .leftJoin(form.reward, reward)
-                .orderBy(orderSpecifier)
+                .orderBy(orderSpecifier.toArray(OrderSpecifier[]::new))
                 .where(matchUser(author),
                         isUserNotDeleted(),
                         isNotDeleted(),
@@ -88,7 +94,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
 
     @Override
     public List<Form> findFormByParticipateUserWithFiltered(ActivityParam.SearchDto searchDto, User participant) {
-        OrderSpecifier<?> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
+        List<OrderSpecifier<?>> orderSpecifier = getOrderSpecifier(SortType.from(searchDto.sort()));
 
         return jpaQueryFactory.select(form)
                 .from(form)
@@ -97,7 +103,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .leftJoin(formTag.tag, tag)
                 .leftJoin(form.reward, reward)
                 .leftJoin(form.submissionList, submission)
-                .orderBy(orderSpecifier)
+                .orderBy(orderSpecifier.toArray(OrderSpecifier[]::new))
                 .where(matchParticipant(participant),
                         isNotDeleted(),
                         afterCursor(SortType.from(searchDto.sort()), searchDto),
@@ -151,7 +157,7 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
         return categories != null && !categories.isEmpty() ? reward.rewardCategory.rewardCategoryName.in(categories)
                 : null;
     }
-    
+
     private BooleanExpression afterCursor(SortType sortType, SearchDto searchDto) {
         return switch (sortType) {
             case START_DATE -> searchDto.startDate() != null ?
