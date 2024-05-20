@@ -1,6 +1,7 @@
 package com.formssafe.domain.form.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public final class FormParam {
                             String keyword,
                             @Schema(description = "정렬 기준", defaultValue = "create date", allowableValues = {
                                     "createDate",
-                                    "endDate", "responseCnt"})
+                                    "endDate"})
                             String sort,
                             @Schema(description = "카테고리")
                             List<String> category,
@@ -27,7 +28,7 @@ public final class FormParam {
                             @Schema(description = "SortType이 EndDate일때, 마지막 endDate")
                             LocalDateTime endDate,
                             @Schema(description = "SortType이 responseCnt일 때, 마지막 responseCnt")
-                                Integer responseCnt) {
+                            Integer responseCnt) {
 
         @Override
         public String toString() {

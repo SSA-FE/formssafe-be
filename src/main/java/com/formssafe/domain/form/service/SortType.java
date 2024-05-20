@@ -7,8 +7,7 @@ import java.util.stream.Collectors;
 
 public enum SortType {
     START_DATE("startDate"),
-    END_DATE("endDate"),
-    RESPONSE_CNT("responseCnt");
+    END_DATE("endDate");
 
     private static final Map<String, SortType> convertor
             = Arrays.stream(SortType.values())

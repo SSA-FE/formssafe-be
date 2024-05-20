@@ -1,9 +1,10 @@
 package com.formssafe.domain.activity.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 
 public final class ActivityParam {
 
@@ -13,7 +14,7 @@ public final class ActivityParam {
                             String keyword,
                             @Schema(description = "정렬 기준", defaultValue = "create date", allowableValues = {
                                     "createDate",
-                                    "endDate", "responseCnt"})
+                                    "endDate"})
                             String sort,
                             @Schema(description = "카테고리")
                             List<String> category,
