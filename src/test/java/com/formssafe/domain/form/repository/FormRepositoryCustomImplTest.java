@@ -1,23 +1,13 @@
 package com.formssafe.domain.form.repository;
 
-import static com.formssafe.global.constants.FormConstraints.PAGE_SIZE;
-import static com.formssafe.util.Fixture.createForm;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.formssafe.config.IntegrationTestConfig;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
-import com.formssafe.domain.reward.repository.RewardCategoryRepository;
 import com.formssafe.domain.tag.entity.FormTag;
 import com.formssafe.domain.tag.entity.Tag;
 import com.formssafe.domain.user.entity.User;
-import com.formssafe.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,16 +16,24 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static com.formssafe.global.constants.FormConstraints.PAGE_SIZE;
+import static com.formssafe.util.Fixture.createForm;
+import static org.assertj.core.api.Assertions.assertThat;
+
 class FormRepositoryCustomImplTest extends IntegrationTestConfig {
+    private final FormRepository formRepository;
+    private final EntityManager em;
 
     @Autowired
-    private FormRepository formRepository;
-    @Autowired
-    private RewardCategoryRepository rewardCategoryRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private EntityManager em;
+    public FormRepositoryCustomImplTest(FormRepository formRepository, EntityManager em) {
+        this.formRepository = formRepository;
+        this.em = em;
+    }
 
     private User testUser;
 
@@ -55,15 +53,14 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
 
     @BeforeEach
     void setUp() {
-        testUser = userRepository.findById(1L).orElseThrow(IllegalStateException::new);
-        rewardCategoryRepository.findAll();
+        testUser = em.find(User.class, 1L);
     }
 
     @ValueSource(strings = {"1", "2", "3"})
     @ParameterizedTest
     void 제목또는설명에_키워드가포함된_설문목록을_조회한다(String keyword) {
         //given
-        SearchDto searchDto = new SearchDto(keyword, null, null, null, null, null, null, null, null);
+        SearchDto searchDto = new SearchDto(keyword, null, null, null, null, null, null, null);
         //when
         List<Form> formAllFiltered = formRepository.findFormWithFiltered(searchDto);
         //then
@@ -76,7 +73,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @ParameterizedTest
     void 특정상태의_설문목록을_조회한다(FormStatus status) {
         //given
-        SearchDto searchDto = new SearchDto(null, null, null, status.displayName(), null, null, null, null, null);
+        SearchDto searchDto = new SearchDto(null, null, null, status.displayName(), null, null, null, null);
         //when
         List<Form> formAllFiltered = formRepository.findFormWithFiltered(searchDto);
         //then
@@ -89,7 +86,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @MethodSource("getTagList")
     void 특정태그들을_가지는_설문목록을_조회한다(List<String> tagList) {
         //given
-        SearchDto searchDto = new SearchDto(null, null, null, null, tagList, null, null, null, null);
+        SearchDto searchDto = new SearchDto(null, null, null, null, tagList, null, null, null);
         //when
         List<Form> result = formRepository.findFormWithFiltered(searchDto);
         //then
@@ -106,7 +103,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
     @MethodSource("getCategoryList")
     void 특정카테고리의_경품들을_가지는_설문목록을_조회한다(List<String> categoryList) {
         //given
-        SearchDto searchDto = new SearchDto(null, null, categoryList, null, null, null, null, null, null);
+        SearchDto searchDto = new SearchDto(null, null, categoryList, null, null, null, null, null);
         //when
         List<Form> result = formRepository.findFormWithFiltered(searchDto);
         //then
@@ -136,7 +133,7 @@ class FormRepositoryCustomImplTest extends IntegrationTestConfig {
             expected.add(forms.get(forms.size() - 1 - i).getId());
         }
 
-        SearchDto searchDto = new SearchDto(null, "startDate", null, null, null, top, startDate, null, null);
+        SearchDto searchDto = new SearchDto(null, "startDate", null, null, null, top, startDate, null);
 
         //when
         List<Form> result = formRepository.findFormWithFiltered(searchDto);
