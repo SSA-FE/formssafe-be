@@ -26,15 +26,13 @@ public final class FormParam {
                             @Schema(description = "SortType이 startDate, 마지막 startDate")
                             LocalDateTime startDate,
                             @Schema(description = "SortType이 EndDate일때, 마지막 endDate")
-                            LocalDateTime endDate,
-                            @Schema(description = "SortType이 responseCnt일 때, 마지막 responseCnt")
-                            Integer responseCnt) {
+                            LocalDateTime endDate) {
 
         @Override
         public String toString() {
             return "keyword : " + keyword + ", sort : " + sort + ", category : " + category + ", status : " + status
                     + ", tag : " + tag + ", top : " + top + ", startDate : " + startDate + ", endDate : "
-                    + endDate + ", responseCnt : " + responseCnt;
+                    + endDate;
         }
     }
 }
