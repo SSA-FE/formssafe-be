@@ -4,6 +4,7 @@ import com.formssafe.domain.activity.dto.ActivityParam;
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.user.entity.User;
+
 import java.util.List;
 
 public interface FormRepositoryCustom {
@@ -12,4 +13,6 @@ public interface FormRepositoryCustom {
     List<Form> findFormByUserWithFiltered(ActivityParam.SearchDto searchDto, User author);
 
     List<Form> findFormByParticipateUserWithFiltered(ActivityParam.SearchDto searchDto, User user);
+
+    List<Form> findTop10HotForm();
 }

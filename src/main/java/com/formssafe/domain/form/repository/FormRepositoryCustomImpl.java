@@ -34,7 +34,6 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
         switch (sortType) {
             case START_DATE -> orderSpecifiers.add(form.startDate.desc());
             case END_DATE -> orderSpecifiers.add(form.endDate.asc());
-            case RESPONSE_CNT -> orderSpecifiers.add(form.responseCnt.desc());
             default -> throw new IllegalArgumentException("Invalid sorting type: " + sortType);
         }
         orderSpecifiers.add(form.id.asc());
@@ -117,6 +116,24 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<Form> findTop10HotForm() {
+        return jpaQueryFactory.select(form)
+                .from(form)
+                .join(form.user, user).fetchJoin()
+                .leftJoin(form.formTagList, formTag)
+                .leftJoin(formTag.tag, tag)
+                .leftJoin(form.reward, reward)
+                .leftJoin(form.submissionList, submission)
+                .orderBy(form.responseCnt.desc())
+                .where(isNotDeleted(),
+                        matchStatus("progress"))
+                .fetchJoin()
+                .limit(10)
+                .distinct()
+                .fetch();
+    }
+
     private BooleanExpression isUserNotDeleted() {
         return user.isDeleted.eq(false);
     }
@@ -166,9 +183,6 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
             case END_DATE -> searchDto.endDate() != null ?
                     (form.endDate.eq(searchDto.endDate()).and(form.id.gt(searchDto.top())))
                             .or(form.endDate.after(searchDto.endDate())) : null;
-            case RESPONSE_CNT -> searchDto.responseCnt() != null ?
-                    (form.responseCnt.eq(searchDto.responseCnt()).and(form.id.gt(searchDto.top())))
-                            .or(form.responseCnt.lt(searchDto.responseCnt())) : null;
         };
     }
 
@@ -180,9 +194,6 @@ public class FormRepositoryCustomImpl implements FormRepositoryCustom {
             case END_DATE -> searchDto.endDate() != null ?
                     (form.endDate.eq(searchDto.endDate()).and(form.id.gt(searchDto.top())))
                             .or(form.endDate.after(searchDto.endDate())) : null;
-            case RESPONSE_CNT -> searchDto.responseCnt() != null ?
-                    (form.responseCnt.eq(searchDto.responseCnt()).and(form.id.gt(searchDto.top())))
-                            .or(form.responseCnt.lt(searchDto.responseCnt())) : null;
         };
     }
 }

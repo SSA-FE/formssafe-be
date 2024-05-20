@@ -11,11 +11,13 @@ import com.formssafe.domain.form.service.FormReadService;
 import com.formssafe.domain.form.service.FormResponseMapper;
 import com.formssafe.domain.form.service.FormValidateService;
 import com.formssafe.domain.form.service.SortType;
-import java.util.List;
+import com.formssafe.domain.hotform.service.HotFormService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,6 +27,7 @@ public class ViewService {
     private final FormReadService formReadService;
     private final FormValidateService formValidateService;
     private final FormResponseMapper formResponseMapper;
+    private final HotFormService hotFormService;
 
     public FormListResponseDto getFormList(SearchDto searchDto) {
         log.info(searchDto.toString());
@@ -47,5 +50,12 @@ public class ViewService {
                 formResponseMapper.toContentResponseDto(contentList),
                 formResponseMapper.toTagListDto(form.getFormTagList()),
                 formResponseMapper.toRewardDto(form.getReward()));
+    }
+
+    public List<FormListDto> getTop10HotFormList() {
+        List<Form> forms = hotFormService.getHotForms();
+        return forms.stream()
+                .map(FormListDto::from)
+                .toList();
     }
 }

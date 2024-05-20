@@ -2,6 +2,7 @@ package com.formssafe.domain.view.controller;
 
 
 import com.formssafe.domain.form.dto.FormParam.SearchDto;
+import com.formssafe.domain.form.dto.FormResponse.FormListDto;
 import com.formssafe.domain.form.dto.FormResponse.FormListResponseDto;
 import com.formssafe.domain.form.dto.FormResponse.FormWithQuestionDto;
 import com.formssafe.domain.view.service.ViewService;
@@ -16,12 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "view", description = "설문 참여 조회 관련 API")
 @RestController
@@ -55,5 +53,20 @@ public class ViewController {
     @ResponseStatus(HttpStatus.OK)
     FormWithQuestionDto getForm(@PathVariable Long id) {
         return viewService.getFormWithQuestion(id);
+    }
+
+    @Operation(summary = "Top10 핫한 설문 조회", description = "현재 시간을 기준으로 10분 이내에 저장된 top10 핫한 설문을 조회한다.")
+    @ApiResponse(responseCode = "400", description = "formId가 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"formId가 존재하지 않습니다.\"}")))
+    @ApiResponse(responseCode = "401", description = "세션이 존재하지 않음",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(value = "{\"error\": \"세션이 존재하지 않습니다.\"}")))
+    @GetMapping(path = "/forms/hot", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    List<FormListDto> getTop10HotForms() {
+        return viewService.getTop10HotFormList();
     }
 }

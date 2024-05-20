@@ -3,16 +3,18 @@ package com.formssafe.domain.batch.form.service;
 import com.formssafe.domain.form.entity.Form;
 import com.formssafe.domain.form.entity.FormStatus;
 import com.formssafe.domain.form.repository.FormRepository;
+import com.formssafe.domain.hotform.service.HotFormService;
 import com.formssafe.domain.notification.dto.NotificationEventDto.FormClosedNotificationEventDto;
 import com.formssafe.domain.notification.event.type.FormClosedNotificationEvent;
 import com.formssafe.domain.reward.service.RewardRecipientsSelectService;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class FormBatchService {
     private final FormRepository formRepository;
+    private final HotFormService hotFormService;
     private final RewardRecipientsSelectService rewardRecipientsSelectService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -49,5 +52,15 @@ public class FormBatchService {
                 this));
 
         log.info("Auto end forms end.");
+    }
+
+    @Transactional
+    public void saveTop10HotForm(LocalDateTime now) {
+        List<Form> top10HotForms = formRepository.findTop10HotForm();
+        now = now.withSecond(0).withNano(0);
+        log.info("top10 forms: {}", top10HotForms.stream()
+                .map(Form::getId).toList());
+
+        hotFormService.saveHotForm(top10HotForms, now);
     }
 }
