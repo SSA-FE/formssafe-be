@@ -19,10 +19,5 @@ public interface HotFormRepository extends JpaRepository<HotForm, Long> {
             ORDER BY hf.id ASC
             LIMIT 10
             """, nativeQuery = true)
-    List<HotForm> getTop10HotForm(@Param("now") LocalDateTime now, @Param("start") LocalDateTime start);
-
-    default List<HotForm> getTop10HotForms(LocalDateTime now) {
-        LocalDateTime start = now.minusMinutes(10);
-        return getTop10HotForm(now, start);
-    }
+    List<HotForm> getTop10HotForms(@Param("now") LocalDateTime now, @Param("start") LocalDateTime start);
 }

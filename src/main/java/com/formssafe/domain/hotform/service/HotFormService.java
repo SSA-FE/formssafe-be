@@ -26,7 +26,9 @@ public class HotFormService {
     }
 
     public List<Form> getHotForms() {
-        return hotFormRepository.getTop10HotForms(LocalDateTime.now()).stream()
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
+        ;
+        return hotFormRepository.getTop10HotForms(now, now.minusMinutes(10)).stream()
                 .map(HotForm::getForm)
                 .toList();
     }
