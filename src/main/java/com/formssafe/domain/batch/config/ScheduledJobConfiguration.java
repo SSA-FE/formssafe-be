@@ -26,7 +26,7 @@ public class ScheduledJobConfiguration {
         submissionService.disposalPrivacy(LocalDateTime.now());
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void scheduledTop10FormSave() {
         formBatchService.saveTop10HotForm(LocalDateTime.now());
     }

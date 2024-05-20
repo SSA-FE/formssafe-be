@@ -22,7 +22,7 @@ public interface HotFormRepository extends JpaRepository<HotForm, Long> {
     List<HotForm> getTop10HotForm(@Param("now") LocalDateTime now, @Param("start") LocalDateTime start);
 
     default List<HotForm> getTop10HotForms(LocalDateTime now) {
-        LocalDateTime start = now.minusMinutes(1);
+        LocalDateTime start = now.minusMinutes(10);
         return getTop10HotForm(now, start);
     }
 }
