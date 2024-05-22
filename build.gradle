@@ -54,7 +54,6 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4'
     // export file
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
-
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

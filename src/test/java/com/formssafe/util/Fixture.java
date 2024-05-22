@@ -137,6 +137,27 @@ public final class Fixture {
                 .build();
     }
 
+    public static Form createForm(User author,
+                                  String title,
+                                  String detail,
+                                  int questionCnt) {
+        return Form.builder()
+                .user(author)
+                .title(title)
+                .imageUrl(null)
+                .detail(detail)
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(2))
+                .expectTime(10)
+                .isEmailVisible(false)
+                .privacyDisposalDate(null)
+                .status(FormStatus.PROGRESS)
+                .isTemp(false)
+                .isDeleted(false)
+                .questionCnt(questionCnt)
+                .build();
+    }
+
     /**
      * 삭제된 설문 엔티티를 생성한다.
      *

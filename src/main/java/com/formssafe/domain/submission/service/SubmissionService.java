@@ -24,9 +24,11 @@ import com.formssafe.domain.submission.repository.SubmissionRepository;
 import com.formssafe.domain.user.dto.UserRequest.LoginUserDto;
 import com.formssafe.domain.user.entity.User;
 import com.formssafe.domain.user.service.UserService;
+import com.formssafe.global.aop.Retry;
 import com.formssafe.global.error.ErrorCode;
 import com.formssafe.global.error.type.BadRequestException;
 import com.formssafe.global.util.DateTimeUtil;
+import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +52,13 @@ public class SubmissionService {
     private final DescriptiveSubmissionRepository descriptiveSubmissionRepository;
     private final ObjectiveSubmissionRepository objectiveSubmissionRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final EntityManager em;
 
     @Transactional
+    @Retry
     public void create(long formId, SubmissionCreateDto request, LoginUserDto loginUser) {
         User user = userService.getUserById(loginUser.id());
-
         Form form = formService.getForm(formId);
-
         if (getSubmissionByUserAndForm(user, form) != null) {
             throw new BadRequestException(ErrorCode.ONLY_ONE_SUBMISSION_ALLOWED,
                     "한 사용자가 하나의 설문에 대하여 두 개 이상의 응답을 작성할 수 없습니다.");
@@ -64,15 +66,16 @@ public class SubmissionService {
 
         validate(user, form);
 
-        Submission submission = createSubmission(request, user, form);
-
-        createDetailSubmission(request.submissions(), submission, form);
-
         if (!request.isTemp()) {
             form.increaseResponseCount();
             applicationEventPublisher.publishEvent(
                     new FormParticipantsNotificationEvent(new FormParticipantsNotificationEventDto(form, user), this));
         }
+
+        em.flush();
+
+        Submission submission = createSubmission(request, user, form);
+        createDetailSubmission(request.submissions(), submission, form);
     }
 
     @Transactional
@@ -106,8 +109,6 @@ public class SubmissionService {
     }
 
     public SubmissionResponseDto getSubmission(long formId, LoginUserDto loginUser) {
-        User user = userService.getUserById(loginUser.id());
-
         Submission submission = submissionRepository.findSubmissionByFormIDAndUserId(formId, loginUser.id())
                 .orElse(null);
 

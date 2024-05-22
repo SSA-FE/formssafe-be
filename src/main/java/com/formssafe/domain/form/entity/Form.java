@@ -26,6 +26,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Version;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,9 @@ public class Form extends BaseTimeEntity {
 
     private boolean isDeleted;
 
+    @Version
+    private int version;
+
     @BatchSize(size = FormConstraints.PAGE_SIZE)
     @OneToMany(mappedBy = "form")
     private List<FormTag> formTagList = new ArrayList<>();
@@ -105,9 +109,20 @@ public class Form extends BaseTimeEntity {
     private List<RewardRecipient> rewardRecipientList = new ArrayList<>();
 
     @Builder
-    private Form(Long id, User user, String title, String detail, List<String> imageUrl,
-                 LocalDateTime startDate, LocalDateTime endDate, int expectTime, boolean isEmailVisible,
-                 LocalDateTime privacyDisposalDate, FormStatus status, int questionCnt, int responseCnt, boolean isTemp,
+    private Form(Long id,
+                 User user,
+                 String title,
+                 String detail,
+                 List<String> imageUrl,
+                 LocalDateTime startDate,
+                 LocalDateTime endDate,
+                 int expectTime,
+                 boolean isEmailVisible,
+                 LocalDateTime privacyDisposalDate,
+                 FormStatus status,
+                 int questionCnt,
+                 int responseCnt,
+                 boolean isTemp,
                  boolean isDeleted) {
         this.id = id;
         this.user = user;
