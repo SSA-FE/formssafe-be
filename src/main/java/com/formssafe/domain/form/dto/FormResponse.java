@@ -12,7 +12,6 @@ import com.formssafe.domain.user.dto.UserResponse.UserAuthorDto;
 import com.formssafe.domain.user.dto.UserResponse.UserListDto;
 import com.formssafe.global.util.JsonConverter;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -164,8 +163,9 @@ public final class FormResponse {
 
         public static FormListDto from(Form form) {
             String imageUrl = null;
-            if (!form.getImageUrl().equals("null")) {
-                imageUrl = JsonConverter.toList(form.getImageUrl(), String.class).get(0);
+            List<String> images = JsonConverter.toList(form.getImageUrl(), String.class);
+            if (!images.isEmpty()) {
+                imageUrl = images.get(0);
             }
 
             RewardDto rewardDto = null;
