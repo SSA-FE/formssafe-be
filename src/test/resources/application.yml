@@ -17,7 +17,7 @@ spring:
     open-in-view: false
     database: mysql
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     defer-datasource-initialization: true
     show-sql: true
     properties:

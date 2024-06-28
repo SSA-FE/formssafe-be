@@ -98,7 +98,7 @@ class FormServiceTest extends IntegrationTestConfig {
         }
 
         @Test
-        void 작성자가아닌_사용자가_설문_상세_조회시_예외가_발생한다() {
+        void 작성자가_아닌_사용자가_설문_상세_조회_시_예외가_발생한다() {
             //given
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
@@ -108,7 +108,7 @@ class FormServiceTest extends IntegrationTestConfig {
         }
 
         @Test
-        void 작성자가_임시설문이_아닌_설문_상세_조회시_예외가_발생한다() {
+        void 작성자가_임시설문이_아닌_설문_상세_조회_시_예외가_발생한다() {
             //given
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
@@ -133,7 +133,7 @@ class FormServiceTest extends IntegrationTestConfig {
         }
 
         @Test
-        void 로그인유저와_설문작성자가_다르다면_예외가_발생한다() {
+        void 로그인_유저와_설문_작성자가_다르다면_예외가_발생한다() {
             //given
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUser = new LoginUserDto(testUser.getId() + 1);
@@ -154,7 +154,7 @@ class FormServiceTest extends IntegrationTestConfig {
 
         @EnumSource(value = FormStatus.class, names = {"NOT_STARTED", "DONE", "REWARDED"})
         @ParameterizedTest
-        void 설문이_진행중이_아니라면_예외가_발생한다(FormStatus status) {
+        void 설문이_진행_중이_아니라면_예외가_발생한다(FormStatus status) {
             //given
             LocalDateTime endDate = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
             Form form = formRepository.save(
@@ -181,7 +181,7 @@ class FormServiceTest extends IntegrationTestConfig {
         }
 
         @Test
-        void 이미_삭제된_설문_삭제시_예외가_발생한다() {
+        void 이미_삭제된_설문_삭제_시_예외가_발생한다() {
             //given
             Form form = formRepository.save(createDeletedForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
@@ -191,7 +191,7 @@ class FormServiceTest extends IntegrationTestConfig {
         }
 
         @Test
-        void 설문작성자와_로그인유저가_다르다면_예외가_발생한다() {
+        void 설문_작성자와_로그인_유저가_다르다면_예외가_발생한다() {
             //given
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
@@ -205,7 +205,7 @@ class FormServiceTest extends IntegrationTestConfig {
     class 설문_마감 {
 
         @Test
-        void 경품없는_설문을_마감한다() {
+        void 경품_없는_설문을_마감한다() {
             //given
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
@@ -217,7 +217,7 @@ class FormServiceTest extends IntegrationTestConfig {
         }
 
         @Test
-        void 경품있는_설문을_마감한다() {
+        void 경품_있는_설문을_마감한다() {
             //given
             List<User> users = createUsers(5);
             List<User> deletedUsers = List.of(
@@ -260,7 +260,7 @@ class FormServiceTest extends IntegrationTestConfig {
         }
 
         @Test
-        void 설문작성자와_로그인유저가_다르다면_예외가_발생한다() {
+        void 설문_작성자와_로그인_유저가_다르다면_예외가_발생한다() {
             //given
             Form form = formRepository.save(createForm(testUser, "설문1", "설문설명1"));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId() + 1);
@@ -271,7 +271,7 @@ class FormServiceTest extends IntegrationTestConfig {
 
         @EnumSource(value = FormStatus.class, names = {"NOT_STARTED", "DONE", "REWARDED"})
         @ParameterizedTest
-        void 진행중인_설문이_아니라면_예외가_발생한다(FormStatus status) {
+        void 진행_중인_설문이_아니라면_예외가_발생한다(FormStatus status) {
             //given
             Form form = formRepository.save(createFormWithStatus(testUser, "설문1", "설문설명1", status));
             LoginUserDto loginUserDto = new LoginUserDto(testUser.getId());
